@@ -3,9 +3,7 @@ package org.example.entity;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "farms")
@@ -17,6 +15,9 @@ public class Farms extends BaseEntity {
     
     @Column(nullable = false)
     private Long year;
+    
+    @Column(nullable = false)
+    private String address;
     
     @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Plants> plants;

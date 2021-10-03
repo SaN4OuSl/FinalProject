@@ -24,25 +24,4 @@ public class Farms extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "district_id")
     private Districts district;
-    
-    public Farms() {
-        plants = new ArrayList<>();
-    }
-    
-    public String getName() {
-        return farmName;
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Farms)) return false;
-        Farms course = (Farms) o;
-        return getName().equals(course.getName());
-    }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName());
-    }
 }

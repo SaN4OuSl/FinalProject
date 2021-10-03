@@ -1,39 +1,28 @@
 package org.example.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "plants")
 public class Plants extends BaseEntity{
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "plant_name")
     private String plantName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "size_of_field")
     private Integer sizeOfField;
 
-    @OneToMany(mappedBy = "plant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<BenefitPlant> benefitPlants;
+    @OneToOne(mappedBy = "plant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private BenefitPlant benefitPlants;
 
     @OneToMany(mappedBy = "plant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<CostOfPlant> costOfPlants;
-
+    private List<Fertilizers> costOfPlants;
+    
+    @ManyToMany(mappedBy = "plant", fetch = FetchType.LAZY)
+    private List<Techniques> techniques;
+    
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "farm_id")
     private Farms farm;
-
-    public Farms getFarm() {
-        return farm;
-    }
-
-    public void setFarm(Farms farm) {
-        this.farm = farm;
-    }
-
-    public Plants() {
-        benefitPlants = new ArrayList<>();
-        costOfPlants = new ArrayList<>();
-    }
 }

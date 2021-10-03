@@ -12,10 +12,15 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">false</property>
+        <mapping class="org.example.entity.Regions"/>
+        <mapping class="org.example.entity.Districts"/>
         <mapping class="org.example.entity.Farms"/>
         <mapping class="org.example.entity.Plants"/>
         <mapping class="org.example.entity.BaseEntity"/>
-        <mapping class="org.example.entity.CostOfPlant"/>
+        <mapping class="org.example.entity.Fertilizers"/>
+        <mapping class="org.example.entity.Techniques"/>
+        <mapping class="org.example.entity.SpareParts"/>
+        <mapping class="org.example.entity.CombustibleLubricants"/>
         <mapping class="org.example.entity.BenefitPlant"/>
     </session-factory>
 </hibernate-configuration>

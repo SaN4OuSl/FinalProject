@@ -1,0 +1,4 @@
+.idea
+target
+*.iml
+unit_2_compile/maven_compile/app/target

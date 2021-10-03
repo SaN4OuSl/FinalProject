@@ -17,7 +17,7 @@ public class Plants extends BaseEntity{
     private BenefitPlant benefitPlants;
 
     @OneToMany(mappedBy = "plant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Fertilizers> costOfPlants;
+    private List<Fertilizers> fertilizers;
     
     @ManyToMany(mappedBy = "plant", fetch = FetchType.LAZY)
     private List<Techniques> techniques;

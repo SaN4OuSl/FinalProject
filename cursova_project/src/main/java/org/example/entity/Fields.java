@@ -13,7 +13,7 @@ public class Fields {
     @Id
     @NaturalId
     @Column(nullable = false, name = "сadastral_number")
-    private Long сadastralNumber;
+    private String сadastralNumber;
     
     @Column(nullable = false, name = "size_of_field")
     private Long sizeOfField;
@@ -27,9 +27,4 @@ public class Fields {
     
     @ManyToMany(mappedBy = "field", fetch = FetchType.LAZY)
     private List<Plants> plants;
-    
-    @ManyToOne
-    @JoinColumn(name = "district_id")
-    private Districts district;
-    
 }

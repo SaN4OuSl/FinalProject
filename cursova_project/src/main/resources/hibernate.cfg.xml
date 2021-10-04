@@ -12,8 +12,6 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">false</property>
-        <mapping class="org.example.entity.Regions"/>
-        <mapping class="org.example.entity.Districts"/>
         <mapping class="org.example.entity.Farms"/>
         <mapping class="org.example.entity.Fields"/>
         <mapping class="org.example.entity.Plants"/>

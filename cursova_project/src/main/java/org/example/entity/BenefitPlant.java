@@ -13,6 +13,6 @@ public class BenefitPlant extends BaseEntity {
     private Long costOfPlant;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plant_id")
+    @JoinColumn(nullable = false, name = "plant_id")
     private Plants plant;
 }

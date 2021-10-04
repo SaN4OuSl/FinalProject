@@ -9,20 +9,19 @@ public class Plants extends BaseEntity{
 
     @Column(nullable = false, name = "plant_name")
     private String plantName;
-
-    @Column(nullable = false, name = "size_of_field")
-    private Integer sizeOfField;
+    
+    @Column(nullable = false, name = "size_of_field_for_plant")
+    private Integer sizeOfFieldForPlant;
 
     @OneToOne(mappedBy = "plant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private BenefitPlant benefitPlants;
 
-    @OneToMany(mappedBy = "plant", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "plant", fetch = FetchType.LAZY)
     private List<Fertilizers> fertilizers;
     
     @ManyToMany(mappedBy = "plant", fetch = FetchType.LAZY)
     private List<Techniques> techniques;
     
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "farm_id")
-    private Farms farm;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Fields> field;
 }

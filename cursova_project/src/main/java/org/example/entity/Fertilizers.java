@@ -1,6 +1,7 @@
 package org.example.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "fertilizers")
@@ -17,8 +18,7 @@ public class Fertilizers extends BaseEntity {
 
     @Column(nullable = false, name = "cost_of_fertilizer")
     private Long costOfFertilizers;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "plant_id")
-    private Plants plant;
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Plants> plant;
 }

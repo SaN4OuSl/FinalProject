@@ -6,10 +6,10 @@ import javax.persistence.*;
 @Table(name = "benefit_plants")
 public class BenefitPlant extends BaseEntity {
 
-    @Column(nullable = false, name = "number_of_plants")
-    private Long numberOfPlants;
+    @Column(nullable = false, name = "plant_harvest")
+    private Long plantHarvest;
 
-    @Column(nullable = false, name = "cost_of_plants")
+    @Column(nullable = false, name = "cost_of_plant")
     private Long costOfPlant;
 
     @OneToOne(fetch = FetchType.LAZY)

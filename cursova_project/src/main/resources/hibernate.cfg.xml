@@ -15,6 +15,7 @@
         <mapping class="org.example.entity.Regions"/>
         <mapping class="org.example.entity.Districts"/>
         <mapping class="org.example.entity.Farms"/>
+        <mapping class="org.example.entity.Fields"/>
         <mapping class="org.example.entity.Plants"/>
         <mapping class="org.example.entity.BaseEntity"/>
         <mapping class="org.example.entity.Fertilizers"/>

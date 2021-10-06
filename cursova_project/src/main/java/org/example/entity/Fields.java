@@ -19,10 +19,10 @@ public class Fields {
     private Double sizeOfField;
     
     @Column(name = "rental_price")
-    private Long rentalPrice;
+    private Double rentalPrice;
     
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "farm_id")
+    @JoinColumn(nullable = false,name = "farm_id")
     private Farms farm;
     
     @ManyToMany(mappedBy = "field", fetch = FetchType.LAZY)

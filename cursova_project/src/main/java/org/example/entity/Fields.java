@@ -16,7 +16,7 @@ public class Fields {
     private String сadastralNumber;
     
     @Column(nullable = false, name = "size_of_field")
-    private Long sizeOfField;
+    private Double sizeOfField;
     
     @Column(name = "rental_price")
     private Long rentalPrice;

@@ -11,10 +11,10 @@ public class CombustibleLubricants extends BaseEntity{
     private String nameOfLubricant;
     
     @Column(nullable = false, name = "number_of_lubricant")
-    private String numberOfLubricant;
+    private Double numberOfLubricant;
     
     @Column(nullable = false, name = "price_of_lubricant")
-    private String priceOfLubricant;
+    private Long priceOfLubricant;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Techniques> techniques;

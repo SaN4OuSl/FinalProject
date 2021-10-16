@@ -13,13 +13,13 @@
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">false</property>
         <mapping class="org.example.entity.Farms"/>
-        <mapping class="org.example.entity.Fields"/>
-        <mapping class="org.example.entity.Plants"/>
+        <mapping class="org.example.entity.plant.Fields"/>
+        <mapping class="org.example.entity.plant.Plants"/>
         <mapping class="org.example.entity.BaseEntity"/>
-        <mapping class="org.example.entity.Fertilizers"/>
-        <mapping class="org.example.entity.Techniques"/>
-        <mapping class="org.example.entity.SpareParts"/>
-        <mapping class="org.example.entity.CombustibleLubricants"/>
-        <mapping class="org.example.entity.BenefitPlant"/>
+        <mapping class="org.example.entity.plant.Fertilizers"/>
+        <mapping class="org.example.entity.tech.Techniques"/>
+        <mapping class="org.example.entity.tech.SpareParts"/>
+        <mapping class="org.example.entity.tech.CombustibleLubricants"/>
+        <mapping class="org.example.entity.plant.BenefitPlant"/>
     </session-factory>
 </hibernate-configuration>

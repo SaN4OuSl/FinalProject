@@ -1,8 +1,8 @@
 package org.example.dto.response.tech;
 
 
-import org.example.entity.tech.SpareParts;
-import org.example.entity.tech.Techniques;
+import org.example.entity.tech.SparePart;
+import org.example.entity.tech.Technique;
 
 import java.util.List;
 
@@ -16,13 +16,13 @@ public class SparePartsDtoResponse {
     public SparePartsDtoResponse() {
     }
 
-    public SparePartsDtoResponse(SpareParts spareParts) {
+    public SparePartsDtoResponse(SparePart spareParts) {
         this.nameOfPart = spareParts.getNameOfPart();
         this.numberOfParts = spareParts.getNumberOfParts();
         this.priceOfPart = spareParts.getPriceOfPart();
 
-        for (Techniques techniques : spareParts.getTechniques()) {
-            this.techniquesIds.add(techniques.getId());
+        for (Technique technique : spareParts.getTechniques()) {
+            this.techniquesIds.add(technique.getId());
         }
     }
 

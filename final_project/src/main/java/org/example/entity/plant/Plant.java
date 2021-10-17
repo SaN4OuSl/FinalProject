@@ -1,14 +1,14 @@
 package org.example.entity.plant;
 
 import org.example.entity.*;
-import org.example.entity.tech.Techniques;
+import org.example.entity.tech.Technique;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "plants")
-public class Plants extends BaseEntity {
+public class Plant extends BaseEntity {
 
     @Column(name = "plant_name")
     private String plantName;
@@ -20,13 +20,13 @@ public class Plants extends BaseEntity {
     private BenefitPlant benefitPlants;
 
     @ManyToMany(mappedBy = "plant", fetch = FetchType.LAZY)
-    private List<Fertilizers> fertilizers;
+    private List<Fertilizer> fertilizers;
     
     @ManyToMany(mappedBy = "plant", fetch = FetchType.LAZY)
-    private List<Techniques> techniques;
+    private List<Technique> techniques;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Fields> field;
+    private List<Field> field;
 
     public String getPlantName() {
         return plantName;
@@ -52,27 +52,27 @@ public class Plants extends BaseEntity {
         this.benefitPlants = benefitPlants;
     }
 
-    public List<Fertilizers> getFertilizers() {
+    public List<Fertilizer> getFertilizers() {
         return fertilizers;
     }
 
-    public void setFertilizers(List<Fertilizers> fertilizers) {
+    public void setFertilizers(List<Fertilizer> fertilizers) {
         this.fertilizers = fertilizers;
     }
 
-    public List<Techniques> getTechniques() {
+    public List<Technique> getTechniques() {
         return techniques;
     }
 
-    public void setTechniques(List<Techniques> techniques) {
+    public void setTechniques(List<Technique> techniques) {
         this.techniques = techniques;
     }
 
-    public List<Fields> getField() {
+    public List<Field> getField() {
         return field;
     }
 
-    public void setField(List<Fields> field) {
+    public void setField(List<Field> field) {
         this.field = field;
     }
 }

@@ -1,7 +1,7 @@
 package org.example.dto.response.animal;
 
-import org.example.entity.animal.Animals;
-import org.example.entity.animal.Feeds;
+import org.example.entity.animal.Animal;
+import org.example.entity.animal.Feed;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ public class FeedDtoResponse {
     public FeedDtoResponse() {
     }
 
-    public FeedDtoResponse(Feeds feeds) {
-        this.nameOfFeed = feeds.getNameOfFeed();
-        this.nameOfMeasure = feeds.getNameOfMeasure();
-        this.nameOfFeed = feeds.getNameOfFeed();
-        this.numberOfFeed = feeds.getNumberOfFeed();
-        this.costOfFeed = feeds.getCostOfFeed();
+    public FeedDtoResponse(Feed feed) {
+        this.nameOfFeed = feed.getNameOfFeed();
+        this.nameOfMeasure = feed.getNameOfMeasure();
+        this.nameOfFeed = feed.getNameOfFeed();
+        this.numberOfFeed = feed.getNumberOfFeed();
+        this.costOfFeed = feed.getCostOfFeed();
 
-        for (Animals animal : feeds.getAnimal()) {
+        for (Animal animal : feed.getAnimal()) {
             this.animalsId.add(animal.getId());
         }
     }

@@ -1,10 +1,10 @@
 package org.example.dto.response.tech;
 
-import org.example.entity.animal.Animals;
-import org.example.entity.plant.Plants;
-import org.example.entity.tech.CombustibleLubricants;
-import org.example.entity.tech.SpareParts;
-import org.example.entity.tech.Techniques;
+import org.example.entity.animal.Animal;
+import org.example.entity.plant.Plant;
+import org.example.entity.tech.CombustibleLubricant;
+import org.example.entity.tech.SparePart;
+import org.example.entity.tech.Technique;
 
 import java.util.List;
 
@@ -20,24 +20,24 @@ public class TechniquesDtoResponse {
     public TechniquesDtoResponse() {
     }
 
-    public TechniquesDtoResponse(Techniques techniques) {
-        this.typeOfTechnique = techniques.getTypeOfTechnique();
-        this.numberOfTechnique = techniques.getNumberOfTechnique();
+    public TechniquesDtoResponse(Technique technique) {
+        this.typeOfTechnique = technique.getTypeOfTechnique();
+        this.numberOfTechnique = technique.getNumberOfTechnique();
 
-        for (Plants plants : techniques.getPlant()) {
-            this.plantsIds.add(plants.getId());
+        for (Plant plant : technique.getPlant()) {
+            this.plantsIds.add(plant.getId());
         }
 
-        for (Animals animal : techniques.getAnimal()) {
+        for (Animal animal : technique.getAnimal()) {
             this.animalsIds.add(animal.getId());
         }
 
-        for (SpareParts sparePart : techniques.getSpareParts()) {
+        for (SparePart sparePart : technique.getSpareParts()) {
             this.sparePartsIds.add(sparePart.getId());
         }
 
-        for (CombustibleLubricants combustibleLubricants : techniques.getCombustibleLubricants()) {
-            this.combustibleLubricantsIds.add(combustibleLubricants.getId());
+        for (CombustibleLubricant combustibleLubricant : technique.getCombustibleLubricants()) {
+            this.combustibleLubricantsIds.add(combustibleLubricant.getId());
         }
     }
 

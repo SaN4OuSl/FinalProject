@@ -1,14 +1,14 @@
 package org.example.entity.animal;
 
 import org.example.entity.*;
-import org.example.entity.tech.Techniques;
+import org.example.entity.tech.Technique;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "animals")
-public class Animals extends BaseEntity {
+public class Animal extends BaseEntity {
 
     @Column(name = "animal_name")
     private String animalName;
@@ -19,13 +19,13 @@ public class Animals extends BaseEntity {
     private Long proceeds;
 
     @ManyToMany(mappedBy = "animal", fetch = FetchType.LAZY)
-    private List<Feeds> feeds;
+    private List<Feed> feeds;
 
     @ManyToMany(mappedBy = "animal", fetch = FetchType.LAZY)
-    private List<Techniques> techniques;
+    private List<Technique> techniques;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Buildings> buildings;
+    private List<Building> buildings;
 
     public String getAnimalName() {
         return animalName;
@@ -51,27 +51,27 @@ public class Animals extends BaseEntity {
         this.proceeds = proceeds;
     }
 
-    public List<Feeds> getFeeds() {
+    public List<Feed> getFeeds() {
         return feeds;
     }
 
-    public void setFeeds(List<Feeds> feeds) {
+    public void setFeeds(List<Feed> feeds) {
         this.feeds = feeds;
     }
 
-    public List<Techniques> getTechniques() {
+    public List<Technique> getTechniques() {
         return techniques;
     }
 
-    public void setTechniques(List<Techniques> techniques) {
+    public void setTechniques(List<Technique> techniques) {
         this.techniques = techniques;
     }
 
-    public List<Buildings> getBuildings() {
+    public List<Building> getBuildings() {
         return buildings;
     }
 
-    public void setBuildings(List<Buildings> buildings) {
+    public void setBuildings(List<Building> buildings) {
         this.buildings = buildings;
     }
 }

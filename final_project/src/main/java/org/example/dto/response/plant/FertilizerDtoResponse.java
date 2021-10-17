@@ -1,8 +1,8 @@
 package org.example.dto.response.plant;
 
 
-import org.example.entity.plant.Fertilizers;
-import org.example.entity.plant.Plants;
+import org.example.entity.plant.Fertilizer;
+import org.example.entity.plant.Plant;
 
 import java.util.List;
 
@@ -17,13 +17,13 @@ public class FertilizerDtoResponse {
     public FertilizerDtoResponse() {
     }
 
-    public FertilizerDtoResponse(Fertilizers fertilizers) {
-        this.nameOfFertilizers = fertilizers.getNameOfFertilizers();
-        this.nameOfMeasure = fertilizers.getNameOfMeasure();
-        this.numberOfFertilizers = fertilizers.getNumberOfFertilizers();
-        this.costOfFertilizers = fertilizers.getCostOfFertilizers();
+    public FertilizerDtoResponse(Fertilizer fertilizer) {
+        this.nameOfFertilizers = fertilizer.getNameOfFertilizers();
+        this.nameOfMeasure = fertilizer.getNameOfMeasure();
+        this.numberOfFertilizers = fertilizer.getNumberOfFertilizers();
+        this.costOfFertilizers = fertilizer.getCostOfFertilizers();
 
-        for (Plants plant : fertilizers.getPlant()) {
+        for (Plant plant : fertilizer.getPlant()) {
             this.plantsIds.add(plant.getId());
         }
     }

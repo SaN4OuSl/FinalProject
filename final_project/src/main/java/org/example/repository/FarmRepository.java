@@ -1,15 +1,15 @@
 package org.example.repository;
 
-import org.example.entity.Farms;
+import org.example.entity.Farm;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface FarmsRepository extends JpaRepository<Farms, Long> {
+public interface FarmRepository extends JpaRepository<Farm, Long> {
     
-    Optional<Farms> findByFarmName(String farmName);
+    Optional<Farm> findByFarmName(String farmName);
     
     Boolean existsByFarmName(String farmName);
 }

@@ -1,9 +1,9 @@
 package org.example.dto.response.animal;
 
-import org.example.entity.animal.Animals;
-import org.example.entity.animal.Buildings;
-import org.example.entity.animal.Feeds;
-import org.example.entity.tech.Techniques;
+import org.example.entity.animal.Animal;
+import org.example.entity.animal.Building;
+import org.example.entity.animal.Feed;
+import org.example.entity.tech.Technique;
 
 import java.util.List;
 
@@ -19,21 +19,21 @@ public class AnimalDtoResponse {
     public AnimalDtoResponse() {
     }
 
-    public AnimalDtoResponse(Animals animals) {
-        this.animalName = animals.getAnimalName();
-        this.numberOfAnimals = animals.getNumberOfAnimals();
-        this.proceeds = animals.getProceeds();
+    public AnimalDtoResponse(Animal animal) {
+        this.animalName = animal.getAnimalName();
+        this.numberOfAnimals = animal.getNumberOfAnimals();
+        this.proceeds = animal.getProceeds();
 
-        for (Feeds feed : animals.getFeeds()){
+        for (Feed feed : animal.getFeeds()){
             this.feedsIds.add(feed.getId());
         }
 
-        for (Techniques techniques : animals.getTechniques()){
-            this.techniquesIds.add(techniques.getId());
+        for (Technique technique : animal.getTechniques()){
+            this.techniquesIds.add(technique.getId());
         }
 
-        for (Buildings buildings : animals.getBuildings()) {
-            this.buildingsIds.add(buildings.getId());
+        for (Building building : animal.getBuildings()) {
+            this.buildingsIds.add(building.getId());
         }
     }
 

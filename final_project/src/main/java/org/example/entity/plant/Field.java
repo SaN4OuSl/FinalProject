@@ -1,8 +1,7 @@
 package org.example.entity.plant;
 
 
-import org.example.entity.Farms;
-import org.example.entity.plant.Plants;
+import org.example.entity.Farm;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -10,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "fields")
-public class Fields {
+public class Field {
     
     @Id
     @NaturalId
@@ -25,10 +24,10 @@ public class Fields {
     
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false,name = "farm_id")
-    private Farms farm;
+    private Farm farm;
     
     @ManyToMany(mappedBy = "field", fetch = FetchType.LAZY)
-    private List<Plants> plants;
+    private List<Plant> plants;
 
     public String getCadastralNumber() {
         return cadastralNumber;
@@ -54,19 +53,19 @@ public class Fields {
         this.rentalPrice = rentalPrice;
     }
 
-    public Farms getFarm() {
+    public Farm getFarm() {
         return farm;
     }
 
-    public void setFarm(Farms farm) {
+    public void setFarm(Farm farm) {
         this.farm = farm;
     }
 
-    public List<Plants> getPlants() {
+    public List<Plant> getPlants() {
         return plants;
     }
 
-    public void setPlants(List<Plants> plants) {
+    public void setPlants(List<Plant> plants) {
         this.plants = plants;
     }
 }

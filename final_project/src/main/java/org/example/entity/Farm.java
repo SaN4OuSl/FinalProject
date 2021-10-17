@@ -1,7 +1,7 @@
 package org.example.entity;
 
-import org.example.entity.animal.Buildings;
-import org.example.entity.plant.Fields;
+import org.example.entity.animal.Building;
+import org.example.entity.plant.Field;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Table(name = "farms",
         uniqueConstraints = {@UniqueConstraint(columnNames = "farm_name")})
-public class Farms extends BaseEntity {
+public class Farm extends BaseEntity {
     
     @Column(nullable = false, name = "farm_name")
     private String farmName;
@@ -21,10 +21,10 @@ public class Farms extends BaseEntity {
     private String address;
     
     @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Fields> fields;
+    private List<Field> fields;
     
     @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Buildings> buildings;
+    private List<Building> buildings;
     
     public String getFarmName() {
         return farmName;
@@ -50,19 +50,19 @@ public class Farms extends BaseEntity {
         this.address = address;
     }
     
-    public List<Fields> getFields() {
+    public List<Field> getFields() {
         return fields;
     }
     
-    public void setFields(List<Fields> fields) {
+    public void setFields(List<Field> fields) {
         this.fields = fields;
     }
     
-    public List<Buildings> getBuildings() {
+    public List<Building> getBuildings() {
         return buildings;
     }
     
-    public void setBuildings(List<Buildings> buildings) {
+    public void setBuildings(List<Building> buildings) {
         this.buildings = buildings;
     }
 }

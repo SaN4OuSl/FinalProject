@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "feeds")
-public class Feeds extends BaseEntity {
+public class Feed extends BaseEntity {
 
     @Column(name = "name_of_feed")
     private String nameOfFeed;
@@ -22,7 +22,7 @@ public class Feeds extends BaseEntity {
     private Double costOfFeed;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Animals> animal;
+    private List<Animal> animal;
 
     public String getNameOfFeed() {
         return nameOfFeed;
@@ -56,11 +56,11 @@ public class Feeds extends BaseEntity {
         this.costOfFeed = costOfFeed;
     }
 
-    public List<Animals> getAnimal() {
+    public List<Animal> getAnimal() {
         return animal;
     }
 
-    public void setAnimal(List<Animals> animal) {
+    public void setAnimal(List<Animal> animal) {
         this.animal = animal;
     }
 }

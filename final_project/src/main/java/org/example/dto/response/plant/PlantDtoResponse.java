@@ -1,9 +1,9 @@
 package org.example.dto.response.plant;
 
-import org.example.entity.plant.Fertilizers;
-import org.example.entity.plant.Fields;
-import org.example.entity.plant.Plants;
-import org.example.entity.tech.Techniques;
+import org.example.entity.plant.Fertilizer;
+import org.example.entity.plant.Field;
+import org.example.entity.plant.Plant;
+import org.example.entity.tech.Technique;
 
 import java.util.List;
 
@@ -20,20 +20,20 @@ public class PlantDtoResponse {
     public PlantDtoResponse() {
     }
 
-    public PlantDtoResponse(Plants plants) {
-        this.id = plants.getId();
-        this.plantName = plants.getPlantName();
-        this.sizeOfFieldForPlant = plants.getSizeOfFieldForPlant();
-        this.benefitPlantsId = plants.getBenefitPlants().getId();
+    public PlantDtoResponse(Plant plant) {
+        this.id = plant.getId();
+        this.plantName = plant.getPlantName();
+        this.sizeOfFieldForPlant = plant.getSizeOfFieldForPlant();
+        this.benefitPlantsId = plant.getBenefitPlants().getId();
 
-        for (Fertilizers fertilizers : plants.getFertilizers()) {
-            this.fertilizersIds.add(fertilizers.getId());
+        for (Fertilizer fertilizer : plant.getFertilizers()) {
+            this.fertilizersIds.add(fertilizer.getId());
         }
-        for (Techniques techniques : plants.getTechniques()){
-            this.techniquesIds.add(techniques.getId());
+        for (Technique technique : plant.getTechniques()){
+            this.techniquesIds.add(technique.getId());
         }
-        for (Fields fields : plants.getField()){
-            this.fieldIds.add(fields.getCadastralNumber());
+        for (Field field : plant.getField()){
+            this.fieldIds.add(field.getCadastralNumber());
         }
     }
 

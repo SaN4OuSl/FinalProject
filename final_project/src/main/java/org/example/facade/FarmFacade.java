@@ -1,15 +1,15 @@
 package org.example.facade;
 
 import org.example.dto.request.FarmDtoRequest;
-import org.example.entity.Farms;
+import org.example.entity.Farm;
 
 import java.util.List;
 
-public interface FarmsFacade {
+public interface FarmFacade {
     
     void create(FarmDtoRequest dtoRequest);
     void update(FarmDtoRequest dtoRequest, Long Id);
     void delete(Long id);
-    Farms findById(Long id);
-    List<Farms> findAll();
+    Farm findById(Long id);
+    List<Farm> findAll();
 }

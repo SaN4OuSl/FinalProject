@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "combustible_lubricants")
-public class CombustibleLubricants extends BaseEntity {
+public class CombustibleLubricant extends BaseEntity {
     
     @Column(name = "name_of_lubricant")
     private String nameOfLubricant;
@@ -19,7 +19,7 @@ public class CombustibleLubricants extends BaseEntity {
     private Double priceOfLubricant;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Techniques> techniques;
+    private List<Technique> techniques;
 
     public String getNameOfLubricant() {
         return nameOfLubricant;
@@ -45,11 +45,11 @@ public class CombustibleLubricants extends BaseEntity {
         this.priceOfLubricant = priceOfLubricant;
     }
 
-    public List<Techniques> getTechniques() {
+    public List<Technique> getTechniques() {
         return techniques;
     }
 
-    public void setTechniques(List<Techniques> techniques) {
+    public void setTechniques(List<Technique> techniques) {
         this.techniques = techniques;
     }
 }

@@ -1,7 +1,7 @@
 package org.example.dto.response.tech;
 
-import org.example.entity.tech.CombustibleLubricants;
-import org.example.entity.tech.Techniques;
+import org.example.entity.tech.CombustibleLubricant;
+import org.example.entity.tech.Technique;
 
 import java.util.List;
 
@@ -15,14 +15,14 @@ public class ComLubricDtoResponse {
     public ComLubricDtoResponse() {
     }
 
-    public ComLubricDtoResponse(CombustibleLubricants combustibleLubricants) {
+    public ComLubricDtoResponse(CombustibleLubricant combustibleLubricant) {
 
-        this.nameOfLubricant = combustibleLubricants.getNameOfLubricant();
-        this.numberOfLubricant = combustibleLubricants.getNumberOfLubricant();
-        this.priceOfLubricant = combustibleLubricants.getPriceOfLubricant();
+        this.nameOfLubricant = combustibleLubricant.getNameOfLubricant();
+        this.numberOfLubricant = combustibleLubricant.getNumberOfLubricant();
+        this.priceOfLubricant = combustibleLubricant.getPriceOfLubricant();
 
-        for (Techniques techniques : combustibleLubricants.getTechniques()) {
-            this.techniquesIds.add(techniques.getId());
+        for (Technique technique : combustibleLubricant.getTechniques()) {
+            this.techniquesIds.add(technique.getId());
         }
     }
 

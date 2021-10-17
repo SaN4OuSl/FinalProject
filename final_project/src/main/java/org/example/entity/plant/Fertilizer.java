@@ -1,14 +1,13 @@
 package org.example.entity.plant;
 
 import org.example.entity.BaseEntity;
-import org.example.entity.plant.Plants;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "fertilizers")
-public class Fertilizers extends BaseEntity {
+public class Fertilizer extends BaseEntity {
 
     @Column(name = "name_of_fertilizer")
     private String nameOfFertilizers;
@@ -23,7 +22,7 @@ public class Fertilizers extends BaseEntity {
     private Long costOfFertilizers;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Plants> plant;
+    private List<Plant> plant;
 
     public String getNameOfFertilizers() {
         return nameOfFertilizers;
@@ -57,11 +56,11 @@ public class Fertilizers extends BaseEntity {
         this.costOfFertilizers = costOfFertilizers;
     }
 
-    public List<Plants> getPlant() {
+    public List<Plant> getPlant() {
         return plant;
     }
 
-    public void setPlant(List<Plants> plant) {
+    public void setPlant(List<Plant> plant) {
         this.plant = plant;
     }
 }

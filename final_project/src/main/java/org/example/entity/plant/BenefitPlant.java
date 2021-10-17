@@ -16,7 +16,7 @@ public class BenefitPlant extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "plant_id")
-    private Plants plant;
+    private Plant plant;
 
     public Long getPlantHarvest() {
         return plantHarvest;
@@ -34,11 +34,11 @@ public class BenefitPlant extends BaseEntity {
         this.costOfPlant = costOfPlant;
     }
 
-    public Plants getPlant() {
+    public Plant getPlant() {
         return plant;
     }
 
-    public void setPlant(Plants plant) {
+    public void setPlant(Plant plant) {
         this.plant = plant;
     }
 }

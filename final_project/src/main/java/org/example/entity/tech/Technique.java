@@ -1,17 +1,15 @@
 package org.example.entity.tech;
 
 import org.example.entity.BaseEntity;
-import org.example.entity.animal.Animals;
-import org.example.entity.plant.Plants;
-import org.example.entity.tech.CombustibleLubricants;
-import org.example.entity.tech.SpareParts;
+import org.example.entity.animal.Animal;
+import org.example.entity.plant.Plant;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "techniques")
-public class Techniques extends BaseEntity {
+public class Technique extends BaseEntity {
     
     @Column(nullable = false, name = "type_of_technique")
     private String typeOfTechnique;
@@ -20,16 +18,16 @@ public class Techniques extends BaseEntity {
     private Integer numberOfTechnique;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Plants> plant;
+    private List<Plant> plant;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Animals> animal;
+    private List<Animal> animal;
     
     @ManyToMany(mappedBy = "techniques", fetch = FetchType.LAZY)
-    private List<SpareParts> spareParts;
+    private List<SparePart> spareParts;
     
     @ManyToMany(mappedBy = "techniques", fetch = FetchType.LAZY)
-    private List<CombustibleLubricants> combustibleLubricants;
+    private List<CombustibleLubricant> combustibleLubricants;
 
     public String getTypeOfTechnique() {
         return typeOfTechnique;
@@ -47,35 +45,35 @@ public class Techniques extends BaseEntity {
         this.numberOfTechnique = numberOfTechnique;
     }
 
-    public List<Plants> getPlant() {
+    public List<Plant> getPlant() {
         return plant;
     }
 
-    public void setPlant(List<Plants> plant) {
+    public void setPlant(List<Plant> plant) {
         this.plant = plant;
     }
 
-    public List<Animals> getAnimal() {
+    public List<Animal> getAnimal() {
         return animal;
     }
 
-    public void setAnimal(List<Animals> animal) {
+    public void setAnimal(List<Animal> animal) {
         this.animal = animal;
     }
 
-    public List<SpareParts> getSpareParts() {
+    public List<SparePart> getSpareParts() {
         return spareParts;
     }
 
-    public void setSpareParts(List<SpareParts> spareParts) {
+    public void setSpareParts(List<SparePart> spareParts) {
         this.spareParts = spareParts;
     }
 
-    public List<CombustibleLubricants> getCombustibleLubricants() {
+    public List<CombustibleLubricant> getCombustibleLubricants() {
         return combustibleLubricants;
     }
 
-    public void setCombustibleLubricants(List<CombustibleLubricants> combustibleLubricants) {
+    public void setCombustibleLubricants(List<CombustibleLubricant> combustibleLubricants) {
         this.combustibleLubricants = combustibleLubricants;
     }
 }

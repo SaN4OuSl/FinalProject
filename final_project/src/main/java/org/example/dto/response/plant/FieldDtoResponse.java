@@ -1,7 +1,7 @@
 package org.example.dto.response.plant;
 
-import org.example.entity.plant.Fields;
-import org.example.entity.plant.Plants;
+import org.example.entity.plant.Field;
+import org.example.entity.plant.Plant;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ public class FieldDtoResponse {
     public FieldDtoResponse() {
     }
 
-    public FieldDtoResponse(Fields fields){
-        this.cadastralNumber = fields.getCadastralNumber();
-        this.sizeOfField = fields.getSizeOfField();
-        this.rentalPrice = fields.getRentalPrice();
-        this.farmId = fields.getFarm().getId();
+    public FieldDtoResponse(Field field){
+        this.cadastralNumber = field.getCadastralNumber();
+        this.sizeOfField = field.getSizeOfField();
+        this.rentalPrice = field.getRentalPrice();
+        this.farmId = field.getFarm().getId();
 
-        for (Plants plants : fields.getPlants()) {
-            this.plantsIds.add(plants.getId());
+        for (Plant plant : field.getPlants()) {
+            this.plantsIds.add(plant.getId());
         }
     }
 

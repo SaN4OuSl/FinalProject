@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "spare_parts")
-public class SpareParts extends BaseEntity {
+public class SparePart extends BaseEntity {
     
     @Column(name = "name_of_part")
     private String nameOfPart;
@@ -19,7 +19,7 @@ public class SpareParts extends BaseEntity {
     private Double priceOfPart;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Techniques> techniques;
+    private List<Technique> techniques;
 
     public String getNameOfPart() {
         return nameOfPart;
@@ -45,11 +45,11 @@ public class SpareParts extends BaseEntity {
         this.priceOfPart = priceOfPart;
     }
 
-    public List<Techniques> getTechniques() {
+    public List<Technique> getTechniques() {
         return techniques;
     }
 
-    public void setTechniques(List<Techniques> techniques) {
+    public void setTechniques(List<Technique> techniques) {
         this.techniques = techniques;
     }
 }

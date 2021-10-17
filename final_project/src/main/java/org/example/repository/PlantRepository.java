@@ -1,12 +1,12 @@
 package org.example.repository;
 
 import org.example.entity.plant.BenefitPlant;
-import org.example.entity.plant.Plants;
+import org.example.entity.plant.Plant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PlantsRepository extends JpaRepository<Plants, Long> {
+public interface PlantRepository extends JpaRepository<Plant, Long> {
     
     BenefitPlant findPlantsByBenefitPlants (BenefitPlant benefitPlant);
 }

@@ -1,8 +1,8 @@
 package org.example.dto.response.animal;
 
 
-import org.example.entity.animal.Animals;
-import org.example.entity.animal.Buildings;
+import org.example.entity.animal.Animal;
+import org.example.entity.animal.Building;
 
 import java.util.List;
 
@@ -15,12 +15,12 @@ public class BuildingDtoResponse {
 
     public BuildingDtoResponse(){}
 
-    public BuildingDtoResponse(Buildings buildings){
-        this.sizeOfBuilding = buildings.getSizeOfBuilding();
-        this.rentalPrice = buildings.getRentalPrice();
-        this.farmId = buildings.getFarm().getId();
+    public BuildingDtoResponse(Building building){
+        this.sizeOfBuilding = building.getSizeOfBuilding();
+        this.rentalPrice = building.getRentalPrice();
+        this.farmId = building.getFarm().getId();
 
-        for (Animals animal : buildings.getAnimal()) {
+        for (Animal animal : building.getAnimal()) {
             this.animalsId.add(animal.getId());
         }
     }

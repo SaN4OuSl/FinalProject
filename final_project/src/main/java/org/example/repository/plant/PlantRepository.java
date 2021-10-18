@@ -1,4 +1,4 @@
-package org.example.repository;
+package org.example.repository.plant;
 
 import org.example.entity.plant.BenefitPlant;
 import org.example.entity.plant.Plant;

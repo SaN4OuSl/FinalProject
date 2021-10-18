@@ -1,4 +1,4 @@
-package org.example.repository;
+package org.example.repository.animal;
 
 import org.example.entity.Farm;
 import org.example.entity.animal.Building;

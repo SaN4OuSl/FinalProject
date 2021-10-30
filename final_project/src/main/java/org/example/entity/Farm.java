@@ -26,6 +26,10 @@ public class Farm extends BaseEntity {
     @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Building> buildings;
     
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(nullable = false,name = "user_id")
+    private User user;
+    
     public String getFarmName() {
         return farmName;
     }

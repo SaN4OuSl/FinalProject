@@ -1,13 +1,15 @@
 package org.example.entity.animal;
 
-import org.example.entity.BaseEntity;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "feeds")
-public class Feed extends BaseEntity {
+public class Feed {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "name_of_feed")
     private String nameOfFeed;
@@ -23,7 +25,15 @@ public class Feed extends BaseEntity {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Animal> animal;
-
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public String getNameOfFeed() {
         return nameOfFeed;
     }

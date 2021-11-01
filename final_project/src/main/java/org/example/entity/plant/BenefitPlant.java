@@ -1,13 +1,15 @@
 package org.example.entity.plant;
 
-import org.example.entity.BaseEntity;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name = "benefit_plants")
-public class BenefitPlant extends BaseEntity {
-
+public class BenefitPlant {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     @Column(name = "plant_harvest")
     private Long plantHarvest;
 
@@ -17,7 +19,15 @@ public class BenefitPlant extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "plant_id")
     private Plant plant;
-
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public Long getPlantHarvest() {
         return plantHarvest;
     }

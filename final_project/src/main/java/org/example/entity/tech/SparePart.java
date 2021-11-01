@@ -1,13 +1,15 @@
 package org.example.entity.tech;
 
-import org.example.entity.BaseEntity;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "spare_parts")
-public class SparePart extends BaseEntity {
+public class SparePart {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
     @Column(name = "name_of_part")
     private String nameOfPart;
@@ -20,7 +22,15 @@ public class SparePart extends BaseEntity {
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Technique> techniques;
-
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public String getNameOfPart() {
         return nameOfPart;
     }

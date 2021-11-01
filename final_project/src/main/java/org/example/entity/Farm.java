@@ -2,6 +2,7 @@ package org.example.entity;
 
 import org.example.entity.animal.Building;
 import org.example.entity.plant.Field;
+import org.example.entity.auth.User;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,7 +10,11 @@ import java.util.List;
 @Entity
 @Table(name = "farms",
         uniqueConstraints = {@UniqueConstraint(columnNames = "farm_name")})
-public class Farm extends BaseEntity {
+public class Farm {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
     @Column(nullable = false, name = "farm_name")
     private String farmName;
@@ -29,6 +34,14 @@ public class Farm extends BaseEntity {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false,name = "user_id")
     private User user;
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
     
     public String getFarmName() {
         return farmName;

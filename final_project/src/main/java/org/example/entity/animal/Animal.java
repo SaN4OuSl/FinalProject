@@ -8,7 +8,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "animals")
-public class Animal extends BaseEntity {
+public class Animal {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "animal_name")
     private String animalName;
@@ -26,7 +30,15 @@ public class Animal extends BaseEntity {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Building> buildings;
-
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public String getAnimalName() {
         return animalName;
     }

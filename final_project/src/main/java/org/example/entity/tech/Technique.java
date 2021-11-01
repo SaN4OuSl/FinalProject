@@ -1,6 +1,5 @@
 package org.example.entity.tech;
 
-import org.example.entity.BaseEntity;
 import org.example.entity.animal.Animal;
 import org.example.entity.plant.Plant;
 
@@ -9,7 +8,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "techniques")
-public class Technique extends BaseEntity {
+public class Technique {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     
     @Column(nullable = false, name = "type_of_technique")
     private String typeOfTechnique;
@@ -28,7 +31,15 @@ public class Technique extends BaseEntity {
     
     @ManyToMany(mappedBy = "techniques", fetch = FetchType.LAZY)
     private List<CombustibleLubricant> combustibleLubricants;
-
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public String getTypeOfTechnique() {
         return typeOfTechnique;
     }

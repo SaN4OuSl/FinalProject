@@ -10,6 +10,6 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>cursova_project</module>
-        <module>final_project</module>
+        <module>soft_for_farm</module>
     </modules>
 </project>

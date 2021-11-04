@@ -13,7 +13,7 @@ public class Techniques extends BaseEntity{
     @Column(nullable = false, name = "number_of_technique")
     private Integer numberOfTechnique;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Plants> plant;
     
     @ManyToMany(mappedBy = "techniques", fetch = FetchType.LAZY)

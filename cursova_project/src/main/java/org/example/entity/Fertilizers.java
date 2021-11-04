@@ -19,6 +19,6 @@ public class Fertilizers extends BaseEntity {
     @Column(nullable = false, name = "cost_of_fertilizer")
     private Long costOfFertilizers;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Plants> plant;
 }

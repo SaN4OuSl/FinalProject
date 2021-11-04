@@ -22,6 +22,6 @@ public class Plants extends BaseEntity{
     @ManyToMany(mappedBy = "plant", fetch = FetchType.LAZY)
     private List<Techniques> techniques;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Fields> field;
 }

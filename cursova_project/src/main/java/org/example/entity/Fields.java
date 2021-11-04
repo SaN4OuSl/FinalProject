@@ -21,7 +21,7 @@ public class Fields {
     @Column(name = "rental_price")
     private Double rentalPrice;
     
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(nullable = false,name = "farm_id")
     private Farms farm;
     

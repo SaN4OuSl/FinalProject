@@ -16,6 +16,6 @@ public class CombustibleLubricants extends BaseEntity{
     @Column(nullable = false, name = "price_of_lubricant")
     private Long priceOfLubricant;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Techniques> techniques;
 }

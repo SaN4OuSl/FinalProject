@@ -16,6 +16,6 @@ public class SpareParts extends BaseEntity{
     @Column(name = "price_of_part")
     private Long priceOfPart;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany( fetch = FetchType.LAZY)
     private List<Techniques> techniques;
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FieldRepository extends JpaRepository<Field, String> {
@@ -14,4 +15,7 @@ public interface FieldRepository extends JpaRepository<Field, String> {
     Boolean existsByCadastralNumber(String cadastralNumber);
     void deleteByCadastralNumber(String cadastralNumber);
     Field findByCadastralNumber(String cadastralNumber);
+    boolean existsById(Long id);
+    Optional<Field> findById(Long id);
+    void deleteById(Long id);
 }

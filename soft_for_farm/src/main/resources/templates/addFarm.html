@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Add Farm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+<body>
+<div style="margin-left: 100px;margin-right: 100px">
+    <div class="container">
+        <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/farms" class="floating-button">Farms</a></li>
+                <lim class="nav-item"><a href="/farm/new" class="floating-button-active">Add Farm</a></lim>
+            </ul>
+            <div id="usernameId">
+                <form id="logoutForm" th:method="POST" th:action="@{/logout}">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <button type="submit" class="floating-button">Logout</button>
+                    <span th:text="*{user.login}"></span>
+                </form>
+            </div>
+        </header>
+    </div>
+    <div id="add_form">
+        <form th:action="@{/farm/new}" th:method="POST" th:object="${farm}">
+            <div class="form-floating">
+                <input name="farmName" type="text" class="form-control" id="farmName" placeholder="farmName"
+                       autofocus="true" th:field="*{farmName}"/>
+                <label for="farmName">Farm name</label>
+            </div>
+            <div class="form-floating">
+                <input name="address" type="text" class="form-control" id="address" placeholder="address"
+                       autofocus="true" th:field="*{address}"/>
+                <label for="address">Address</label>
+            </div>
+            <div class="form-floating">
+                <input name="yearOfStatistic" type="text" class="form-control" id="yearOfStatistic"
+                       placeholder="yearOfStatistic"
+                       autofocus="true" th:field="*{yearOfStatistic}"/>
+                <label for="yearOfStatistic">Year of statistic</label>
+            </div>
+            <input type="submit" class="floating-button" value="Create"/>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+        integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+        integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+        crossorigin="anonymous"></script>
+</body>
+</html>

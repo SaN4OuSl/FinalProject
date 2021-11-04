@@ -20,7 +20,7 @@ public class SparePart {
     @Column(name = "price_of_part")
     private Double priceOfPart;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany( fetch = FetchType.LAZY)
     private List<Technique> techniques;
     
     public Long getId() {

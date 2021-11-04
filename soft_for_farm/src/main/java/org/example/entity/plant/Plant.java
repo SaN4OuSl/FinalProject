@@ -1,6 +1,5 @@
 package org.example.entity.plant;
 
-import org.example.entity.*;
 import org.example.entity.tech.Technique;
 
 import javax.persistence.*;
@@ -29,7 +28,7 @@ public class Plant {
     @ManyToMany(mappedBy = "plant", fetch = FetchType.LAZY)
     private List<Technique> techniques;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany( fetch = FetchType.LAZY)
     private List<Field> field;
     
     public Long getId() {

@@ -1,50 +1,61 @@
 package org.example.controller;
 
-import org.example.dto.request.FarmDtoRequest;
-import org.example.dto.response.ResponseContainer;
 import org.example.entity.Farm;
-import org.example.facade.FarmFacade;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.example.entity.auth.User;
+import org.example.exception.UserNotFoundException;
+import org.example.service.FarmService;
+import org.example.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
+import java.security.Principal;
 
-@RestController
-@RequestMapping("/farms")
+@Controller
+@RequestMapping("/farm")
 public class FarmController {
     
-    private final FarmFacade farmFacade;
+    private final FarmService farmService;
+    private final UserService userService;
     
-    public FarmController(FarmFacade farmFacade) {
-        this.farmFacade = farmFacade;
+    @Autowired
+    public FarmController(FarmService farmService, UserService userService) {
+        this.farmService = farmService;
+        this.userService = userService;
     }
     
-    @PostMapping
-    private ResponseEntity<ResponseContainer<Boolean>> create(@RequestBody FarmDtoRequest dto) {
-        farmFacade.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseContainer<>(true));
+    @GetMapping("/new")
+    public String displayFarmCreation(Principal principal, @ModelAttribute("farm") Farm farm, Model model) throws UserNotFoundException {
+        model.addAttribute("user", userService.findByLogin(principal.getName()));
+        return "addFarm.html";
     }
     
-    @PutMapping("/{id}")
-    private ResponseEntity<ResponseContainer<Boolean>> update(@RequestBody FarmDtoRequest dto, @PathVariable Long id) {
-        farmFacade.update(dto, id);
-        return ResponseEntity.ok(new ResponseContainer<>(true));
+    @PostMapping(value = "/new")
+        public String createFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result) throws UserNotFoundException {
+        User user = userService.findByLogin(principal.getName());
+        if (result.hasErrors()) {
+            return "addFarm.html";
+        } else {
+            farmService.addFarm(user, farm);
+            return "redirect:/farms";
+        }
     }
     
-    @DeleteMapping("/{id}")
-    private ResponseEntity<ResponseContainer<Boolean>> delete(@PathVariable Long id) {
-        farmFacade.delete(id);
-        return ResponseEntity.ok(new ResponseContainer<>(true));
+    @PatchMapping(value = "/{id}")
+    public String updateFarm(@Valid @ModelAttribute("farm") Farm farm, @PathVariable("id") Long id, BindingResult result) {
+        if (!result.hasErrors()) {
+            farmService.updateFarm(id, farm);
+        }
+        return "redirect:/farms";
     }
     
-    @GetMapping("/{id}")
-    private ResponseEntity<ResponseContainer<Farm>> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(new ResponseContainer<>(farmFacade.findById(id)));
-    }
-    
-    @GetMapping
-    public ResponseEntity<ResponseContainer<List<Farm>>> findAll() {
-        return ResponseEntity.ok(new ResponseContainer<>(farmFacade.findAll()));
+    @DeleteMapping(value = "/{id}")
+    public String deleteFarm(Principal principal, @PathVariable("id") Long id) throws UserNotFoundException {
+        User user = userService.findByLogin(principal.getName());
+        farmService.deleteFarm(user, id);
+        return "redirect:/farms";
     }
 }

@@ -20,7 +20,7 @@ public class CombustibleLubricant {
     @Column(name = "price_of_lubricant")
     private Double priceOfLubricant;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany( fetch = FetchType.LAZY)
     private List<Technique> techniques;
     
     public Long getId() {

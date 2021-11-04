@@ -2,13 +2,11 @@ package org.example.service.impl;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.dto.response.ResponseUserAdmin;
 import org.example.entity.auth.Role;
-import org.example.entity.auth.Status;
 import org.example.entity.auth.User;
-import org.example.exception.user.DuplicateUserLogin;
-import org.example.exception.user.UserNotFoundException;
-import org.example.exception.user.UserPasswordSmall;
+import org.example.exception.DuplicateUserLogin;
+import org.example.exception.UserNotFoundException;
+import org.example.exception.UserPasswordSmall;
 import org.example.repository.auth.RoleRepository;
 import org.example.repository.auth.UserRepository;
 import org.example.service.UserService;
@@ -19,7 +17,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -82,7 +79,6 @@ public class UserServiceImpl implements UserService {
         roleList.add(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(roleList);
-        user.setStatus(Status.ACTIVE);
         user.setCreated(Date.from(Instant.now()));
 
         User regUser = userRepository.save(user);
@@ -92,29 +88,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ResponseUserAdmin> getAll() throws UserNotFoundException {
-        List<User> userList = userRepository.findAll();
-        List<ResponseUserAdmin> responseUserAdmins = userList.stream().map(
-                el -> new ResponseUserAdmin(el.getId(), el.getLogin(), el.getCreated(), el.getStatus()))
-                .collect(Collectors.toList()
-        );
-        if (responseUserAdmins.isEmpty()) {
-            throw new UserNotFoundException("Users not found");
-        }
-        log.info("IN getAll: {} users found", responseUserAdmins.size());
-        return responseUserAdmins;
-    }
-
-    @Override
     public User findByLogin(String login) throws UserNotFoundException {
         User resultUser = userRepository.findByLogin(login);
         if (resultUser == null) {
             log.warn("IN findByLogin user not found by login: {}", login);
             throw new UserNotFoundException("User with login " + login + " dont found");
-        }
-        if (resultUser.getStatus() == Status.INACTIVE) {
-            log.warn("IN findByLogin user was deleted by login: {}", login);
-            throw new UserNotFoundException("User with login " + login + " was deleted");
         }
         log.info("IN findByLogin: found user by login: {} with id : {}", login, resultUser.getId());
         return resultUser;
@@ -126,12 +104,6 @@ public class UserServiceImpl implements UserService {
             log.warn("IN findById no user found by id: {}", id);
             return new UserNotFoundException("user with id:" + id + " not found");
         });
-
-        if (result.getStatus() == Status.INACTIVE) {
-            log.warn("IN findByLogin user was deleted by id: {}", id);
-            throw new UserNotFoundException("User with id " + id + " was deleted");
-        }
-
         log.info("IN findById - user: {} found by id: {}", result, id);
         return result;
     }
@@ -139,7 +111,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(Long id) throws UserNotFoundException {
         User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found by id: " + id));
-        user.setStatus(Status.INACTIVE);
         userRepository.save(user);
         log.info("IN deleteById: deleted with id: {}, user: {}", id, user);
     }

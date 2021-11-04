@@ -7,18 +7,23 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class SpringDocConfig {
-
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .components(new Components().addSecuritySchemes("bearer-key",
-                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
-                .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
-                .info(new Info().title("Body Controller API"))
-                .info(new Info().description("This API will help you keep track of your body and nutrition" +
-                        ", as well as select a recipe for your preferences"));
+@EnableWebMvc
+public class SpringDocConfig implements WebMvcConfigurer {
+    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(
+                        "/img/**",
+                        "/css/**",
+                        "/js/**")
+                .addResourceLocations(
+                        "classpath:/static/img/",
+                        "classpath:/static/css/",
+                        "classpath:/static/js/");
     }
 }

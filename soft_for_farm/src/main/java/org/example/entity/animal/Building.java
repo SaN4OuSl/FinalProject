@@ -19,7 +19,7 @@ public class Building {
     @Column(name = "rental_price")
     private Double rentalPrice;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(nullable = false,name = "farm_id")
     private Farm farm;
 

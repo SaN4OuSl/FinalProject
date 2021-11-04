@@ -8,8 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "farms",
-        uniqueConstraints = {@UniqueConstraint(columnNames = "farm_name")})
+@Table(name = "farms")
 public class Farm {
     
     @Id
@@ -31,7 +30,7 @@ public class Farm {
     @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Building> buildings;
     
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(nullable = false,name = "user_id")
     private User user;
     
@@ -81,5 +80,13 @@ public class Farm {
     
     public void setBuildings(List<Building> buildings) {
         this.buildings = buildings;
+    }
+    
+    public User getUser() {
+        return user;
+    }
+    
+    public void setUser(User user) {
+        this.user = user;
     }
 }

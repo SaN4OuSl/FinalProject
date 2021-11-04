@@ -1,15 +1,15 @@
 package org.example.service;
 
 import org.example.entity.Farm;
+import org.example.entity.auth.User;
 
 import java.util.List;
 
 public interface FarmService {
     
-    void create(Farm farm);
-    void update(Farm farm);
-    boolean existById(Long id);
-    void delete(Long id);
-    Farm findById(Long id);
-    List<Farm> findAll();
+    void addFarm(User user, Farm farm);
+    void updateFarm(Long id, Farm farm);
+    Farm findFarmById(Long id);
+    void deleteFarm(User user, Long id);
+    List<Farm> findAllFarms();
 }

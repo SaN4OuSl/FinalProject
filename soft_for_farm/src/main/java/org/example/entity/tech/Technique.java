@@ -20,10 +20,10 @@ public class Technique {
     @Column(nullable = false, name = "number_of_technique")
     private Integer numberOfTechnique;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Plant> plant;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany( fetch = FetchType.LAZY)
     private List<Animal> animal;
     
     @ManyToMany(mappedBy = "techniques", fetch = FetchType.LAZY)

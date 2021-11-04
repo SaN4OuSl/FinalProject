@@ -23,7 +23,7 @@ public class Feed {
     @Column(name = "cost_of_feed")
     private Double costOfFeed;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Animal> animal;
     
     public Long getId() {

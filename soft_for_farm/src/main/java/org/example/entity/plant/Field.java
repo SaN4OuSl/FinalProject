@@ -8,11 +8,13 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "fields")
+@Table(name = "fields", uniqueConstraints = {@UniqueConstraint(columnNames = "cadastral_number")})
 public class Field {
     
     @Id
-    @NaturalId
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     @Column(nullable = false, name = "cadastral_number")
     private String cadastralNumber;
     
@@ -22,13 +24,21 @@ public class Field {
     @Column(name = "rental_price")
     private Double rentalPrice;
     
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(nullable = false,name = "farm_id")
     private Farm farm;
     
     @ManyToMany(mappedBy = "field", fetch = FetchType.LAZY)
     private List<Plant> plants;
-
+    
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public String getCadastralNumber() {
         return cadastralNumber;
     }

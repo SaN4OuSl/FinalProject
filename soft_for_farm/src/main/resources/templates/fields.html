@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Farm's fields</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+            <li class="nav-item"><a href="/farms" class="floating-button-active">Farms</a></li>
+            <li class="nav-item"><a href="/farm/new" class="floating-button">Add Farm</a></li>
+        </ul>
+    </header>
+</div>
+<div>
+    <table class="table_price">
+        <caption>List of field</caption>
+        <thead>
+        <tr>
+            <th scope="col">Cadastral number</th>
+            <th scope="col">Size of field</th>
+            <th scope="col">Rental price</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="field : ${fields}">
+            <td><label th:text="${field.getCadastralNumber}">Cadastral number</label></td>
+            <td><label th:text="${field.getSizeOfField()}">Size of field</label></td>
+            <td><label th:text="${field.getRentalPrice()}">Rental price</label></td>
+            <td><a th:href="@{/update/field/{id}(id=${field.getId()})}" class="floating-button">Select</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${option == 0}" id="add_form">
+    <form th:method="PATCH" th:action="@{/farm/{id}(id=${field.getId()})}" th:object="${field}">
+        <div class="form-floating">
+            <input name="cadastralNumber" type="text" class="form-control" id="fieldCadastral" placeholder="fieldCadastral"
+                   autofocus="true" field="*{cadastralNumber}"/>
+            <label for="fieldCadastral">Field cadastral number</label>
+        </div>
+        <div class="form-floating">
+            <input name="sizeOfField" type="text" class="form-control" id="sizeOfField" placeholder="sizeOfField"
+                   autofocus="true" field="*{sizeOfField}"/>
+            <label for="sizeOfField">Size of field</label>
+        </div>
+        <div class="form-floating">
+            <input name="rentalPrice" type="text" class="form-control" id="rentalPrice" placeholder="rentalPrice"
+                   autofocus="true" field="*{rentalPrice}"/>
+            <label for="rentalPrice">Rental price</label>
+        </div>
+        <input type="submit" class="floating-button" value="Update"/>
+    </form>
+    <form th:method="DELETE" th:action="@{/field/{id}(id=${field.getId()})}">
+        <input type="submit" class="floating-button" value="Delete"/>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+        integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+        integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

@@ -23,7 +23,7 @@ public class Fertilizer {
     @Column(name = "cost_of_fertilizer")
     private Long costOfFertilizers;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Plant> plant;
     
     public Long getId() {

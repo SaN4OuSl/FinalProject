@@ -11,5 +11,6 @@ public interface FieldService {
     void updateField(Long id, Field field);
     Field findFieldByCadastralNumber(Long id);
     void deleteField(Farm farm,Long id);
+    Field findFieldById(Long id);
     List<Field> findAllFields();
 }

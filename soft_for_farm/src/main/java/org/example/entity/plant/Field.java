@@ -15,6 +15,7 @@ public class Field {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NaturalId
     @Column(nullable = false, name = "cadastral_number")
     private String cadastralNumber;
     

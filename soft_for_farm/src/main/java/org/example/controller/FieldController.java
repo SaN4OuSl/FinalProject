@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import org.example.entity.Farm;
 import org.example.entity.plant.Field;
 import org.example.service.FarmService;
 import org.example.service.FieldService;
@@ -24,19 +23,19 @@ public class FieldController {
         this.fieldService = fieldService;
     }
     
-    @GetMapping("/{id}/new")
-    public String displayFieldCreation(Farm farm, Model model) {
-        model.addAttribute("farm", farmService.findFarmById(farm.getId()));
+    @GetMapping("/{farm_id}/new")
+    public String displayFieldCreation(Model model, @PathVariable("farm_id") Long farm_id) {
+        model.addAttribute("farm", farmService.findFarmById(farm_id));
         return "addField.html";
     }
     
-    @PostMapping(value = "/{id}/new")
-    public String createField(Farm farm, Field field, BindingResult result) {
+    @PostMapping(value = "/{farm_id}/new")
+    public String createField(Field field, BindingResult result, @PathVariable("farm_id") Long farm_id) {
         if (result.hasErrors()) {
             return "addField.html";
         } else {
-            fieldService.addField(farm, field);
-            return "redirect:/field/{id}/all";
+            fieldService.addField(farmService.findFarmById(farm_id), field);
+            return "redirect:/field/{farm_id}/all";
         }
     }
     
@@ -45,20 +44,20 @@ public class FieldController {
         if (!result.hasErrors()) {
             fieldService.updateField(id, field);
         }
-        return "redirect:/field/{"+ field.getFarm().getId()+ "}/all";
+        return "redirect:/field/{" + field.getFarm().getId() + "}/all";
     }
     
-    @DeleteMapping(value = "/{id}")
-    public String deleteField(Farm farm, @PathVariable("id") Long id) {
-        fieldService.deleteField(farm, id);
-        return "redirect:/field/{"+ farm.getId()+ "}/all";
+    @DeleteMapping(value = "/{farm_id}/{id}")
+    public String deleteField(@PathVariable("id") Long id, @PathVariable Long farm_id) {
+        fieldService.deleteField(farmService.findFarmById(farm_id), id);
+        return "redirect:/field/{" + farmService.findFarmById(farm_id) + "}/all";
     }
     
     @GetMapping("/{id}/all")
-    public String fields(Farm farm, Model model) {
-        model.addAttribute("farm", farmService.findFarmById(farm.getId()));
-        model.addAttribute("fields", farmService.findFarmById(farm.getId()).getFields());
-        model.addAttribute("currentUser", farmService.findFarmById(farm.getId()).getUser().getLogin());
+    public String fields(Model model, @PathVariable Long id) {
+        model.addAttribute("farm", farmService.findFarmById(id));
+        model.addAttribute("fields", farmService.findFarmById(id).getFields());
+        model.addAttribute("currentUser", farmService.findFarmById(id).getUser().getLogin());
         return "fields.html";
     }
 }

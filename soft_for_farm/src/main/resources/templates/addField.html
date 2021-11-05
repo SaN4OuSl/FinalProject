@@ -9,8 +9,17 @@
 </head>
 <body>
 <div style="margin-left: 100px;margin-right: 100px">
+    <div class="container">
+        <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/farms" class="floating-button">Farms</a></li>
+                <lim class="nav-item"><a href="/farm/new" class="floating-button">Add Farm</a></lim>
+            </ul>
+        </header>
+    </div>
     <div id="add_form">
-        <form th:action="@{/field/{id}/new(id=${farm.getId()})}" th:method="POST" th:object="${field}">
+        <form th:action="@{/field/{farm_id}/new(farm_id=${farm.getId()})}" th:method="POST" th:object="${field}">
             <div class="form-floating">
                 <input name="cadastralNumber" type="text" class="form-control" id="fieldCadastral" placeholder="fieldCadastral"
                        autofocus="true" field="*{cadastralNumber}"/>

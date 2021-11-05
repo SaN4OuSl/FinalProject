@@ -64,6 +64,10 @@ public class FieldServiceImpl implements FieldService {
     }
     
     @Override
+    public Field findFieldById(Long id) {
+        return fieldRepository.findById(id).orElse(null);
+    }
+    @Override
     public List<Field> findAllFields() {
         LOGGER.info("Read all fields");
         return fieldRepository.findAll();

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BenefitRepository extends JpaRepository<BenefitPlant, Long> {
     
-    Plant findBenefitPlantByPlant (Plant plant);
+    BenefitPlant findBenefitPlantByPlant (Plant plant);
 }

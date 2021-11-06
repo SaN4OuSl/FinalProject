@@ -10,7 +10,7 @@ public interface FieldService {
     void addField(Farm farm, Field field);
     void updateField(Long id, Field field);
     Field findFieldByCadastralNumber(Long id);
-    void deleteField(Farm farm,Long id);
+    void deleteField(Long id);
     Field findFieldById(Long id);
     List<Field> findAllFields();
 }

@@ -8,15 +8,15 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "fields", uniqueConstraints = {@UniqueConstraint(columnNames = "cadastral_number")})
+@Table(name = "fields")
 public class Field {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NaturalId
-    @Column(nullable = false, name = "cadastral_number")
+    @NaturalId(mutable = true)
+    @Column(nullable = false, name = "cadastral_number", unique = true)
     private String cadastralNumber;
     
     @Column(nullable = false, name = "size_of_field")

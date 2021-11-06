@@ -40,20 +40,20 @@
 </div>
 
 <div th:if="${option == 0}" id="add_form">
-    <form th:method="PATCH" th:action="@{/farm/{id}(id=${field.getId()})}" th:object="${field}">
+    <form th:method="PATCH" th:action="@{/field/{id}(id=${field.getId()})}" th:object="${field}">
         <div class="form-floating">
             <input name="cadastralNumber" type="text" class="form-control" id="fieldCadastral" placeholder="fieldCadastral"
-                   autofocus="true" field="*{cadastralNumber}"/>
+                   autofocus="true" th:field="*{cadastralNumber}"/>
             <label for="fieldCadastral">Field cadastral number</label>
         </div>
         <div class="form-floating">
             <input name="sizeOfField" type="text" class="form-control" id="sizeOfField" placeholder="sizeOfField"
-                   autofocus="true" field="*{sizeOfField}"/>
+                   autofocus="true" th:field="*{sizeOfField}"/>
             <label for="sizeOfField">Size of field</label>
         </div>
         <div class="form-floating">
             <input name="rentalPrice" type="text" class="form-control" id="rentalPrice" placeholder="rentalPrice"
-                   autofocus="true" field="*{rentalPrice}"/>
+                   autofocus="true" th:field="*{rentalPrice}"/>
             <label for="rentalPrice">Rental price</label>
         </div>
         <input type="submit" class="floating-button" value="Update"/>

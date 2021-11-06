@@ -40,24 +40,26 @@ public class FieldController {
     }
     
     @PatchMapping(value = "/{id}")
-    public String updateField(Field field, @PathVariable("id") Long id, BindingResult result) {
+    public String updateField(Field field, @PathVariable("id") Long id, BindingResult result, Model model) {
         if (!result.hasErrors()) {
             fieldService.updateField(id, field);
         }
-        return "redirect:/field/{" + field.getFarm().getId() + "}/all";
+        System.out.println(id);
+        model.addAttribute("farm",  fieldService.findFieldById(id).getFarm());
+        model.addAttribute("fields", fieldService.findFieldById(id).getFarm().getFields());
+        return "fields.html";
     }
     
-    @DeleteMapping(value = "/{farm_id}/{id}")
-    public String deleteField(@PathVariable("id") Long id, @PathVariable Long farm_id) {
-        fieldService.deleteField(farmService.findFarmById(farm_id), id);
-        return "redirect:/field/{" + farmService.findFarmById(farm_id) + "}/all";
+    @DeleteMapping(value = "/{id}")
+    public String deleteField(@PathVariable("id") Long id) {
+        fieldService.deleteField(id);
+        return "fields.html";
     }
     
     @GetMapping("/{id}/all")
     public String fields(Model model, @PathVariable Long id) {
         model.addAttribute("farm", farmService.findFarmById(id));
         model.addAttribute("fields", farmService.findFarmById(id).getFields());
-        model.addAttribute("currentUser", farmService.findFarmById(id).getUser().getLogin());
         return "fields.html";
     }
 }

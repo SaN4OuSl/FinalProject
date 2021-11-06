@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface FieldRepository extends JpaRepository<Field, String> {
+public interface FieldRepository extends JpaRepository<Field, Long> {
     
     List<Field> findAllByPlants(Plant plant);
     List<Field> findAllByFarm(Farm farm);
@@ -19,5 +19,4 @@ public interface FieldRepository extends JpaRepository<Field, String> {
     Field findByCadastralNumber(String cadastralNumber);
     boolean existsById(Long id);
     Optional<Field> findById(Long id);
-    void deleteById(Long id);
 }

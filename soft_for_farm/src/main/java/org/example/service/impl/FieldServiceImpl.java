@@ -38,6 +38,7 @@ public class FieldServiceImpl implements FieldService {
         if (fieldRepository.existsById(id)) {
             LOGGER.info("Start update field: " + id);
             Field newField = findFieldByCadastralNumber(id);
+            newField.setCadastralNumber(field.getCadastralNumber());
             newField.setSizeOfField(field.getSizeOfField());
             newField.setRentalPrice(field.getRentalPrice());
             fieldRepository.save(newField);
@@ -53,7 +54,7 @@ public class FieldServiceImpl implements FieldService {
     }
     
     @Override
-    public void deleteField(Farm farm,Long id) {
+    public void deleteField(Long id) {
         if (fieldRepository.existsById(id)) {
             LOGGER.info("Start delete field: " + id);
             fieldRepository.deleteById(id);

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
@@ -55,24 +54,11 @@ public class MainController {
         }
         if (action.equals("field")) {
             model.addAttribute("field", fieldService.findFieldById(id));
-            model.addAttribute("currentFarm", fieldService.findFieldById(id).getFarm())
+            model.addAttribute("farm", fieldService.findFieldById(id).getFarm())
                     .addAttribute("option", option)
                     .addAttribute("fields", fieldService.findFieldById(id).getFarm().getFields());
             return "fields.html";
         }
         return "farms.html";
-    }
-    
-    @GetMapping("/update")
-    public String update(Principal principal,
-                         @ModelAttribute("farm") Farm farm,
-                         Model model) throws UserNotFoundException {
-        
-        User user = userService.findByLogin(principal.getName());
-        List<Farm> farms = user.getFarms();
-        model.addAttribute("currentUser", user)
-                .addAttribute("farms", farm);
-        return "farms.html";
-        
     }
 }

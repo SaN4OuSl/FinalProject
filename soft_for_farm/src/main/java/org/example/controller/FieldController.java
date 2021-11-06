@@ -30,8 +30,9 @@ public class FieldController {
     }
     
     @PostMapping(value = "/{farm_id}/new")
-    public String createField(Field field, BindingResult result, @PathVariable("farm_id") Long farm_id) {
+    public String createField(Field field, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("farm", farmService.findFarmById(farm_id).getFarmName());
             return "addField.html";
         } else {
             fieldService.addField(farmService.findFarmById(farm_id), field);

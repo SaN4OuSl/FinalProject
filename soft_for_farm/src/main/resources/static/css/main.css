@@ -1,5 +1,5 @@
 
-html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, ul, li, table, button {
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, ul, li, table, button, header {
 
     margin: 0;
     padding: 0;
@@ -76,6 +76,9 @@ body {
 .form-signin .form-floating:focus-within {
     z-index: 2;
 }
+.form-floating p{
+    color: red;
+}
 #add_form {
     position: relative;
     border-radius: 15px;
@@ -84,36 +87,45 @@ body {
     text-align: center;
 }
 
-.table_price {
+.table_of_smth {
     margin: 50px auto;
     border-collapse: collapse;
     border-left: 3px solid #2EE59D;
     border-right: 3px solid #2EE59D;
     border-bottom: 3px solid #2EE59D;
 }
-.table_price caption {
+
+.table_of_smth caption {
 
     caption-side: top;
     background: #2EE59D;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     padding: 10px;
-    box-shadow: 0 2px  4px 0 rgba(0,0,0,.3);
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .3);
     color: white;
     font-style: normal;
     font-size: 26px;
     text-align: center;
 }
-.table_price td, .table_price th {
+
+.table_of_smth td, .table_of_smth th {
     padding: 10px;
 }
-.table_price th {
+
+.table_of_smth th {
     text-align: left;
     font-size: 18px;
 }
-.table_price tr:nth-child(2n) {
+.table_of_smth td a {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.table_of_smth tr:nth-child(2n) {
     background: white;
 }
-.table_price td:last-of-type {
+
+.table_of_smth td:last-of-type {
     text-align: center;
 }

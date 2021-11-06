@@ -33,10 +33,12 @@ public class FarmController {
         return "addFarm.html";
     }
     
+    
     @PostMapping(value = "/new")
-        public String createFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result) throws UserNotFoundException {
+        public String createFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result, Model model) throws UserNotFoundException {
         User user = userService.findByLogin(principal.getName());
         if (result.hasErrors()) {
+            model.addAttribute("user", userService.findByLogin(principal.getName()));
             return "addFarm.html";
         } else {
             farmService.addFarm(user, farm);

@@ -5,6 +5,8 @@ import org.example.entity.plant.Field;
 import org.example.entity.auth.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -15,12 +17,15 @@ public class Farm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Size(min=2, message = "Farm name must be more than 2 characters")
     @Column(nullable = false, name = "farm_name")
     private String farmName;
     
+    @Pattern(regexp = "^\\d+$", message = "Year must only contain numbers")
     @Column(nullable = false, name = "year_of_statistic")
-    private Long yearOfStatistic;
+    private String yearOfStatistic;
     
+    @Size(min=2, message = "Address must be more than 2 characters")
     @Column(nullable = false)
     private String address;
     
@@ -50,11 +55,11 @@ public class Farm {
         this.farmName = farmName;
     }
     
-    public Long getYearOfStatistic() {
+    public String getYearOfStatistic() {
         return yearOfStatistic;
     }
     
-    public void setYearOfStatistic(Long yearOfStatistic) {
+    public void setYearOfStatistic(String yearOfStatistic) {
         this.yearOfStatistic = yearOfStatistic;
     }
     

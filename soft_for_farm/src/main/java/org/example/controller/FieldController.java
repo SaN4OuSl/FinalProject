@@ -51,7 +51,9 @@ public class FieldController {
     }
     
     @DeleteMapping(value = "/{id}")
-    public String deleteField(@PathVariable("id") Long id) {
+    public String deleteField(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("farm",  fieldService.findFieldById(id).getFarm());
+        model.addAttribute("fields", fieldService.findFieldById(id).getFarm().getFields());
         fieldService.deleteField(id);
         return "fields.html";
     }

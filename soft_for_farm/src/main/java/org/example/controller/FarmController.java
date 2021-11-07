@@ -35,7 +35,7 @@ public class FarmController {
     
     
     @PostMapping(value = "/new")
-        public String createFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result, Model model) throws UserNotFoundException {
+    public String createFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result, Model model) throws UserNotFoundException {
         User user = userService.findByLogin(principal.getName());
         if (result.hasErrors()) {
             model.addAttribute("user", userService.findByLogin(principal.getName()));
@@ -47,11 +47,14 @@ public class FarmController {
     }
     
     @PatchMapping(value = "/{id}")
-    public String updateFarm(@Valid @ModelAttribute("farm") Farm farm, @PathVariable("id") Long id, BindingResult result) {
-        if (!result.hasErrors()) {
+    public String updateFarm(@Valid @ModelAttribute("farm") Farm farm, BindingResult result, @PathVariable("id") Long id, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("user", farmService.findFarmById(id).getUser());
+            return "redirect:/update/farms/{id}";
+        } else {
             farmService.updateFarm(id, farm);
+            return "redirect:/farms";
         }
-        return "redirect:/farms";
     }
     
     @DeleteMapping(value = "/{id}")

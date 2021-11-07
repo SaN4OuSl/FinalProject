@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @Controller
 @RequestMapping("/field")
@@ -30,9 +32,9 @@ public class FieldController {
     }
     
     @PostMapping(value = "/{farm_id}/new")
-    public String createField(Field field, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
+    public String createField(@Valid @ModelAttribute("field") Field field, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("farm", farmService.findFarmById(farm_id).getFarmName());
+            model.addAttribute("farm", farmService.findFarmById(farm_id));
             return "addField.html";
         } else {
             fieldService.addField(farmService.findFarmById(farm_id), field);
@@ -41,19 +43,22 @@ public class FieldController {
     }
     
     @PatchMapping(value = "/{id}")
-    public String updateField(Field field, @PathVariable("id") Long id, BindingResult result, Model model) {
-        if (!result.hasErrors()) {
+    public String updateField(@Valid @ModelAttribute("field") Field field, BindingResult result, @PathVariable("id") Long id, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("farm", fieldService.findFieldById(id).getFarm());
+            model.addAttribute("fields", fieldService.findFieldById(id).getFarm().getFields());
+            return "redirect:/update/field/{id}";
+        } else {
             fieldService.updateField(id, field);
+            model.addAttribute("farm", fieldService.findFieldById(id).getFarm());
+            model.addAttribute("fields", fieldService.findFieldById(id).getFarm().getFields());
+            return "fields.html";
         }
-        System.out.println(id);
-        model.addAttribute("farm",  fieldService.findFieldById(id).getFarm());
-        model.addAttribute("fields", fieldService.findFieldById(id).getFarm().getFields());
-        return "fields.html";
     }
     
     @DeleteMapping(value = "/{id}")
     public String deleteField(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("farm",  fieldService.findFieldById(id).getFarm());
+        model.addAttribute("farm", fieldService.findFieldById(id).getFarm());
         model.addAttribute("fields", fieldService.findFieldById(id).getFarm().getFields());
         fieldService.deleteField(id);
         return "fields.html";

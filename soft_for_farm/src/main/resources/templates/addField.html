@@ -28,19 +28,16 @@
                        placeholder="fieldCadastral"
                        autofocus="true" field="*{cadastralNumber}"/>
                 <label for="fieldCadastral">Field cadastral number in format: xxxxxxxxxx.xx.xxx.xxxx</label>
-                <p if="${#fields.hasErrors('cadastralNumber')}" errorclass="error" errors="*{cadastralNumber}"/>
             </div>
             <div class="form-floating">
                 <input name="sizeOfField" type="text" class="form-control" id="sizeOfField" placeholder="sizeOfField"
                        autofocus="true" field="*{sizeOfField}"/>
                 <label for="sizeOfField">Size of field (ha)</label>
-                <p if="${#fields.hasErrors('sizeOfField')}" errorclass="error" errors="*{sizeOfField}"/>
             </div>
             <div class="form-floating">
                 <input name="rentalPrice" type="text" class="form-control" id="rentalPrice" placeholder="rentalPrice"
                        autofocus="true" field="*{rentalPrice}"/>
                 <label for="rentalPrice">Rental price (₴)</label>
-                <p if="${#fields.hasErrors('rentalPrice')}" errorclass="error" errors="*{rentalPrice}"/>
             </div>
             <input type="submit" class="floating-button" value="Create"/>
         </form>

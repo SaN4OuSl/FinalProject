@@ -6,6 +6,7 @@ import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
@@ -19,14 +20,16 @@ public class Field {
     
     @NaturalId(mutable = true)
     @Column(nullable = false, name = "cadastral_number", unique = true)
-    @Pattern(regexp = "^[0-9]{1,10}\\.[0-9]{1,2}\\.[0-9]{1,3}\\.[0-9]{1,4}$", message = "Cadastral number in wrong format")
+    @Pattern(regexp = "^[0-9]{10}\\.[0-9]{2}\\.[0-9]{3}\\.[0-9]{4}$", message = "Cadastral number in wrong format")
     private String cadastralNumber;
     
     @Min(1)
     @Column(nullable = false, name = "size_of_field")
     private Double sizeOfField;
     
-    @Column(name = "rental_price")
+    @NotNull
+    @Min(0)
+    @Column(nullable = false, name = "rental_price")
     private Double rentalPrice;
     
     @ManyToOne

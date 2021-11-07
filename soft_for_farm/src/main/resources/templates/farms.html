@@ -53,20 +53,17 @@
             <input name="farmName" type="text" class="form-control" id="farmName" placeholder="farmName"
                    autofocus="true" th:field="*{farmName}"/>
             <label for="farmName">Farm name</label>
-            <p th:if="${#fields.hasErrors('farmName')}" th:errorclass="error" th:errors="*{farmName}"/>
         </div>
         <div class="form-floating">
             <input name="address" type="text" class="form-control" id="address" placeholder="address"
                    autofocus="true" th:field="*{address}"/>
             <label for="address">Address</label>
-            <p th:if="${#fields.hasErrors('address')}" th:errorclass="error" th:errors="*{address}"/>
         </div>
         <div class="form-floating">
             <input name="yearOfStatistic" type="text" class="form-control" id="yearOfStatistic"
                    placeholder="yearOfStatistic"
                    autofocus="true" th:field="*{yearOfStatistic}"/>
             <label for="yearOfStatistic">Year of statistic</label>
-            <p th:if="${#fields.hasErrors('yearOfStatistic')}" th:errorclass="error" th:errors="*{yearOfStatistic}"/>
         </div>
         <input type="submit" class="floating-button" value="Update"/>
     </form>

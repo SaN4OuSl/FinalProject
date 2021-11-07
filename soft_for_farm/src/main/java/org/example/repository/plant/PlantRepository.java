@@ -1,16 +1,14 @@
 package org.example.repository.plant;
 
-import org.example.entity.plant.BenefitPlant;
-import org.example.entity.plant.Field;
-import org.example.entity.plant.Plant;
+import org.example.entity.Plant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PlantRepository extends JpaRepository<Plant, Long> {
     
-    List<Plant> findAllByField(Field field);
-    Plant findPlantsByBenefitPlants (BenefitPlant benefitPlant);
+    boolean existsById(Long id);
+    Optional<Plant> findById(Long id);
 }

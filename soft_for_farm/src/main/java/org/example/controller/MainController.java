@@ -1,10 +1,11 @@
 package org.example.controller;
 
 import org.example.entity.Farm;
+import org.example.entity.Plant;
 import org.example.entity.auth.User;
 import org.example.exception.UserNotFoundException;
 import org.example.service.FarmService;
-import org.example.service.FieldService;
+import org.example.service.PlantService;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,13 +21,13 @@ public class MainController {
     
     private final UserService userService;
     private final FarmService farmService;
-    private final FieldService fieldService;
+    private final PlantService plantService;
     
     @Autowired
-    public MainController(UserService userService, FarmService farmService, FieldService fieldService) {
+    public MainController(UserService userService, FarmService farmService, PlantService plantService) {
         this.userService = userService;
         this.farmService = farmService;
-        this.fieldService = fieldService;
+        this.plantService = plantService;
     }
     
     @GetMapping("/farms")
@@ -52,12 +53,17 @@ public class MainController {
                     .addAttribute("farms", farms);
             return "farms.html";
         }
-        if (action.equals("field")) {
-            model.addAttribute("field", fieldService.findFieldById(id));
-            model.addAttribute("farm", fieldService.findFieldById(id).getFarm())
+        if (action.equals("plant")) {
+            Plant plant = plantService.findPlantById(id);
+            System.out.println(plantService.profitCounter(plant));
+            model.addAttribute("plant", plant);
+            model.addAttribute("expense", String.format("%.2f", plantService.expensesCounter(plant)))
+                    .addAttribute("profit", String.format("%.2f", plantService.profitCounter(plant)))
+                    .addAttribute("netProfit", String.format("%.2f", plantService.netProfitCounter(plant)));
+            model.addAttribute("farm", plant.getFarm())
                     .addAttribute("option", option)
-                    .addAttribute("fields", fieldService.findFieldById(id).getFarm().getFields());
-            return "fields.html";
+                    .addAttribute("plants", plant.getFarm().getPlants());
+            return "plants.html";
         }
         return "farms.html";
     }

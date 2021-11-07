@@ -1,7 +1,5 @@
 package org.example.entity;
 
-import org.example.entity.animal.Building;
-import org.example.entity.plant.Field;
 import org.example.entity.auth.User;
 
 import javax.persistence.*;
@@ -30,10 +28,7 @@ public class Farm {
     private String address;
     
     @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Field> fields;
-    
-    @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<Building> buildings;
+    private List<Plant> plants;
     
     @ManyToOne
     @JoinColumn(nullable = false,name = "user_id")
@@ -71,20 +66,12 @@ public class Farm {
         this.address = address;
     }
     
-    public List<Field> getFields() {
-        return fields;
+    public List<Plant> getPlants() {
+        return plants;
     }
     
-    public void setFields(List<Field> fields) {
-        this.fields = fields;
-    }
-    
-    public List<Building> getBuildings() {
-        return buildings;
-    }
-    
-    public void setBuildings(List<Building> buildings) {
-        this.buildings = buildings;
+    public void setPlants(List<Plant> plants) {
+        this.plants = plants;
     }
     
     public User getUser() {

@@ -2,9 +2,9 @@ package org.example.service;
 
 
 import org.example.entity.auth.User;
-import org.example.exception.DuplicateUserLogin;
-import org.example.exception.UserNotFoundException;
-import org.example.exception.UserPasswordSmall;
+import org.example.exception.user.DuplicateUserLogin;
+import org.example.exception.user.UserNotFoundException;
+import org.example.exception.user.UserPasswordSmall;
 
 public interface UserService {
 

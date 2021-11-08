@@ -32,7 +32,16 @@ public class Animal {
     
     @NotNull
     @DecimalMin("0.00")
-    private Long costOfOneAnimal;
+    @Column(name = "other_expenses")
+    private Double otherExpenses;
+    
+    @NotNull
+    @DecimalMin("0.00")
+    private Double costOfOneAnimal;
+    
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "farm_id")
+    private Farm farm;
     
     public Long getId() {
         return id;
@@ -58,11 +67,11 @@ public class Animal {
         this.numberOfAnimals = numberOfAnimals;
     }
     
-    public Long getCostOfOneAnimal() {
+    public Double getCostOfOneAnimal() {
         return costOfOneAnimal;
     }
     
-    public void setCostOfOneAnimal(Long costOfOneAnimal) {
+    public void setCostOfOneAnimal(Double costOfOneAnimal) {
         this.costOfOneAnimal = costOfOneAnimal;
     }
     
@@ -78,7 +87,23 @@ public class Animal {
         return rentalPriceOfBuilding;
     }
     
+    public Double getOtherExpenses() {
+        return otherExpenses;
+    }
+    
+    public void setOtherExpenses(Double otherExpenses) {
+        this.otherExpenses = otherExpenses;
+    }
+    
     public void setRentalPriceOfBuilding(Double rentalPriceOfBuilding) {
         this.rentalPriceOfBuilding = rentalPriceOfBuilding;
+    }
+    
+    public Farm getFarm() {
+        return farm;
+    }
+    
+    public void setFarm(Farm farm) {
+        this.farm = farm;
     }
 }

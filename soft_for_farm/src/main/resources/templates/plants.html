@@ -36,7 +36,7 @@
         </thead>
         <tbody>
         <tr th:each="plant : ${plants}">
-            <td><label th:text="${plant.getPlantName()}">Cadastral number</label></td>
+            <td><label th:text="${plant.getPlantName()}">Plant name</label></td>
             <td><label th:text="${plant.getSizeOfFieldForPlant()}">Size of field for plant</label></td>
             <td><label th:text="${plant.getRentalPriceOfField()}">Rental price of fields</label></td>
             <td><label th:text="${plant.getCostOfFertilizers()}">Cost of fertilizers</label></td>

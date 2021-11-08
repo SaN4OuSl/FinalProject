@@ -1,8 +1,8 @@
 package org.example.controller;
 
 import org.example.entity.auth.User;
-import org.example.exception.DuplicateUserLogin;
-import org.example.exception.UserPasswordSmall;
+import org.example.exception.user.DuplicateUserLogin;
+import org.example.exception.user.UserPasswordSmall;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,11 +41,19 @@ public class AuthController {
     }
     
     @PostMapping("/registration")
-    public String registration(@Valid @ModelAttribute("user") User user, BindingResult result) throws DuplicateUserLogin, UserPasswordSmall {
+    public String registration(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "registration.html";
         }
-        userService.registration(user);
+        try {
+            userService.registration(user);
+        } catch (DuplicateUserLogin e) {
+            model.addAttribute("errorMessage", "This username already exists");
+            return "registration.html";
+        } catch (UserPasswordSmall e) {
+            model.addAttribute("errorMessage", "Password must be have more than 8 characters");
+            return "registration.html";
+        }
         return "redirect:/login";
     }
     

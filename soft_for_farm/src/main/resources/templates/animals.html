@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Farm's animals</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+            <li class="nav-item"><a href="/farms" class="floating-button">Farms</a></li>
+        </ul>
+        <div>
+            <span>Farm name: </span>
+            <span th:text="*{farm.farmName}"></span>
+        </div>
+    </header>
+</div>
+<div>
+    <table class="table_of_smth">
+        <caption>List of animals</caption>
+        <thead>
+        <tr>
+            <th scope="col">Animal name</th>
+            <th scope="col">Number of animals</th>
+            <th scope="col">Cost of feeds</th>
+            <th scope="col">Rental price of building (₴)</th>
+            <th scope="col">Other expenses (₴)</th>
+            <th scope="col">Cost of animals (₴)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="animal : ${animals}">
+            <td><label th:text="${animal.getAnimalName()}">Animal name</label></td>
+            <td><label th:text="${animal.getNumberOfAnimals()}">Number of animals</label></td>
+            <td><label th:text="${animal.getCostOfFeeds()}">Cost of feeds</label></td>
+            <td><label th:text="${animal.getRentalPriceOfBuilding()}">Rental price of building (₴)</label></td>
+            <td><label th:text="${animal.getOtherExpenses()}">Other expenses (₴)</label></td>
+            <td><label th:text="${animal.getCostOfOneAnimal()}">Cost of animals (₴)</label></td>
+            <td><a th:href="@{/update/animal/{id}(id=${animal.getId()})}" class="floating-button">Select</a></td>
+        </tr>
+        <tr>
+            <td colspan="7"><a th:method="GET" th:href="@{/animal/{id}/new(id=${farm.getId()})}" class="floating-button">Add
+                new animal</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${option == 0}" id="add_form">
+    <div>
+        <label>Expense: <span th:text="*{expenses}"></span></label>
+    </div>
+    <div><label>Profit: <span th:text="*{profit}"></span></label></div>
+    <div><label>Net profit: <span th:text="*{netProfit}"></span></label></div>
+    <form th:method="PATCH" th:action="@{/animal/{id}(id=${animal.getId()})}" th:object="${animal}">
+        <div class="form-floating">
+            <input name="animalName" type="text" class="form-control" id="animalName"
+                   placeholder="animalName"
+                   autofocus="true" th:field="*{animalName}"/>
+            <label for="animalName">Animal name</label>
+        </div>
+        <div class="form-floating">
+            <input name="numberOfAnimals" type="text" class="form-control" id="numberOfAnimals"
+                   placeholder="numberOfAnimals"
+                   autofocus="true" th:field="*{numberOfAnimals}"/>
+            <label for="numberOfAnimals">Number of animals</label>
+        </div>
+        <div class="form-floating">
+            <input name="costOfFeeds" type="text" class="form-control" id="costOfFeeds"
+                   placeholder="costOfFeeds"
+                   autofocus="true" th:field="*{costOfFeeds}"/>
+            <label for="costOfFeeds">Cost of feeds (₴)</label>
+        </div>
+        <div class="form-floating">
+            <input name="rentalPriceOfBuilding" type="text" class="form-control" id="rentalPriceOfBuilding"
+                   placeholder="rentalPriceOfBuilding"
+                   autofocus="true" th:field="*{rentalPriceOfBuilding}"/>
+            <label for="rentalPriceOfBuilding">Rental price of building (₴)</label>
+        </div>
+        <div class="form-floating">
+            <input name="otherExpenses" type="text" class="form-control" id="otherExpenses" placeholder="otherExpenses"
+                   autofocus="true" th:field="*{otherExpenses}"/>
+            <label for="otherExpenses">Other expenses (₴)</label>
+        </div>
+        <div class="form-floating">
+            <input name="costOfOneAnimal" type="text" class="form-control" id="costOfOneAnimal" placeholder="costOfOneAnimal"
+                   autofocus="true" th:field="*{costOfOneAnimal}"/>
+            <label for="costOfOneAnimal">Cost of one animal (₴)</label>
+        </div>
+        <input type="submit" class="floating-button" value="Update"/>
+    </form>
+    <form th:method="DELETE" th:action="@{/animal/{id}(id=${animal.getId()})}">
+        <input type="submit" class="floating-button" value="Delete"/>
+    </form>
+</div>
+</body>
+</html>

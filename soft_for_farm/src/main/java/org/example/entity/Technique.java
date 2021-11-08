@@ -2,9 +2,7 @@ package org.example.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "techniques")
@@ -14,6 +12,7 @@ public class Technique {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @NotNull
     @Column(nullable = false, name = "type_of_technique")
     private String typeOfTechnique;
     
@@ -26,6 +25,10 @@ public class Technique {
     @DecimalMin("0.00")
     @Column(name = "price_of_lubricants")
     private Double priceOfLubricant;
+    
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "farm_id")
+    private Farm farm;
     
     public Long getId() {
         return id;
@@ -41,5 +44,29 @@ public class Technique {
 
     public void setTypeOfTechnique(String typeOfTechnique) {
         this.typeOfTechnique = typeOfTechnique;
+    }
+    
+    public Double getPriceOfParts() {
+        return priceOfParts;
+    }
+    
+    public void setPriceOfParts(Double priceOfParts) {
+        this.priceOfParts = priceOfParts;
+    }
+    
+    public Double getPriceOfLubricant() {
+        return priceOfLubricant;
+    }
+    
+    public void setPriceOfLubricant(Double priceOfLubricant) {
+        this.priceOfLubricant = priceOfLubricant;
+    }
+    
+    public Farm getFarm() {
+        return farm;
+    }
+    
+    public void setFarm(Farm farm) {
+        this.farm = farm;
     }
 }

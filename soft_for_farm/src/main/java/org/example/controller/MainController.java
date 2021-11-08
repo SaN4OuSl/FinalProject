@@ -1,12 +1,14 @@
 package org.example.controller;
 
+import org.example.entity.Animal;
 import org.example.entity.Farm;
 import org.example.entity.Plant;
+import org.example.entity.Technique;
 import org.example.entity.auth.User;
-import org.example.exception.UserNotFoundException;
-import org.example.service.FarmService;
-import org.example.service.PlantService;
-import org.example.service.UserService;
+import org.example.exception.farm.AccessToFarmException;
+import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.user.UserNotFoundException;
+import org.example.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,12 +24,16 @@ public class MainController {
     private final UserService userService;
     private final FarmService farmService;
     private final PlantService plantService;
+    private final AnimalService animalService;
+    private final TechniqueService techniqueService;
     
     @Autowired
-    public MainController(UserService userService, FarmService farmService, PlantService plantService) {
+    public MainController(UserService userService, FarmService farmService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
         this.userService = userService;
         this.farmService = farmService;
         this.plantService = plantService;
+        this.animalService = animalService;
+        this.techniqueService = techniqueService;
     }
     
     @GetMapping("/farms")
@@ -47,7 +53,15 @@ public class MainController {
         List<Farm> farms = user.getFarms();
         int option = 0;
         if (action.equals("farms")) {
-            model.addAttribute("farm", farmService.findFarmById(id));
+            try {
+                model.addAttribute("farm", farmService.findFarmById(principal, id));
+            } catch (FarmNotFoundException e) {
+                model.addAttribute("errorMessage", "Farm with this id not found");
+                return "error.html";
+            } catch (AccessToFarmException e) {
+                model.addAttribute("errorMessage", "You don't have access to this farm");
+                return "error.html";
+            }
             model.addAttribute("currentUser", user)
                     .addAttribute("option", option)
                     .addAttribute("farms", farms);
@@ -55,7 +69,6 @@ public class MainController {
         }
         if (action.equals("plant")) {
             Plant plant = plantService.findPlantById(id);
-            System.out.println(plantService.profitCounter(plant));
             model.addAttribute("plant", plant);
             model.addAttribute("expense", String.format("%.2f", plantService.expensesCounter(plant)))
                     .addAttribute("profit", String.format("%.2f", plantService.profitCounter(plant)))
@@ -64,6 +77,26 @@ public class MainController {
                     .addAttribute("option", option)
                     .addAttribute("plants", plant.getFarm().getPlants());
             return "plants.html";
+        }
+        if (action.equals("animal")) {
+            Animal animal = animalService.findAnimalById(id);
+            model.addAttribute("animal", animal);
+            model.addAttribute("expenses", String.format("%.2f", animalService.expensesCounter(animal)))
+                    .addAttribute("profit", String.format("%.2f", animalService.profitCounter(animal)))
+                    .addAttribute("netProfit", String.format("%.2f", animalService.netProfitCounter(animal)));
+            model.addAttribute("farm", animal.getFarm())
+                    .addAttribute("option", option)
+                    .addAttribute("animals", animal.getFarm().getAnimals());
+            return "animals.html";
+        }
+        if (action.equals("technique")) {
+            Technique technique = techniqueService.findTechniqueById(id);
+            model.addAttribute("technique", technique);
+            model.addAttribute("expenses", String.format("%.2f", techniqueService.expensesCounter(technique)));
+            model.addAttribute("farm", technique.getFarm())
+                    .addAttribute("option", option)
+                    .addAttribute("techniques", technique.getFarm().getTechniques());
+            return "techniques.html";
         }
         return "farms.html";
     }

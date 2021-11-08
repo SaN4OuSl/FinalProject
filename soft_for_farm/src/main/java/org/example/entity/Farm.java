@@ -30,6 +30,12 @@ public class Farm {
     @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Plant> plants;
     
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Animal> animals;
+    
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    private List<Technique> techniques;
+    
     @ManyToOne
     @JoinColumn(nullable = false,name = "user_id")
     private User user;
@@ -80,5 +86,21 @@ public class Farm {
     
     public void setUser(User user) {
         this.user = user;
+    }
+    
+    public List<Animal> getAnimals() {
+        return animals;
+    }
+    
+    public void setAnimals(List<Animal> animals) {
+        this.animals = animals;
+    }
+    
+    public List<Technique> getTechniques() {
+        return techniques;
+    }
+    
+    public void setTechniques(List<Technique> techniques) {
+        this.techniques = techniques;
     }
 }

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Farm's techniques</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+            <li class="nav-item"><a href="/farms" class="floating-button">Farms</a></li>
+        </ul>
+        <div>
+            <span>Farm name: </span>
+            <span th:text="*{farm.farmName}"></span>
+        </div>
+    </header>
+</div>
+<div>
+    <table class="table_of_smth">
+        <caption>List of techniques</caption>
+        <thead>
+        <tr>
+            <th scope="col">Techniques type</th>
+            <th scope="col">Price of parts (₴)</th>
+            <th scope="col">Price of lubricants (₴)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="technique : ${techniques}">
+            <td><label th:text="${technique.getTypeOfTechnique()}">Techniques type</label></td>
+            <td><label th:text="${technique.getPriceOfParts()}">Price of parts (₴)</label></td>
+            <td><label th:text="${technique.getPriceOfLubricant()}">Price of lubricants (₴)</label></td>
+            <td><a th:href="@{/update/technique/{id}(id=${technique.getId()})}" class="floating-button">Select</a></td>
+        </tr>
+        <tr>
+            <td colspan="8"><a th:method="GET" th:href="@{/technique/{id}/new(id=${farm.getId()})}" class="floating-button">Add
+                new technique</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:if="${option == 0}" id="add_form">
+    <div>
+        <label>Expense: <span th:text="*{expenses}"></span></label>
+    </div>
+    <form th:method="PATCH" th:action="@{/technique/{id}(id=${technique.getId()})}" th:object="${technique}">
+        <div class="form-floating">
+            <input name="typeOfTechnique" type="text" class="form-control" id="typeOfTechnique"
+                   placeholder="typeOfTechnique"
+                   autofocus="true" th:field="*{typeOfTechnique}"/>
+            <label for="typeOfTechnique">Techniques type</label>
+        </div>
+        <div class="form-floating">
+            <input name="priceOfParts" type="text" class="form-control" id="priceOfParts" placeholder="priceOfParts"
+                   autofocus="true" th:field="*{priceOfParts}"/>
+            <label for="priceOfParts">Price of parts (₴)</label>
+        </div>
+        <div class="form-floating">
+            <input name="priceOfLubricant" type="text" class="form-control" id="priceOfLubricant"
+                   placeholder="priceOfLubricant"
+                   autofocus="true" th:field="*{priceOfLubricant}"/>
+            <label for="priceOfLubricant">Price of lubricants (₴)</label>
+        </div>
+        <input type="submit" class="floating-button" value="Update"/>
+    </form>
+    <form th:method="DELETE" th:action="@{/technique/{id}(id=${technique.getId()})}">
+        <input type="submit" class="floating-button" value="Delete"/>
+    </form>
+</div>
+</body>
+</html>

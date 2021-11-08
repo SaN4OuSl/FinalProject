@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Add technique</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+<body>
+<div style="margin-left: 100px;margin-right: 100px">
+    <div class="container">
+        <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/farms" class="floating-button">Farms</a></li>
+            </ul>
+            <div>
+                <span>Farm name: </span>
+                <span th:text="*{farm.farmName}"></span>
+            </div>
+        </header>
+    </div>
+    <div id="add_form">
+        <form th:action="@{/technique/{farm_id}/new(farm_id=${farm.getId()})}" th:method="POST"
+              th:object="${technique}">
+            <div class="form-floating">
+                <input name="typeOfTechnique" type="text" class="form-control" id="typeOfTechnique"
+                       placeholder="typeOfTechnique"
+                       autofocus="true" field="*{typeOfTechnique}"/>
+                <label for="typeOfTechnique">Techniques type</label>
+            </div>
+            <div class="form-floating">
+                <input name="priceOfParts" type="text" class="form-control" id="priceOfParts" placeholder="priceOfParts"
+                       autofocus="true" field="*{priceOfParts}"/>
+                <label for="priceOfParts">Price of parts (₴)</label>
+            </div>
+            <div class="form-floating">
+                <input name="priceOfLubricant" type="text" class="form-control" id="priceOfLubricant"
+                       placeholder="priceOfLubricant"
+                       autofocus="true" field="*{priceOfLubricant}"/>
+                <label for="priceOfLubricant">Price of lubricants (₴)</label>
+            </div>
+            <input type="submit" class="floating-button" value="Create"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

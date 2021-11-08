@@ -20,6 +20,7 @@
 
     <form th:method="POST" th:action="@{/registration}" th:object="${user}" class="form-signin text-center">
         <h2 class="h3 mb-3 fw-normal">Create your account</h2>
+        <h6 th:text="${errorMessage}"></h6>
         <div class="form-floating">
             <input type="text" class="form-control" placeholder="Username"  id="usernamefloat"
                    autofocus="true" th:field="*{login}">

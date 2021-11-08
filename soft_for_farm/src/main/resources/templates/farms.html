@@ -68,7 +68,13 @@
         <input type="submit" class="floating-button" value="Update"/>
     </form>
     <form th:method="GET" th:action="@{/plant/{id}/all(id=${farm.getId()})}">
-        <input type="submit" class="floating-button" value="Show plant  "/>
+        <input type="submit" class="floating-button" value="Show plants"/>
+    </form>
+    <form th:method="GET" th:action="@{/animal/{id}/all(id=${farm.getId()})}">
+        <input type="submit" class="floating-button" value="Show animals"/>
+    </form>
+    <form th:method="GET" th:action="@{/technique/{id}/all(id=${farm.getId()})}">
+        <input type="submit" class="floating-button" value="Show techniques"/>
     </form>
     <form th:method="DELETE" th:action="@{/farm/{id}(id=${farm.getId()})}">
         <input type="submit" class="floating-button" value="Delete"/>

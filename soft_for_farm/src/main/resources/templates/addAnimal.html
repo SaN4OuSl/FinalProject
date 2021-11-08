@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Add animal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+<body>
+<div style="margin-left: 100px;margin-right: 100px">
+    <div class="container">
+        <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="/farms" class="floating-button">Farms</a></li>
+            </ul>
+            <div>
+                <span>Farm name: </span>
+                <span th:text="*{farm.farmName}"></span>
+            </div>
+        </header>
+    </div>
+    <div id="add_form">
+        <form th:action="@{/animal/{farm_id}/new(farm_id=${farm.getId()})}" th:method="POST" th:object="${animal}">
+            <div class="form-floating">
+                <input name="animalName" type="text" class="form-control" id="animalName"
+                       placeholder="animalName"
+                       autofocus="true" field="*{animalName}"/>
+                <label for="animalName">Animal name</label>
+            </div>
+            <div class="form-floating">
+                <input name="numberOfAnimals" type="text" class="form-control" id="numberOfAnimals"
+                       placeholder="numberOfAnimals"
+                       autofocus="true" field="*{numberOfAnimals}"/>
+                <label for="numberOfAnimals">Number of animals</label>
+            </div>
+            <div class="form-floating">
+                <input name="costOfFeeds" type="text" class="form-control" id="costOfFeeds"
+                       placeholder="costOfFeeds"
+                       autofocus="true" field="*{costOfFeeds}"/>
+                <label for="costOfFeeds">Cost of feeds (₴)</label>
+            </div>
+            <div class="form-floating">
+                <input name="rentalPriceOfBuilding" type="text" class="form-control" id="rentalPriceOfBuilding"
+                       placeholder="rentalPriceOfBuilding"
+                       autofocus="true" field="*{rentalPriceOfBuilding}"/>
+                <label for="rentalPriceOfBuilding">Rental price of building (₴)</label>
+            </div>
+            <div class="form-floating">
+                <input name="otherExpenses" type="text" class="form-control" id="otherExpenses" placeholder="otherExpenses"
+                       autofocus="true" field="*{otherExpenses}"/>
+                <label for="otherExpenses">Other expenses (₴)</label>
+            </div>
+            <div class="form-floating">
+                <input name="costOfOneAnimal" type="text" class="form-control" id="costOfOneAnimal" placeholder="costOfOneAnimal"
+                       autofocus="true" field="*{costOfOneAnimal}"/>
+                <label for="costOfOneAnimal">Cost of one animal (₴)</label>
+            </div>
+            <input type="submit" class="floating-button" value="Create"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

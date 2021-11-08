@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class PlantServiceImpl implements PlantService {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(FarmServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlantServiceImpl.class);
     
     private final PlantRepository plantRepository;
     
@@ -29,7 +29,7 @@ public class PlantServiceImpl implements PlantService {
             plantRepository.save(plant);
             LOGGER.info("End create field: " + plant.getId());
         } else {
-            LOGGER.warn("field is null!");
+            LOGGER.warn("plant is null!");
         }
     }
     

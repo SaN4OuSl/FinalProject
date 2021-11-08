@@ -1,7 +1,7 @@
 package org.example.controller;
 
-import org.example.entity.Farm;
-import org.example.entity.auth.User;
+import org.example.model.Farm;
+import org.example.model.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;

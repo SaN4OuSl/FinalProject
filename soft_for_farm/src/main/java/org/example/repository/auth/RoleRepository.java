@@ -1,6 +1,6 @@
 package org.example.repository.auth;
 
-import org.example.entity.auth.Role;
+import org.example.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

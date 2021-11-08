@@ -1,4 +1,4 @@
-package org.example.entity.auth;
+package org.example.model;
 
 import javax.persistence.*;
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.entity.auth.User;
+import org.example.model.User;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserPasswordSmall;
 import org.example.service.UserService;

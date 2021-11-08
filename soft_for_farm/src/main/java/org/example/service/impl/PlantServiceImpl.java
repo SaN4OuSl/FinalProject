@@ -1,7 +1,7 @@
 package org.example.service.impl;
 
-import org.example.entity.Farm;
-import org.example.entity.Plant;
+import org.example.model.Farm;
+import org.example.model.Plant;
 import org.example.repository.plant.PlantRepository;
 import org.example.service.PlantService;
 import org.slf4j.Logger;

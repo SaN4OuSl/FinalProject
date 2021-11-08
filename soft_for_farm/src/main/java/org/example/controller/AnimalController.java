@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.entity.Animal;
+import org.example.model.Animal;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.service.AnimalService;

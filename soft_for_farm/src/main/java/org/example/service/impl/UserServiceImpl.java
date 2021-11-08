@@ -2,8 +2,8 @@ package org.example.service.impl;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.entity.auth.Role;
-import org.example.entity.auth.User;
+import org.example.model.Role;
+import org.example.model.User;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;

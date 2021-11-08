@@ -1,6 +1,4 @@
-package org.example.entity;
-
-import org.example.entity.auth.User;
+package org.example.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;

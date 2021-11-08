@@ -1,6 +1,6 @@
 package org.example.repository.tech;
 
-import org.example.entity.Technique;
+import org.example.model.Technique;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

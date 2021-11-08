@@ -1,7 +1,7 @@
 package org.example.repository;
 
-import org.example.entity.Farm;
-import org.example.entity.auth.User;
+import org.example.model.Farm;
+import org.example.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

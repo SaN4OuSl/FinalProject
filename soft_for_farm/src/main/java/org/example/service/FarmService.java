@@ -1,7 +1,7 @@
 package org.example.service;
 
-import org.example.entity.Farm;
-import org.example.entity.auth.User;
+import org.example.model.Farm;
+import org.example.model.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.springframework.data.domain.Page;

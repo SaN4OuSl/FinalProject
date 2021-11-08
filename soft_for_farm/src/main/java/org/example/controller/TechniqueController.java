@@ -1,7 +1,7 @@
 package org.example.controller;
 
 
-import org.example.entity.Technique;
+import org.example.model.Technique;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.service.FarmService;

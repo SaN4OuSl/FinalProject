@@ -1,7 +1,6 @@
-package org.example.entity.auth;
+package org.example.model;
 
 
-import org.example.entity.Farm;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;

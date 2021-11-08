@@ -1,8 +1,8 @@
 package org.example.service.impl;
 
 
-import org.example.entity.Farm;
-import org.example.entity.Technique;
+import org.example.model.Farm;
+import org.example.model.Technique;
 import org.example.repository.tech.TechniqueRepository;
 import org.example.service.TechniqueService;
 import org.slf4j.Logger;

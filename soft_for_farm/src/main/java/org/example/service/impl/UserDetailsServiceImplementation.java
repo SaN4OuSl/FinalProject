@@ -1,7 +1,7 @@
 package org.example.service.impl;
 
-import org.example.entity.auth.Role;
-import org.example.entity.auth.User;
+import org.example.model.Role;
+import org.example.model.User;
 import org.example.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

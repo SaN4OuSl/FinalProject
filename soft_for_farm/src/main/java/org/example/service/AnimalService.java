@@ -1,7 +1,7 @@
 package org.example.service;
 
-import org.example.entity.Animal;
-import org.example.entity.Farm;
+import org.example.model.Animal;
+import org.example.model.Farm;
 
 import java.util.List;
 

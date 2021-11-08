@@ -1,15 +1,14 @@
 package org.example.controller;
 
-import org.example.entity.Animal;
-import org.example.entity.Farm;
-import org.example.entity.Plant;
-import org.example.entity.Technique;
-import org.example.entity.auth.User;
+import org.example.model.Animal;
+import org.example.model.Farm;
+import org.example.model.Plant;
+import org.example.model.Technique;
+import org.example.model.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.service.*;
-import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,9 +49,9 @@ public class MainController {
             model.addAttribute("errorMessage", "User with this login not found");
             return "error.html";
         }
-        Page<Farm> page = farmService.findAllPageable(user, pageable);
-        model.addAttribute("page", page);
-        model.addAttribute("farms", farmService.findAllPageable(user, pageable));
+        Page<Farm> pageFarm = farmService.findAllPageable(user, pageable);
+        model.addAttribute("page", pageFarm);
+        model.addAttribute("farms", pageFarm);
         model.addAttribute("currentUser", user);
         return "farms.html";
     }
@@ -77,14 +76,14 @@ public class MainController {
                 model.addAttribute("errorMessage", "You don't have access to this farm");
                 return "error.html";
             }
-            Page<Farm> page = farmService.findAllPageable(user, pageable);
-            model.addAttribute("page", page);
+            Page<Farm> pageFarm = farmService.findAllPageable(user, pageable);
+            model.addAttribute("page", pageFarm);
             model.addAttribute("expense", String.format("%.2f", farmService.expensesCounter(farm)))
                     .addAttribute("profit", String.format("%.2f", farmService.profitCounter(farm)))
                     .addAttribute("netProfit", String.format("%.2f", farmService.netProfitCounter(farm)));
             model.addAttribute("currentUser", user)
                     .addAttribute("option", option)
-                    .addAttribute("farms", farms);
+                    .addAttribute("farms", pageFarm);
             return "farms.html";
         }
         if (action.equals("plant")) {

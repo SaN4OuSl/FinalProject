@@ -116,6 +116,16 @@ body {
     text-align: center;
 }
 
+#pagination {
+    position: relative;
+    border-collapse: collapse;
+    max-width: 400px;
+    margin: 50px auto;
+    text-align: center;
+}
+#pagination .floating-button{
+    width: 50px;
+}
 .table_of_smth {
     margin: 50px auto;
     border-collapse: collapse;

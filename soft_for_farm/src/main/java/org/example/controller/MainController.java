@@ -11,6 +11,7 @@ import org.example.exception.user.UserNotFoundException;
 import org.example.service.*;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -41,7 +42,6 @@ public class MainController {
     }
     
     @GetMapping("/farms")
-    @PageableAsQueryParam
     public String farms(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         User user;
         try {
@@ -50,6 +50,8 @@ public class MainController {
             model.addAttribute("errorMessage", "User with this login not found");
             return "error.html";
         }
+        Page<Farm> page = farmService.findAllPageable(user, pageable);
+        model.addAttribute("page", page);
         model.addAttribute("farms", farmService.findAllPageable(user, pageable));
         model.addAttribute("currentUser", user);
         return "farms.html";
@@ -59,7 +61,7 @@ public class MainController {
     public String update(Principal principal,
                          @PathVariable("aa") String action,
                          @PathVariable("id") Long id,
-                         Model model) throws UserNotFoundException {
+                         Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) throws UserNotFoundException {
         User user = userService.findByLogin(principal.getName());
         List<Farm> farms = user.getFarms();
         Farm farm;
@@ -75,6 +77,8 @@ public class MainController {
                 model.addAttribute("errorMessage", "You don't have access to this farm");
                 return "error.html";
             }
+            Page<Farm> page = farmService.findAllPageable(user, pageable);
+            model.addAttribute("page", page);
             model.addAttribute("expense", String.format("%.2f", farmService.expensesCounter(farm)))
                     .addAttribute("profit", String.format("%.2f", farmService.profitCounter(farm)))
                     .addAttribute("netProfit", String.format("%.2f", farmService.netProfitCounter(farm)));

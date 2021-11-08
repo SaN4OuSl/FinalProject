@@ -9,7 +9,11 @@ import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.service.*;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,9 +41,16 @@ public class MainController {
     }
     
     @GetMapping("/farms")
-    public String farms(Principal principal, Model model) throws UserNotFoundException {
-        User user = userService.findByLogin(principal.getName());
-        model.addAttribute("farms", user.getFarms());
+    @PageableAsQueryParam
+    public String farms(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
+        User user;
+        try {
+            user = userService.findByLogin(principal.getName());
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User with this login not found");
+            return "error.html";
+        }
+        model.addAttribute("farms", farmService.findAllPageable(user, pageable));
         model.addAttribute("currentUser", user);
         return "farms.html";
     }
@@ -51,10 +62,12 @@ public class MainController {
                          Model model) throws UserNotFoundException {
         User user = userService.findByLogin(principal.getName());
         List<Farm> farms = user.getFarms();
+        Farm farm;
         int option = 0;
         if (action.equals("farms")) {
             try {
-                model.addAttribute("farm", farmService.findFarmById(principal, id));
+                farm = farmService.findFarmById(principal, id);
+                model.addAttribute("farm", farm);
             } catch (FarmNotFoundException e) {
                 model.addAttribute("errorMessage", "Farm with this id not found");
                 return "error.html";
@@ -62,6 +75,9 @@ public class MainController {
                 model.addAttribute("errorMessage", "You don't have access to this farm");
                 return "error.html";
             }
+            model.addAttribute("expense", String.format("%.2f", farmService.expensesCounter(farm)))
+                    .addAttribute("profit", String.format("%.2f", farmService.profitCounter(farm)))
+                    .addAttribute("netProfit", String.format("%.2f", farmService.netProfitCounter(farm)));
             model.addAttribute("currentUser", user)
                     .addAttribute("option", option)
                     .addAttribute("farms", farms);

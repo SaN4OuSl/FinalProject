@@ -26,6 +26,7 @@
     </div>
     <div id="add_form">
         <form th:action="@{/farm/new}" th:method="POST" th:object="${farm}">
+            <h6 th:text="${errorMessage}"></h6>
             <div class="form-floating">
                 <input name="farmName" type="text" class="form-control" id="farmName" placeholder="farmName"
                        autofocus="true" th:field="*{farmName}"/>

@@ -48,7 +48,13 @@
 </div>
 
 <div th:if="${option == 0}" id="add_form">
+    <div>
+        <label>Expense: <span th:text="*{expense}"></span></label>
+    </div>
+    <div><label>Profit: <span th:text="*{profit}"></span></label></div>
+    <div><label>Net profit: <span th:text="*{netProfit}"></span></label></div>
     <form th:method="PATCH" th:action="@{/farm/{id}(id=${farm.getId()})}" th:object="${farm}">
+        <h6 th:text="${errorMessage}"></h6>
         <div class="form-floating">
             <input name="farmName" type="text" class="form-control" id="farmName" placeholder="farmName"
                    autofocus="true" th:field="*{farmName}"/>
@@ -65,19 +71,25 @@
                    autofocus="true" th:field="*{yearOfStatistic}"/>
             <label for="yearOfStatistic">Year of statistic</label>
         </div>
-        <input type="submit" class="floating-button" value="Update"/>
+        <input type="submit" class="special-floating-button" value="Update"/>
     </form>
     <form th:method="GET" th:action="@{/plant/{id}/all(id=${farm.getId()})}">
-        <input type="submit" class="floating-button" value="Show plants"/>
+        <input type="submit" class="special-floating-button" value="Show plants"/>
     </form>
     <form th:method="GET" th:action="@{/animal/{id}/all(id=${farm.getId()})}">
-        <input type="submit" class="floating-button" value="Show animals"/>
+        <input type="submit" class="special-floating-button" value="Show animals"/>
     </form>
     <form th:method="GET" th:action="@{/technique/{id}/all(id=${farm.getId()})}">
-        <input type="submit" class="floating-button" value="Show techniques"/>
+        <input type="submit" class="special-floating-button" value="Show techniques"/>
+    </form>
+    <form th:method="GET" th:action="@{/farm/{year}(year=${farm.getYearOfStatistic()})}">
+        <input type="submit" class="special-floating-button" value="search for other farms with this year"/>
+    </form>
+    <form th:method="GET" th:action="@{/farm/findByFarmName/{farmName}(farmName=${farm.getFarmName()})}">
+        <input type="submit" class="special-floating-button" value="search farms with this name"/>
     </form>
     <form th:method="DELETE" th:action="@{/farm/{id}(id=${farm.getId()})}">
-        <input type="submit" class="floating-button" value="Delete"/>
+        <input type="submit" class="special-floating-button" value="Delete"/>
     </form>
 </div>
 </body>

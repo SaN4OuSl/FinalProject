@@ -43,8 +43,9 @@ public class FarmController {
     
     @PostMapping(value = "/new")
     public String createFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result, Model model) {
+        User user = null;
         try {
-            User user = userService.findByLogin(principal.getName());
+            user = userService.findByLogin(principal.getName());
             if (result.hasErrors()) {
                 model.addAttribute("user", user);
                 return "addFarm.html";
@@ -95,5 +96,33 @@ public class FarmController {
             model.addAttribute("errorMessage", "User not found");
             return "login.html";
         }
+    }
+    
+    @GetMapping(value = "/{year}")
+    public String findFarmsByYear(Principal principal, Model model, @PathVariable String year) {
+        User user;
+        try {
+            user = userService.findByLogin(principal.getName());
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User with this lodin not found");
+            return "error.html";
+        }
+        model.addAttribute("farms", farmService.findFarmsByYear(year, user));
+        model.addAttribute("currentUser", user);
+        return "farms.html";
+    }
+    
+    @GetMapping(value = "/findByFarmName/{farmName}")
+    public String findFarmsByFarmName(Principal principal, Model model, @PathVariable String farmName) {
+        User user;
+        try {
+            user = userService.findByLogin(principal.getName());
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User with this lodin not found");
+            return "error.html";
+        }
+        model.addAttribute("farms", farmService.findFarmsByFarmName(farmName, user));
+        model.addAttribute("currentUser", user);
+        return "farms.html";
     }
 }

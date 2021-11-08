@@ -12,29 +12,29 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Size(min=2, max=40, message = "Login must be more than 2 and no more than 40 characters")
+    @Size(min = 2, max = 40, message = "Login must be more than 2 and no more than 40 characters")
     private String login;
     
-    @Size(min=8, message = "Password must be more than 8 characters")
+    @Size(min = 8, message = "Password must be more than 8 characters")
     private String password;
-
+    
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles;
-
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Farm> farms;
-
+    
     @CreatedDate
     private Date created;
-
+    
     public User(Long id, String login, String password) {
         this.id = id;
         this.login = login;

@@ -61,7 +61,7 @@ public class AnimalController {
     }
     
     @PatchMapping(value = "/{id}")
-    public String updateAnimal(Principal principal, @Valid @ModelAttribute("animal") Animal animal, BindingResult result, @PathVariable("id") Long id, Model model) {
+    public String updateAnimal(@Valid @ModelAttribute("animal") Animal animal, BindingResult result, @PathVariable("id") Long id, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("farm", animalService.findAnimalById(id).getFarm());
             model.addAttribute("animals", animalService.findAnimalById(id).getFarm().getAnimals());

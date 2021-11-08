@@ -1,7 +1,9 @@
 package org.example.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "plants")
@@ -11,7 +13,7 @@ public class Plant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Size(min=2, message = "Plant name must be more than 2 characters")
+    @Size(min = 2, message = "Plant name must be more than 2 characters")
     @Column(name = "plant_name")
     private String plantName;
     
@@ -60,7 +62,7 @@ public class Plant {
     public String getPlantName() {
         return plantName;
     }
-
+    
     public void setPlantName(String plantName) {
         this.plantName = plantName;
     }

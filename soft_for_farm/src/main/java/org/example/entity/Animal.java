@@ -10,11 +10,11 @@ public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     @Size(min = 2, message = "Animal name must be have more than 2 characters")
     @Column(name = "animal_name")
     private String animalName;
-
+    
     @NotNull
     @DecimalMin("0.00")
     @Column(name = "number_of_animals")
@@ -54,15 +54,15 @@ public class Animal {
     public String getAnimalName() {
         return animalName;
     }
-
+    
     public void setAnimalName(String animalName) {
         this.animalName = animalName;
     }
-
+    
     public Integer getNumberOfAnimals() {
         return numberOfAnimals;
     }
-
+    
     public void setNumberOfAnimals(Integer numberOfAnimals) {
         this.numberOfAnimals = numberOfAnimals;
     }

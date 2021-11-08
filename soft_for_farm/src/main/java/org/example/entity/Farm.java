@@ -15,7 +15,7 @@ public class Farm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Size(min=2, message = "Farm name must be more than 2 characters")
+    @Size(min = 2, message = "Farm name must be more than 2 characters")
     @Column(nullable = false, name = "farm_name")
     private String farmName;
     
@@ -23,7 +23,7 @@ public class Farm {
     @Column(nullable = false, name = "year_of_statistic")
     private String yearOfStatistic;
     
-    @Size(min=2, message = "Address must be more than 2 characters")
+    @Size(min = 2, message = "Address must be more than 2 characters")
     @Column(nullable = false)
     private String address;
     
@@ -37,7 +37,7 @@ public class Farm {
     private List<Technique> techniques;
     
     @ManyToOne
-    @JoinColumn(nullable = false,name = "user_id")
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
     
     public Long getId() {

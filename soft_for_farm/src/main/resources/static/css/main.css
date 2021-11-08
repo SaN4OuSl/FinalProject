@@ -76,9 +76,11 @@ body {
 .form-signin .form-floating:focus-within {
     z-index: 2;
 }
-.form-floating p{
+
+.form-floating p {
     color: red;
 }
+
 #add_form {
     position: relative;
     border-radius: 15px;
@@ -117,6 +119,7 @@ body {
     text-align: left;
     font-size: 18px;
 }
+
 .table_of_smth td a {
     margin-left: auto;
     margin-right: auto;

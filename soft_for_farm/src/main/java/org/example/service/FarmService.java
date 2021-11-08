@@ -11,8 +11,12 @@ import java.util.List;
 public interface FarmService {
     
     void addFarm(User user, Farm farm);
+    
     void updateFarm(Principal principal, Long id, Farm farm) throws FarmNotFoundException, AccessToFarmException;
+    
     Farm findFarmById(Principal principal, Long id) throws FarmNotFoundException, AccessToFarmException;
+    
     void deleteFarm(User user, Long id);
+    
     List<Farm> findAllFarms();
 }

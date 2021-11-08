@@ -41,7 +41,7 @@ public class Technique {
     public String getTypeOfTechnique() {
         return typeOfTechnique;
     }
-
+    
     public void setTypeOfTechnique(String typeOfTechnique) {
         this.typeOfTechnique = typeOfTechnique;
     }

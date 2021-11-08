@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface PlantRepository extends JpaRepository<Plant, Long> {
     
     boolean existsById(Long id);
+    
     Optional<Plant> findById(Long id);
 }

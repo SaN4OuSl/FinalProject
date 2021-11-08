@@ -43,7 +43,8 @@
                        placeholder="yearOfStatistic"
                        autofocus="true" th:field="*{yearOfStatistic}"/>
                 <label for="yearOfStatistic">Year of statistic</label>
-                <p th:if="${#fields.hasErrors('yearOfStatistic')}" th:errorclass="error" th:errors="*{yearOfStatistic}"/>
+                <p th:if="${#fields.hasErrors('yearOfStatistic')}" th:errorclass="error"
+                   th:errors="*{yearOfStatistic}"/>
             </div>
             <input type="submit" class="floating-button" value="Create"/>
         </form>

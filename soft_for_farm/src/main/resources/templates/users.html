@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Users</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container">
+    <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+        </ul>
+        <div id="usernameId">
+            <form id="logoutForm" th:method="POST" th:action="@{/logout}">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <button type="submit" class="floating-button">Logout</button>
+                <span th:text="*{currentUser.login}"></span>
+            </form>
+        </div>
+    </header>
+</div>
+<div>
+    <div class="row" id="pagination">
+        <div th:if="${page.totalPages != 1}">
+            <ul class="pagination">
+                <li th:class="${page.number == 0} ? disabled"><a
+                        class="floating-button" th:href="@{/admin/users?page=0}">&laquo;</a></li>
+                <li th:class="${page.number == 0} ? disabled"><a
+                        class="floating-button" th:href="@{/admin/users?page={num} (num=${page.number-1})}">&larr;</a>
+                </li>
+                <li th:class="${page.number + 1 == page.totalPages} ? disabled">
+                    <a class="floating-button" th:href="@{/admin/users?page={num} (num=${page.number+1})}">&rarr;</a>
+                </li>
+                <li th:class="${page.number + 1 == page.totalPages} ? disabled">
+                    <a class="floating-button"
+                       th:href="@{/admin/users?page={num} (num=${page.totalPages-1})}">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <table class="table_of_smth">
+        <caption>List of users</caption>
+        <thead>
+        <tr>
+            <th scope="col">Login</th>
+            <th scope="col">Password</th>
+            <th scope="col">Created date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${page}">
+            <td><label th:text="${user.getLogin()}">Login</label></td>
+            <td><label th:text="${user.getPassword()}">Password</label></td>
+            <td><label th:text="${user.getCreated()}">Created date</label></td>
+            <td>
+                <form th:method="DELETE" th:action="@{/admin/user/{id}(id=${user.getId()})}">
+                    <input type="submit" class="floating-button" value="Delete"/>
+                </form>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4"><a href="/admin/new" class="floating-button">Add Admin</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

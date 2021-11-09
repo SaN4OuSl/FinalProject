@@ -14,9 +14,9 @@ public interface FarmService {
     
     void addFarm(User user, Farm farm);
     
-    void updateFarm(Principal principal, Long id, Farm farm) throws FarmNotFoundException, AccessToFarmException;
+    void updateFarm(User user, Long id, Farm farm) throws FarmNotFoundException, AccessToFarmException;
     
-    Farm findFarmById(Principal principal, Long id) throws FarmNotFoundException, AccessToFarmException;
+    Farm findFarmById(User user, Long id) throws FarmNotFoundException, AccessToFarmException;
     
     void deleteFarm(User user, Long id);
     
@@ -26,9 +26,9 @@ public interface FarmService {
     
     Double netProfitCounter(Farm farm);
     
-    List<Farm> findFarmsByYear(String year, User user);
+    Page<Farm> findFarmsByYear(String year, User user, Pageable pageable);
     
-    List<Farm> findFarmsByFarmName(String farmName, User user);
+    Page<Farm> findFarmsByFarmName(String farmName, User user, Pageable pageable);
     
     Page<Farm> findAllPageable(User user, Pageable pageable);
 }

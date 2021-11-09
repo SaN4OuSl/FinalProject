@@ -1,14 +1,18 @@
 package org.example.controller;
 
-import org.example.model.User;
 import org.example.exception.user.DuplicateUserLogin;
+import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
+import org.example.model.User;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -59,11 +63,16 @@ public class AuthController {
     
     @GetMapping(value = {"/", "/home"})
     public String home(Principal principal, Model model) {
-        if (principal != null) {
-            model.addAttribute("username", principal.getName());
-        } else {
-            model.addAttribute("username", null);
+        try {
+            if (userService.isAdmin(principal)) {
+                return "redirect:/admin/users";
+            } else {
+                model.addAttribute("username", principal.getName());
+                return "index.html";
+            }
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User not found");
+            return "login.html";
         }
-        return "index.html";
     }
 }

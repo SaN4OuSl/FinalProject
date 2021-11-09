@@ -51,7 +51,6 @@ public class MainController {
         }
         Page<Farm> pageFarm = farmService.findAllPageable(user, pageable);
         model.addAttribute("page", pageFarm);
-        model.addAttribute("farms", pageFarm);
         model.addAttribute("currentUser", user);
         return "farms.html";
     }
@@ -62,12 +61,11 @@ public class MainController {
                          @PathVariable("id") Long id,
                          Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) throws UserNotFoundException {
         User user = userService.findByLogin(principal.getName());
-        List<Farm> farms = user.getFarms();
         Farm farm;
         int option = 0;
         if (action.equals("farms")) {
             try {
-                farm = farmService.findFarmById(principal, id);
+                farm = farmService.findFarmById(user, id);
                 model.addAttribute("farm", farm);
             } catch (FarmNotFoundException e) {
                 model.addAttribute("errorMessage", "Farm with this id not found");
@@ -82,8 +80,7 @@ public class MainController {
                     .addAttribute("profit", String.format("%.2f", farmService.profitCounter(farm)))
                     .addAttribute("netProfit", String.format("%.2f", farmService.netProfitCounter(farm)));
             model.addAttribute("currentUser", user)
-                    .addAttribute("option", option)
-                    .addAttribute("farms", pageFarm);
+                    .addAttribute("option", option);
             return "farms.html";
         }
         if (action.equals("plant")) {

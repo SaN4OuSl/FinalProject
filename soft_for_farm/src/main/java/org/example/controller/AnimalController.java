@@ -1,10 +1,13 @@
 package org.example.controller;
 
+import org.example.exception.user.UserNotFoundException;
 import org.example.model.Animal;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
+import org.example.model.User;
 import org.example.service.AnimalService;
 import org.example.service.FarmService;
+import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,22 +23,28 @@ public class AnimalController {
     
     private final FarmService farmService;
     private final AnimalService animalService;
+    private final UserService userService;
     
     @Autowired
-    public AnimalController(FarmService farmService, AnimalService animalService) {
+    public AnimalController(FarmService farmService, AnimalService animalService, UserService userService) {
         this.farmService = farmService;
         this.animalService = animalService;
+        this.userService = userService;
     }
     
     @GetMapping("/{farm_id}/new")
     public String displayAnimalCreation(Principal principal, Model model, @PathVariable("farm_id") Long farm_id) {
         try {
-            model.addAttribute("farm", farmService.findFarmById(principal, farm_id));
+            User user = userService.findByLogin(principal.getName());
+            model.addAttribute("farm", farmService.findFarmById(user, farm_id));
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
             return "error.html";
         } catch (AccessToFarmException e) {
             model.addAttribute("errorMessage", "You don't have access to this farm");
+            return "error.html";
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User not found");
             return "error.html";
         }
         return "addAnimal.html";
@@ -44,11 +53,12 @@ public class AnimalController {
     @PostMapping(value = "/{farm_id}/new")
     public String createAnimal(Principal principal, @Valid @ModelAttribute("animal") Animal animal, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
         try {
+            User user = userService.findByLogin(principal.getName());
             if (result.hasErrors()) {
-                model.addAttribute("farm", farmService.findFarmById(principal, farm_id));
+                model.addAttribute("farm", farmService.findFarmById(user, farm_id));
                 return "addAnimal.html";
             } else {
-                animalService.addAnimal(farmService.findFarmById(principal, farm_id), animal);
+                animalService.addAnimal(farmService.findFarmById(user, farm_id), animal);
                 return "redirect:/animal/{farm_id}/all";
             }
         } catch (FarmNotFoundException e) {
@@ -56,6 +66,9 @@ public class AnimalController {
             return "error.html";
         } catch (AccessToFarmException e) {
             model.addAttribute("errorMessage", "You don't have access to this farm");
+            return "error.html";
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User not found");
             return "error.html";
         }
     }
@@ -85,16 +98,20 @@ public class AnimalController {
     @GetMapping("/{id}/all")
     public String animals(Principal principal, Model model, @PathVariable Long id) {
         try {
-            model.addAttribute("farm", farmService.findFarmById(principal, id));
-            model.addAttribute("animals", farmService.findFarmById(principal, id).getAnimals());
+            User user = userService.findByLogin(principal.getName());
+            model.addAttribute("farm", farmService.findFarmById(user, id));
+            model.addAttribute("animals", farmService.findFarmById(user, id).getAnimals());
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
             return "error.html";
         } catch (AccessToFarmException e) {
             model.addAttribute("errorMessage", "You don't have access to this farm");
             return "error.html";
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User not found");
+            return "error.html";
         }
-        
+    
         return "animals.html";
     }
 }

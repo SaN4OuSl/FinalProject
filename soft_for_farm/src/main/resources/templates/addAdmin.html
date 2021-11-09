@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Add admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+<body>
+<div style="margin-left: 100px;margin-right: 100px">
+    <div class="container">
+        <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+            </ul>
+            <div id="usernameId">
+                <form id="logoutForm" th:method="POST" th:action="@{/logout}">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    <button type="submit" class="floating-button">Logout</button>
+                    <span th:text="*{user.login}"></span>
+                </form>
+            </div>
+        </header>
+    </div>
+    <div id="add_form">
+        <form th:action="@{/admin/new}" th:method="POST" th:object="${user}">
+            <h6 th:text="${errorMessage}"></h6>
+            <div class="form-floating">
+                <input type="text" class="form-control" placeholder="Username"  id="usernamefloat"
+                       autofocus="true" th:field="*{login}">
+                <label for="usernamefloat">Username</label>
+            </div>
+
+            <div class="form-floating">
+                <input type="password" class="form-control" placeholder="Password"  id="passwordfloat"
+                       autofocus="true" th:field="*{password}">
+                <label for="passwordfloat">Password</label>
+            </div>
+            <input type="submit" class="floating-button" value="Create"/>
+        </form>
+    </div>
+</div>
+</body>
+</html>

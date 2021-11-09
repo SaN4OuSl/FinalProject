@@ -50,7 +50,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="farm : ${farms}">
+        <tr th:each="farm : ${page}">
             <td><label th:text="${farm.getFarmName}">farm name</label></td>
             <td><label th:text="${farm.getAddress()}">Address</label></td>
             <td><label th:text="${farm.getYearOfStatistic()}">Year</label></td>

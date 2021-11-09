@@ -1,10 +1,15 @@
 package org.example.service;
 
 
+import org.example.exception.user.AccessToUserException;
 import org.example.model.User;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.security.Principal;
 
 public interface UserService {
 
@@ -14,10 +19,8 @@ public interface UserService {
 
     User findByLogin(String login) throws UserNotFoundException;
 
-    User findById(Long id) throws UserNotFoundException;
+    void deleteById(Principal principal, Long id) throws UserNotFoundException, AccessToUserException;
 
-    void deleteById(Long id) throws UserNotFoundException;
-
-    void updateUser(User user) throws UserNotFoundException;
-
+    Page<User> findAllPageable (User user, Pageable pageable);
+    boolean isAdmin(Principal principal) throws UserNotFoundException;
 }

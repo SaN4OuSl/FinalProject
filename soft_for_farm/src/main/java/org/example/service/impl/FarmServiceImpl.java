@@ -8,7 +8,6 @@ import org.example.model.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.repository.FarmRepository;
-import org.example.repository.auth.UserRepository;
 import org.example.service.AnimalService;
 import org.example.service.FarmService;
 import org.example.service.PlantService;
@@ -20,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -29,15 +27,13 @@ public class FarmServiceImpl implements FarmService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmServiceImpl.class);
     
     private final FarmRepository farmRepository;
-    private final UserRepository userRepository;
     private final PlantService plantService;
     private final AnimalService animalService;
     private final TechniqueService techniqueService;
     
     @Autowired
-    public FarmServiceImpl(FarmRepository farmRepository, UserRepository userRepository, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
+    public FarmServiceImpl(FarmRepository farmRepository, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
         this.farmRepository = farmRepository;
-        this.userRepository = userRepository;
         this.plantService = plantService;
         this.animalService = animalService;
         this.techniqueService = techniqueService;
@@ -54,10 +50,10 @@ public class FarmServiceImpl implements FarmService {
         }
     }
     
-    public void updateFarm(Principal principal, Long id, Farm farm) throws FarmNotFoundException, AccessToFarmException {
+    public void updateFarm(User user, Long id, Farm farm) throws FarmNotFoundException, AccessToFarmException {
         if (farmRepository.existsById(id)) {
             LOGGER.info("Start update farm: " + id);
-            Farm newFarm = findFarmById(principal, id);
+            Farm newFarm = findFarmById(user, id);
             newFarm.setFarmName(farm.getFarmName());
             newFarm.setAddress(farm.getAddress());
             newFarm.setYearOfStatistic(farm.getYearOfStatistic());
@@ -68,11 +64,11 @@ public class FarmServiceImpl implements FarmService {
         }
     }
     
-    public Farm findFarmById(Principal principal, Long id) throws FarmNotFoundException, AccessToFarmException {
+    public Farm findFarmById(User user, Long id) throws FarmNotFoundException, AccessToFarmException {
         if (!farmRepository.existsById(id)) {
             throw new FarmNotFoundException("Farm with this id not found");
         }
-        if (!userRepository.findByLogin(principal.getName()).getFarms().contains(farmRepository.findById(id).orElse(null))) {
+        if (!user.getFarms().contains(farmRepository.findById(id).orElse(null))) {
             throw new AccessToFarmException("You don't have access to this farm");
         }
         return farmRepository.findById(id).orElse(null);
@@ -126,13 +122,13 @@ public class FarmServiceImpl implements FarmService {
     }
     
     @Override
-    public List<Farm> findFarmsByYear(String year, User user) {
-        return farmRepository.findAllByYearOfStatisticAndUser(year, user);
+    public Page<Farm> findFarmsByYear(String year, User user, Pageable pageable) {
+        return farmRepository.findAllByYearOfStatisticAndUser(year, user, pageable);
     }
     
     @Override
-    public List<Farm> findFarmsByFarmName(String farmName, User user) {
-        return farmRepository.findAllByFarmNameAndUser(farmName, user);
+    public Page<Farm> findFarmsByFarmName(String farmName, User user,  Pageable pageable) {
+        return farmRepository.findAllByFarmNameAndUser(farmName, user, pageable);
     }
     
     @Override

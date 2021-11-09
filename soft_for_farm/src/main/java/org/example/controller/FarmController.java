@@ -1,13 +1,17 @@
 package org.example.controller;
 
-import org.example.model.Farm;
-import org.example.model.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
+import org.example.model.Farm;
+import org.example.model.User;
 import org.example.service.FarmService;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,7 +47,7 @@ public class FarmController {
     
     @PostMapping(value = "/new")
     public String createFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result, Model model) {
-        User user = null;
+        User user;
         try {
             user = userService.findByLogin(principal.getName());
             if (result.hasErrors()) {
@@ -63,23 +67,25 @@ public class FarmController {
     public String updateFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result, @PathVariable("id") Long id, Model model) {
         if (result.hasErrors()) {
             try {
-                model.addAttribute("user", farmService.findFarmById(principal, id).getUser());
-            } catch (FarmNotFoundException e) {
-                model.addAttribute("errorMessage", "Farm with this id not found");
-                return "error.html";
-            } catch (AccessToFarmException e) {
-                model.addAttribute("errorMessage", "You don't have access to this farm");
+                User user = userService.findByLogin(principal.getName());
+                model.addAttribute("user", user);
+            } catch (UserNotFoundException e) {
+                model.addAttribute("errorMessage", "User not found");
                 return "error.html";
             }
             return "redirect:/update/farms/{id}";
         } else {
             try {
-                farmService.updateFarm(principal, id, farm);
+                User user = userService.findByLogin(principal.getName());
+                farmService.updateFarm(user, id, farm);
             } catch (FarmNotFoundException e) {
                 model.addAttribute("errorMessage", "Farm with this id not found");
                 return "error.html";
             } catch (AccessToFarmException e) {
                 model.addAttribute("errorMessage", "You don't have access to this farm");
+                return "error.html";
+            } catch (UserNotFoundException e) {
+                model.addAttribute("errorMessage", "User not found");
                 return "error.html";
             }
             return "redirect:/farms";
@@ -99,7 +105,7 @@ public class FarmController {
     }
     
     @GetMapping(value = "/{year}")
-    public String findFarmsByYear(Principal principal, Model model, @PathVariable String year) {
+    public String findFarmsByYear(Principal principal, Model model, @PathVariable String year, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         User user;
         try {
             user = userService.findByLogin(principal.getName());
@@ -107,13 +113,14 @@ public class FarmController {
             model.addAttribute("errorMessage", "User with this lodin not found");
             return "error.html";
         }
-        model.addAttribute("farms", farmService.findFarmsByYear(year, user));
+        Page<Farm> pageFarm = farmService.findFarmsByYear(year, user, pageable);
+        model.addAttribute("page", pageFarm);
         model.addAttribute("currentUser", user);
         return "farms.html";
     }
     
     @GetMapping(value = "/findByFarmName/{farmName}")
-    public String findFarmsByFarmName(Principal principal, Model model, @PathVariable String farmName) {
+    public String findFarmsByFarmName(Principal principal, Model model, @PathVariable String farmName, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         User user;
         try {
             user = userService.findByLogin(principal.getName());
@@ -121,7 +128,8 @@ public class FarmController {
             model.addAttribute("errorMessage", "User with this lodin not found");
             return "error.html";
         }
-        model.addAttribute("farms", farmService.findFarmsByFarmName(farmName, user));
+        Page<Farm> pageFarm = farmService.findFarmsByFarmName(farmName, user, pageable);
+        model.addAttribute("page", pageFarm);
         model.addAttribute("currentUser", user);
         return "farms.html";
     }

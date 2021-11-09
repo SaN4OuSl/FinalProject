@@ -38,6 +38,15 @@ public class Farm {
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
     
+    public Farm() {
+    }
+    
+    public Farm(String farmName, String yearOfStatistic, String address) {
+        this.farmName = farmName;
+        this.yearOfStatistic = yearOfStatistic;
+        this.address = address;
+    }
+    
     public Long getId() {
         return id;
     }

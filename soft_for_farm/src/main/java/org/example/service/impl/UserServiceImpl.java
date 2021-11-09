@@ -1,7 +1,6 @@
 package org.example.service.impl;
 
 
-import lombok.extern.slf4j.Slf4j;
 import org.example.exception.user.AccessToUserException;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
@@ -25,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-@Slf4j
 public class UserServiceImpl implements UserService {
     
     private final UserRepository userRepository;

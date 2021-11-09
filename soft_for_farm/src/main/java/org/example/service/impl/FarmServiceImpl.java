@@ -68,7 +68,7 @@ public class FarmServiceImpl implements FarmService {
         if (!farmRepository.existsById(id)) {
             throw new FarmNotFoundException("Farm with this id not found");
         }
-        if (!user.getFarms().contains(farmRepository.findById(id).orElse(null))) {
+        if (!farmRepository.existsByIdAndUser(id, user)) {
             throw new AccessToFarmException("You don't have access to this farm");
         }
         return farmRepository.findById(id).orElse(null);

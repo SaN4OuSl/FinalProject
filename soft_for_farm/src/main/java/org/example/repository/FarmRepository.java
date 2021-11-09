@@ -19,4 +19,6 @@ public interface FarmRepository extends JpaRepository<Farm, Long> {
     Page<Farm> findAllByFarmNameAndUser(@Size(min = 2, message = "Farm name must be more than 2 characters") String farmName, User user, Pageable pageable);
     
     Page<Farm> findAllByUser(User user, Pageable pageable);
+    
+    boolean existsByIdAndUser(Long id, User user);
 }

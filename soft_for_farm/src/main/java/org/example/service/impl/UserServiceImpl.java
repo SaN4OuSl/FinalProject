@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,18 +54,26 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public User registrationAdmin(User user) throws DuplicateUserLogin, UserPasswordSmall {
-        if (user.getPassword().length() < 8) {
-            LOGGER.warn("IN registrationAdmin user enter small password");
-            throw new UserPasswordSmall("Password cannot be less than 8 symbols");
+    public User registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException, AccessToUserException {
+        try {
+            if (isAdmin(userAdmin)) {
+                if (user.getPassword().length() < 8) {
+                    LOGGER.warn("IN registrationAdmin user enter small password");
+                    throw new UserPasswordSmall("Password cannot be less than 8 symbols");
+                }
+                if (userRepository.existsUserByLogin(user.getLogin())) {
+                    LOGGER.warn("IN registrationAdmin user with login {} exist", user.getLogin());
+                    throw new DuplicateUserLogin("User with login:" + user.getLogin() + " exist");
+                }
+                
+                Role role = roleRepository.findByName("ROLE_ADMIN");
+                return regUser(user, role);
+            } else {
+                throw new AccessToUserException("You dont have enough rights");
+            }
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException("You dont have enough rights");
         }
-        if (userRepository.existsUserByLogin(user.getLogin())) {
-            LOGGER.warn("IN registrationAdmin user with login {} exist", user.getLogin());
-            throw new DuplicateUserLogin("User with login:" + user.getLogin() + " exist");
-        }
-        
-        Role role = roleRepository.findByName("ROLE_ADMIN");
-        return regUser(user, role);
     }
     
     @Override
@@ -104,8 +111,8 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void deleteById(Principal principal, Long id) throws UserNotFoundException, AccessToUserException {
-        if(isAdmin(principal)) {
+    public void deleteById(User user, Long id) throws UserNotFoundException, AccessToUserException {
+        if (isAdmin(user)) {
             userRepository.deleteById(id);
             LOGGER.info("IN deleteById: deleted with id: {}", id);
         } else {
@@ -114,12 +121,12 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public boolean isAdmin(Principal principal) throws UserNotFoundException {
-        if (findByLogin(principal.getName()).getRoles().size() == 1) {
-            return findByLogin(principal.getName()).getRoles().get(0).getName().equals("ROLE_ADMIN");
+    public boolean isAdmin(User user) throws UserNotFoundException {
+        if (user.getRoles().size() == 1) {
+            return user.getRoles().get(0).getName().equals("ROLE_ADMIN");
         } else {
-            return findByLogin(principal.getName()).getRoles().get(0).getName().equals("ROLE_ADMIN") ||
-                    findByLogin(principal.getName()).getRoles().get(1).getName().equals("ROLE_ADMIN");
+            return user.getRoles().get(0).getName().equals("ROLE_ADMIN") ||
+                    user.getRoles().get(1).getName().equals("ROLE_ADMIN");
         }
     }
 }

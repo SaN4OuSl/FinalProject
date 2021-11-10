@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource("/application-test.properties")
 @Sql(value = {"create-user.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = {"delete-user.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"delete-database.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class FarmControllerTest {
     
     @Autowired
@@ -99,5 +99,4 @@ public class FarmControllerTest {
         
         Assertions.assertFalse(farmRepository.existsById(id));
     }
-    
 }

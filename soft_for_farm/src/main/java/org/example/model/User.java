@@ -34,8 +34,7 @@ public class User {
     @CreatedDate
     private Date created;
     
-    public User(Long id, String login, String password) {
-        this.id = id;
+    public User(String login, String password) {
         this.login = login;
         this.password = password;
     }

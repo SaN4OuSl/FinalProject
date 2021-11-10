@@ -95,4 +95,4 @@ insert into users(id, created, login, password)
 values (1, '2021-11-09 14:55:10.842000', 'test user',
         '$2a$10$qY9v6fyT8QyoK8.iwyHkO.2FRs26AxAc6NUCM9SbyNbdDsYy4bOaS');
 
-insert into user_roles(user_id, role_id) values (1,1);
+insert into user_roles(user_id, role_id) values (1,2);

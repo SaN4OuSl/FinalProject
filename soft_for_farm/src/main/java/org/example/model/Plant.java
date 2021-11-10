@@ -51,6 +51,19 @@ public class Plant {
     @JoinColumn(nullable = false, name = "farm_id")
     private Farm farm;
     
+    public Plant() {
+    }
+    
+    public Plant(String plantName, Double sizeOfFieldForPlant, Double rentalPriceOfField, Double costOfFertilizers, Double otherExpense, Double plantHarvest, Double costOfPlant) {
+        this.plantName = plantName;
+        this.sizeOfFieldForPlant = sizeOfFieldForPlant;
+        this.rentalPriceOfField = rentalPriceOfField;
+        this.costOfFertilizers = costOfFertilizers;
+        this.otherExpense = otherExpense;
+        this.plantHarvest = plantHarvest;
+        this.costOfPlant = costOfPlant;
+    }
+    
     public Long getId() {
         return id;
     }

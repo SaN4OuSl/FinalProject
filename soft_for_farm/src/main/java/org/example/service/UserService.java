@@ -15,12 +15,12 @@ public interface UserService {
 
     User registration(User user) throws DuplicateUserLogin, UserPasswordSmall;
 
-    User registrationAdmin(User user) throws DuplicateUserLogin, UserPasswordSmall;
+    User registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException, AccessToUserException;
 
     User findByLogin(String login) throws UserNotFoundException;
 
-    void deleteById(Principal principal, Long id) throws UserNotFoundException, AccessToUserException;
+    void deleteById(User user, Long id) throws UserNotFoundException, AccessToUserException;
 
     Page<User> findAllPageable (User user, Pageable pageable);
-    boolean isAdmin(Principal principal) throws UserNotFoundException;
+    boolean isAdmin(User user) throws UserNotFoundException;
 }

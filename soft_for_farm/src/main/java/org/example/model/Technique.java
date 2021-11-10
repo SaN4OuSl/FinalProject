@@ -30,6 +30,15 @@ public class Technique {
     @JoinColumn(nullable = false, name = "farm_id")
     private Farm farm;
     
+    public Technique() {
+    }
+    
+    public Technique(String typeOfTechnique, Double priceOfParts, Double priceOfLubricant) {
+        this.typeOfTechnique = typeOfTechnique;
+        this.priceOfParts = priceOfParts;
+        this.priceOfLubricant = priceOfLubricant;
+    }
+    
     public Long getId() {
         return id;
     }

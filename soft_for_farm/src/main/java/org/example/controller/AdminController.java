@@ -46,24 +46,34 @@ public class AdminController {
     
     @GetMapping("/new")
     public String displayAdminCreation(Principal principal, @ModelAttribute("user") User user, Model model) {
+        User userAdmin;
         try {
-            model.addAttribute("user", userService.findByLogin(principal.getName()));
-            return "addAdmin.html";
+            userAdmin = userService.findByLogin(principal.getName());
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
             return "login.html";
         }
+        try {
+            if (userService.isAdmin(userAdmin)) {
+                model.addAttribute("user", userAdmin);
+                return "addAdmin.html";
+            }
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "You dont have enough rights");
+        }
+        return "error.html";
     }
     
     
     @PostMapping(value = "/new")
     public String createAdmin(Principal principal, @Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         try {
+            User userAdmin = userService.findByLogin(principal.getName());
             if (result.hasErrors()) {
-                model.addAttribute("user", userService.findByLogin(principal.getName()));
+                model.addAttribute("user", userAdmin);
                 return "addAdmin.html";
             } else {
-                userService.registrationAdmin(user);
+                userService.registrationAdmin(userAdmin, user);
                 return "redirect:/admin/users";
             }
         } catch (UserNotFoundException e) {
@@ -75,13 +85,16 @@ public class AdminController {
         } catch (UserPasswordSmall userPasswordSmall) {
             model.addAttribute("errorMessage", "Password is small");
             return "addAdmin.html";
+        } catch (AccessToUserException e) {
+            model.addAttribute("errorMessage", "You dont have enough rights");
+            return "error.html";
         }
     }
     
     @DeleteMapping(value = "/user/{id}")
     public String deleteUser(Principal principal, @PathVariable("id") Long id, Model model) {
         try {
-            userService.deleteById(principal, id);
+            userService.deleteById(userService.findByLogin(principal.getName()), id);
             return "redirect:/admin/users";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");

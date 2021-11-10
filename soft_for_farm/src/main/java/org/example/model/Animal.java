@@ -43,6 +43,18 @@ public class Animal {
     @JoinColumn(nullable = false, name = "farm_id")
     private Farm farm;
     
+    public Animal() {
+    }
+    
+    public Animal(String animalName, Integer numberOfAnimals, Double costOfFeeds, Double rentalPriceOfBuilding, Double otherExpenses, Double costOfOneAnimal) {
+        this.animalName = animalName;
+        this.numberOfAnimals = numberOfAnimals;
+        this.costOfFeeds = costOfFeeds;
+        this.rentalPriceOfBuilding = rentalPriceOfBuilding;
+        this.otherExpenses = otherExpenses;
+        this.costOfOneAnimal = costOfOneAnimal;
+    }
+    
     public Long getId() {
         return id;
     }

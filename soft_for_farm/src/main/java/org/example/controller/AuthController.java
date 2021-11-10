@@ -64,7 +64,7 @@ public class AuthController {
     @GetMapping(value = {"/", "/home"})
     public String home(Principal principal, Model model) {
         try {
-            if (userService.isAdmin(principal)) {
+            if (userService.isAdmin(userService.findByLogin(principal.getName()))) {
                 return "redirect:/admin/users";
             } else {
                 model.addAttribute("username", principal.getName());

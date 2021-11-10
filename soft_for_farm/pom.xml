@@ -10,7 +10,6 @@
     </parent>
     <groupId>org.example</groupId>
     <artifactId>final_project</artifactId>
-    <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>final_project</name>
     <description>final_project</description>

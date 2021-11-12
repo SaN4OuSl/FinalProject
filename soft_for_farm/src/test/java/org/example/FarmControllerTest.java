@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.model.Farm;
-import org.example.model.User;
+import org.example.entity.Farm;
+import org.example.entity.User;
 import org.example.repository.FarmRepository;
 import org.example.service.FarmService;
 import org.example.service.UserService;

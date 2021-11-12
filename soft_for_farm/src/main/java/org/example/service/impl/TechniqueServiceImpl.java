@@ -1,9 +1,9 @@
 package org.example.service.impl;
 
 
-import org.example.model.Farm;
-import org.example.model.Technique;
-import org.example.repository.tech.TechniqueRepository;
+import org.example.entity.Farm;
+import org.example.entity.Technique;
+import org.example.repository.TechniqueRepository;
 import org.example.service.TechniqueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +73,8 @@ public class TechniqueServiceImpl implements TechniqueService {
     }
     
     @Override
-    public List<Technique> findAllTechniques() {
-        LOGGER.info("Read all techniques");
-        return techniqueRepository.findAll();
+    public List<Technique> findAllTechniquesByFarm(Farm farm) {
+        LOGGER.info("Read all techniques by farm");
+        return techniqueRepository.findAllByFarm(farm);
     }
 }

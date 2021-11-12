@@ -1,7 +1,7 @@
 package org.example;
 
-import org.example.model.*;
-import org.example.repository.tech.TechniqueRepository;
+import org.example.entity.*;
+import org.example.repository.TechniqueRepository;
 import org.example.service.FarmService;
 import org.example.service.TechniqueService;
 import org.example.service.UserService;

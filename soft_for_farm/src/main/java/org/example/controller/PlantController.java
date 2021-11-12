@@ -1,10 +1,11 @@
 package org.example.controller;
 
 import org.example.exception.user.UserNotFoundException;
-import org.example.model.Plant;
+import org.example.entity.Farm;
+import org.example.entity.Plant;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
-import org.example.model.User;
+import org.example.entity.User;
 import org.example.service.FarmService;
 import org.example.service.PlantService;
 import org.example.service.UserService;
@@ -55,11 +56,12 @@ public class PlantController {
     public String createPlant(Principal principal, @Valid @ModelAttribute("plant") Plant plant, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
         try {
             User user = userService.findByLogin(principal.getName());
+            Farm farm = farmService.findFarmById(user, farm_id);
             if (result.hasErrors()) {
-                model.addAttribute("farm", farmService.findFarmById(user, farm_id));
+                model.addAttribute("farm", farm);
                 return "addPlant.html";
             } else {
-                plantService.addPlant(farmService.findFarmById(user, farm_id), plant);
+                plantService.addPlant(farm, plant);
                 return "redirect:/plant/{farm_id}/all";
             }
         } catch (FarmNotFoundException e) {
@@ -75,33 +77,35 @@ public class PlantController {
     }
     
     @PatchMapping(value = "/{id}")
-    public String updatePlant(@Valid @ModelAttribute("plant") Plant plant, BindingResult result, @PathVariable("id") Long id, Model model) {
+    public String updatePlant(@Valid @ModelAttribute("plant") Plant newPlant, BindingResult result, @PathVariable("id") Long id, Model model) {
+        Plant plant = plantService.findPlantById(id);
         if (result.hasErrors()) {
-            model.addAttribute("farm", plantService.findPlantById(id).getFarm());
-            model.addAttribute("plants", plantService.findPlantById(id).getFarm().getPlants());
+            model.addAttribute("farm", plant.getFarm());
+            model.addAttribute("plants", plantService.findAllPlantsByFarm(plant.getFarm()));
             return "redirect:/update/plant/{id}";
         } else {
-            plantService.updatePlant(id, plant);
-            model.addAttribute("farm", plantService.findPlantById(id).getFarm());
-            model.addAttribute("plants", plantService.findPlantById(id).getFarm().getPlants());
+            plantService.updatePlant(id, newPlant);
+            model.addAttribute("farm", plant.getFarm());
+            model.addAttribute("plants", plantService.findAllPlantsByFarm(plant.getFarm()));
             return "plants.html";
         }
     }
     
     @DeleteMapping(value = "/{id}")
     public String deletePlant(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("farm", plantService.findPlantById(id).getFarm());
-        model.addAttribute("plants", plantService.findPlantById(id).getFarm().getPlants());
+        Plant plant = plantService.findPlantById(id);
+        Long farmId = plant.getFarm().getId();
         plantService.deletePlant(id);
-        return "plants.html";
+        return "redirect:/plant/"+ farmId + "/all";
     }
     
     @GetMapping("/{id}/all")
     public String plants(Principal principal, Model model, @PathVariable Long id) {
         try {
             User user = userService.findByLogin(principal.getName());
-            model.addAttribute("farm", farmService.findFarmById(user, id));
-            model.addAttribute("plants", farmService.findFarmById(user, id).getPlants());
+            Farm farm = farmService.findFarmById(user, id);
+            model.addAttribute("farm", farm);
+            model.addAttribute("plants", plantService.findAllPlantsByFarm(farm));
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
             return "error.html";

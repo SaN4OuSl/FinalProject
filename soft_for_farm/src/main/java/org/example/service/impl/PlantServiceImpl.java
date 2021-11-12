@@ -1,8 +1,8 @@
 package org.example.service.impl;
 
-import org.example.model.Farm;
-import org.example.model.Plant;
-import org.example.repository.plant.PlantRepository;
+import org.example.entity.Farm;
+import org.example.entity.Plant;
+import org.example.repository.PlantRepository;
 import org.example.service.PlantService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,11 +82,10 @@ public class PlantServiceImpl implements PlantService {
     public Double netProfitCounter(Plant plant) {
         return profitCounter(plant) - expensesCounter(plant);
     }
-    
+
     @Override
-    public List<Plant> findAllPlants() {
-        LOGGER.info("Read all plants");
-        return plantRepository.findAll();
+    public List<Plant> findAllPlantsByFarm(Farm farm) {
+        LOGGER.info("Read all plants by farm");
+        return plantRepository.findAllByFarm(farm);
     }
-    
 }

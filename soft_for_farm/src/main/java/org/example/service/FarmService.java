@@ -1,14 +1,11 @@
 package org.example.service;
 
-import org.example.model.Farm;
-import org.example.model.User;
+import org.example.entity.Farm;
+import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.security.Principal;
-import java.util.List;
 
 public interface FarmService {
     

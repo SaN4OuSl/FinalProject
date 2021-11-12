@@ -1,9 +1,9 @@
 package org.example;
 
-import org.example.model.Animal;
-import org.example.model.Farm;
-import org.example.model.User;
-import org.example.repository.animal.AnimalRepository;
+import org.example.entity.Animal;
+import org.example.entity.Farm;
+import org.example.entity.User;
+import org.example.repository.AnimalRepository;
 import org.example.service.AnimalService;
 import org.example.service.FarmService;
 import org.example.service.UserService;

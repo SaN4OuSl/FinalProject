@@ -1,7 +1,7 @@
 package org.example.service.impl;
 
-import org.example.model.Role;
-import org.example.model.User;
+import org.example.entity.Role;
+import org.example.entity.User;
 import org.example.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,7 +36,7 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
     }
     
     private List<GrantedAuthority> getAuthorities(User user) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+        List<GrantedAuthority> authorities = new ArrayList<>();
         for (Role role : user.getRoles()) {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getName());
             authorities.add(grantedAuthority);

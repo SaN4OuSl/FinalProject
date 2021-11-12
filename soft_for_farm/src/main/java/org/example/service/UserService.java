@@ -2,20 +2,18 @@ package org.example.service;
 
 
 import org.example.exception.user.AccessToUserException;
-import org.example.model.User;
+import org.example.entity.User;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.security.Principal;
-
 public interface UserService {
 
-    User registration(User user) throws DuplicateUserLogin, UserPasswordSmall;
+    void registration(User user) throws DuplicateUserLogin, UserPasswordSmall;
 
-    User registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException, AccessToUserException;
+    void registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException, AccessToUserException;
 
     User findByLogin(String login) throws UserNotFoundException;
 

@@ -1,10 +1,10 @@
 package org.example.controller;
 
-import org.example.model.Animal;
-import org.example.model.Farm;
-import org.example.model.Plant;
-import org.example.model.Technique;
-import org.example.model.User;
+import org.example.entity.Animal;
+import org.example.entity.Farm;
+import org.example.entity.Plant;
+import org.example.entity.Technique;
+import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 public class MainController {

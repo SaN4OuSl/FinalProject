@@ -4,7 +4,7 @@ import org.example.exception.user.AccessToUserException;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
-import org.example.model.User;
+import org.example.entity.User;
 import org.example.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

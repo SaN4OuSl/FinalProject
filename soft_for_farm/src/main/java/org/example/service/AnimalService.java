@@ -1,7 +1,7 @@
 package org.example.service;
 
-import org.example.model.Animal;
-import org.example.model.Farm;
+import org.example.entity.Animal;
+import org.example.entity.Farm;
 
 import java.util.List;
 
@@ -21,5 +21,5 @@ public interface AnimalService {
     
     Double netProfitCounter(Animal animal);
     
-    List<Animal> findAllAnimal();
+    List<Animal> findAllAnimalByFarm(Farm farm);
 }

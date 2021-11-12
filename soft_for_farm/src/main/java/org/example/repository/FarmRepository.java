@@ -1,11 +1,10 @@
 package org.example.repository;
 
-import org.example.model.Farm;
-import org.example.model.User;
+import org.example.entity.Farm;
+import org.example.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.Pattern;

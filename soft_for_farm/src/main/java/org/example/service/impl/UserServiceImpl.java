@@ -5,8 +5,8 @@ import org.example.exception.user.AccessToUserException;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
-import org.example.model.Role;
-import org.example.model.User;
+import org.example.entity.Role;
+import org.example.entity.User;
 import org.example.repository.auth.RoleRepository;
 import org.example.repository.auth.UserRepository;
 import org.example.service.UserService;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public User registration(User user) throws DuplicateUserLogin, UserPasswordSmall {
+    public void registration(User user) throws DuplicateUserLogin, UserPasswordSmall {
         if (user.getPassword().length() < 8) {
             LOGGER.warn("IN registration user enter small password");
             throw new UserPasswordSmall("Password cannot be less than 8 symbols");
@@ -50,11 +50,11 @@ public class UserServiceImpl implements UserService {
         }
         
         Role role = roleRepository.findByName("ROLE_USER");
-        return regUser(user, role);
+        regUser(user, role);
     }
     
     @Override
-    public User registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException, AccessToUserException {
+    public void registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException, AccessToUserException {
         try {
             if (isAdmin(userAdmin)) {
                 if (user.getPassword().length() < 8) {
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 }
                 
                 Role role = roleRepository.findByName("ROLE_ADMIN");
-                return regUser(user, role);
+                regUser(user, role);
             } else {
                 throw new AccessToUserException("You dont have enough rights");
             }
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
             return null;
     }
     
-    private User regUser(User user, Role role) {
+    private void regUser(User user, Role role) {
         List<Role> roleList = new ArrayList<>();
         
         roleList.add(role);
@@ -96,7 +96,6 @@ public class UserServiceImpl implements UserService {
         User regUser = userRepository.save(user);
         
         LOGGER.info("IN registration: user by id : {} successfully registered", regUser.getId());
-        return regUser;
     }
     
     @Override

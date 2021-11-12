@@ -1,10 +1,11 @@
 package org.example.controller;
 
 import org.example.exception.user.UserNotFoundException;
-import org.example.model.Animal;
+import org.example.entity.Animal;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
-import org.example.model.User;
+import org.example.entity.Farm;
+import org.example.entity.User;
 import org.example.service.AnimalService;
 import org.example.service.FarmService;
 import org.example.service.UserService;
@@ -54,11 +55,12 @@ public class AnimalController {
     public String createAnimal(Principal principal, @Valid @ModelAttribute("animal") Animal animal, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
         try {
             User user = userService.findByLogin(principal.getName());
+            Farm farm = farmService.findFarmById(user, farm_id);
             if (result.hasErrors()) {
-                model.addAttribute("farm", farmService.findFarmById(user, farm_id));
+                model.addAttribute("farm", farm);
                 return "addAnimal.html";
             } else {
-                animalService.addAnimal(farmService.findFarmById(user, farm_id), animal);
+                animalService.addAnimal(farm, animal);
                 return "redirect:/animal/{farm_id}/all";
             }
         } catch (FarmNotFoundException e) {
@@ -74,33 +76,35 @@ public class AnimalController {
     }
     
     @PatchMapping(value = "/{id}")
-    public String updateAnimal(@Valid @ModelAttribute("animal") Animal animal, BindingResult result, @PathVariable("id") Long id, Model model) {
+    public String updateAnimal(@Valid @ModelAttribute("animal") Animal newAnimal, BindingResult result, @PathVariable("id") Long id, Model model) {
+        Animal animal = animalService.findAnimalById(id);
         if (result.hasErrors()) {
-            model.addAttribute("farm", animalService.findAnimalById(id).getFarm());
-            model.addAttribute("animals", animalService.findAnimalById(id).getFarm().getAnimals());
+            model.addAttribute("farm", animal.getFarm());
+            model.addAttribute("animals", animalService.findAllAnimalByFarm(animal.getFarm()));
             return "redirect:/update/animal/{id}";
         } else {
-            animalService.updateAnimal(id, animal);
-            model.addAttribute("farm", animalService.findAnimalById(id).getFarm());
-            model.addAttribute("animals", animalService.findAnimalById(id).getFarm().getAnimals());
+            animalService.updateAnimal(id, newAnimal);
+            model.addAttribute("farm", animal.getFarm());
+            model.addAttribute("animals", animalService.findAllAnimalByFarm(animal.getFarm()));
             return "animals.html";
         }
     }
     
     @DeleteMapping(value = "/{id}")
-    public String deleteAnimal(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("farm", animalService.findAnimalById(id).getFarm());
-        model.addAttribute("animals", animalService.findAnimalById(id).getFarm().getAnimals());
+    public String deleteAnimal(@PathVariable("id") Long id) {
+        Animal animal = animalService.findAnimalById(id);
+        Long farmId = animal.getFarm().getId();
         animalService.deleteAnimal(id);
-        return "animals.html";
+        return "redirect:/animal/"+ farmId + "/all";
     }
     
     @GetMapping("/{id}/all")
     public String animals(Principal principal, Model model, @PathVariable Long id) {
         try {
             User user = userService.findByLogin(principal.getName());
-            model.addAttribute("farm", farmService.findFarmById(user, id));
-            model.addAttribute("animals", farmService.findFarmById(user, id).getAnimals());
+            Farm farm = farmService.findFarmById(user, id);
+            model.addAttribute("farm", farm);
+            model.addAttribute("animals", animalService.findAllAnimalByFarm(farm));
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
             return "error.html";

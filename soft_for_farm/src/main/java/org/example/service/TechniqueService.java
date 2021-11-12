@@ -1,7 +1,7 @@
 package org.example.service;
 
-import org.example.model.Farm;
-import org.example.model.Technique;
+import org.example.entity.Farm;
+import org.example.entity.Technique;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ public interface TechniqueService {
     
     Double expensesCounter(Technique technique);
     
-    List<Technique> findAllTechniques();
+    List<Technique> findAllTechniquesByFarm(Farm farm);
 }

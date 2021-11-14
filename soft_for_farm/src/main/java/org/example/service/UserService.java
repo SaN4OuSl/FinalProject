@@ -1,7 +1,6 @@
 package org.example.service;
 
 
-import org.example.exception.user.AccessToUserException;
 import org.example.entity.User;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
@@ -13,12 +12,15 @@ public interface UserService {
 
     void registration(User user) throws DuplicateUserLogin, UserPasswordSmall;
 
-    void registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException, AccessToUserException;
+    void registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException;
 
     User findByLogin(String login) throws UserNotFoundException;
 
-    void deleteById(User user, Long id) throws UserNotFoundException, AccessToUserException;
+    User findUserById(Long id) throws UserNotFoundException;
 
-    Page<User> findAllPageable (User user, Pageable pageable);
-    boolean isAdmin(User user) throws UserNotFoundException;
+    void deleteById(Long id) throws UserNotFoundException;
+
+    void updateUserById(Long id, User user) throws UserNotFoundException;
+
+    Page<User> findAllPageable(User user, Pageable pageable);
 }

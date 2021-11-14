@@ -12,6 +12,7 @@
     <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
         <ul class="nav nav-pills">
             <li class="nav-item"><a href="/home" class="floating-button" aria-current="page">Home</a></li>
+            <li class="nav-item"><a href="/admin/users" class="floating-button-active">Users</a></li>
         </ul>
         <div id="usernameId">
             <form id="logoutForm" th:method="POST" th:action="@{/logout}">
@@ -55,17 +56,32 @@
             <td><label th:text="${user.getLogin()}">Login</label></td>
             <td><label th:text="${user.getPassword()}">Password</label></td>
             <td><label th:text="${user.getCreated()}">Created date</label></td>
-            <td>
-                <form th:method="DELETE" th:action="@{/admin/user/{id}(id=${user.getId()})}">
-                    <input type="submit" class="floating-button" value="Delete"/>
-                </form>
-            </td>
+            <td><a th:href="@{/update/user/{id}(id=${user.getId()})}" class="floating-button">Select</a></td>
         </tr>
         <tr>
             <td colspan="4"><a href="/admin/new" class="floating-button">Add Admin</a></td>
         </tr>
         </tbody>
     </table>
+</div>
+<div th:if="${option == 0}" id="add_form">
+    <form th:method="PATCH" th:action="@{/admin/userUpdate/{id}(id=${user.getId()})}" th:object="${user}">
+        <h6 th:text="${errorMessage}"></h6>
+        <div class="form-floating">
+            <input type="text" class="form-control" placeholder="Username"  id="usernamefloat"
+                   autofocus="true" th:field="*{login}">
+            <label for="usernamefloat">Username</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" placeholder="Password"  id="passwordfloat"
+                   autofocus="true" th:field="*{password}">
+            <label for="passwordfloat">Password</label>
+        </div>
+        <input type="submit" class="floating-button" value="Update account"/>
+    </form>
+    <form th:method="DELETE" th:action="@{/admin/user/{id}(id=${user.getId()})}">
+        <input type="submit" class="floating-button" value="Delete account  "/>
+    </form>
 </div>
 </body>
 </html>

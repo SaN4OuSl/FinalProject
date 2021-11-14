@@ -28,6 +28,26 @@
             </form>
         </div>
     </header>
+    <div id="add_form">
+        <p>Welcome to the farms app</p>
+        <form th:method="PATCH" th:action="@{/updateYourAccount}" th:object="${user}">
+            <h6 th:text="${errorMessage}"></h6>
+            <div class="form-floating">
+                <input type="text" class="form-control" placeholder="Username"  id="usernamefloat"
+                       autofocus="true" th:field="*{login}">
+                <label for="usernamefloat">Username</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" placeholder="Password"  id="passwordfloat"
+                       autofocus="true" th:field="*{password}">
+                <label for="passwordfloat">Password</label>
+            </div>
+            <input type="submit" class="special-floating-button" value="Update your account"/>
+        </form>
+        <form th:method="DELETE" th:action="@{/deleteYourAccount}">
+            <input type="submit" class="special-floating-button" value="Delete your account"/>
+        </form>
+    </div>
 </div>
 </body>
 </html>

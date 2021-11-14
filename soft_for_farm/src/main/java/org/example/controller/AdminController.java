@@ -1,10 +1,9 @@
 package org.example.controller;
 
-import org.example.exception.user.AccessToUserException;
+import org.example.entity.User;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
-import org.example.entity.User;
 import org.example.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,13 +21,13 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    
+
     private final UserService userService;
-    
+
     public AdminController(UserService userService) {
         this.userService = userService;
     }
-    
+
     @GetMapping("/users")
     public String users(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         User user;
@@ -43,7 +42,7 @@ public class AdminController {
         model.addAttribute("currentUser", user);
         return "users.html";
     }
-    
+
     @GetMapping("/new")
     public String displayAdminCreation(Principal principal, @ModelAttribute("user") User user, Model model) {
         User userAdmin;
@@ -53,18 +52,11 @@ public class AdminController {
             model.addAttribute("errorMessage", "User not found");
             return "login.html";
         }
-        try {
-            if (userService.isAdmin(userAdmin)) {
-                model.addAttribute("user", userAdmin);
-                return "addAdmin.html";
-            }
-        } catch (UserNotFoundException e) {
-            model.addAttribute("errorMessage", "You dont have enough rights");
-        }
-        return "error.html";
+        model.addAttribute("user", userAdmin);
+        return "addAdmin.html";
     }
-    
-    
+
+
     @PostMapping(value = "/new")
     public String createAdmin(Principal principal, @Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         try {
@@ -85,23 +77,32 @@ public class AdminController {
         } catch (UserPasswordSmall userPasswordSmall) {
             model.addAttribute("errorMessage", "Password is small");
             return "addAdmin.html";
-        } catch (AccessToUserException e) {
-            model.addAttribute("errorMessage", "You dont have enough rights");
-            return "error.html";
         }
     }
-    
+
     @DeleteMapping(value = "/user/{id}")
-    public String deleteUser(Principal principal, @PathVariable("id") Long id, Model model) {
+    public String deleteUser(@PathVariable("id") Long id, Model model) {
         try {
-            userService.deleteById(userService.findByLogin(principal.getName()), id);
+            userService.deleteById(id);
             return "redirect:/admin/users";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
             return "login.html";
-        } catch (AccessToUserException e) {
-            model.addAttribute("errorMessage", "You dont have enough rights");
-            return "error.html";
+        }
+    }
+
+    @PatchMapping(value = "/userUpdate/{id}")
+    public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result, @PathVariable("id") Long id, Model model) {
+        if (result.hasErrors()) {
+            return "redirect:/update/user/{id}";
+        } else {
+            try {
+                userService.updateUserById(id, newUser);
+            } catch (UserNotFoundException e) {
+                model.addAttribute("errorMessage", "User not found");
+                return "error.html";
+            }
+            return "redirect:/admin/users";
         }
     }
 }

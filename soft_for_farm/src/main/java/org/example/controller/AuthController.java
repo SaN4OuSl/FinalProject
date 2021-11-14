@@ -1,10 +1,11 @@
 package org.example.controller;
 
+import org.example.entity.User;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
-import org.example.entity.User;
 import org.example.service.UserService;
+import org.example.service.impl.UserDetailsServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,19 +20,21 @@ import java.security.Principal;
 
 @Controller
 public class AuthController {
-    
+
     private final UserService userService;
-    
+    private final UserDetailsServiceImplementation userDetailsServiceImplementation;
+
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, UserDetailsServiceImplementation userDetailsServiceImplementation) {
         this.userService = userService;
+        this.userDetailsServiceImplementation = userDetailsServiceImplementation;
     }
-    
+
     @GetMapping("/registration")
     public String displayRegisterForm(@Valid @ModelAttribute("user") User user) {
         return "registration.html";
     }
-    
+
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error, @RequestParam(value = "logout", required = false) String logout, Model model) {
         if (error != null) {
@@ -40,10 +43,10 @@ public class AuthController {
         if (logout != null) {
             model.addAttribute("logoutMessage", "You have been logged out successfully!");
         }
-        
+
         return "login.html";
     }
-    
+
     @PostMapping("/registration")
     public String registration(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -60,19 +63,23 @@ public class AuthController {
         }
         return "redirect:/login";
     }
-    
+
     @GetMapping(value = {"/", "/home"})
     public String home(Principal principal, Model model) {
         try {
-            if (userService.isAdmin(userService.findByLogin(principal.getName()))) {
-                return "redirect:/admin/users";
+            User user = userService.findByLogin(principal.getName());
+            if (!userDetailsServiceImplementation.isAdmin(user)) {
+                model.addAttribute("username", principal.getName());
+                model.addAttribute("user", user);
+                return "index.html";
             } else {
                 model.addAttribute("username", principal.getName());
-                return "index.html";
+                model.addAttribute("user", user);
+                return "adminHome.html";
             }
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
-            return "login.html";
+            return "error.html";
         }
     }
 }

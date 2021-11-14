@@ -19,48 +19,58 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql(scripts = {"create-user.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = {"delete-database.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class UserServiceTest {
-    
+
     @Autowired
     UserRepository userRepository;
-    
+
     @Autowired
     UserService userService;
-    
+
     @Test
     void contextLoads() {
         assertThat(userRepository).isNotNull();
         assertThat(userService).isNotNull();
     }
-    
+
     @Test
     void registrationUser() throws Exception {
-        User userAdmin = userService.findByLogin("test user");
         User user = new User("username", "userpass");
         userService.registration(user);
         Long id = user.getId();
-        
+
         Assertions.assertTrue(userRepository.existsById(id));
-        userService.deleteById(userAdmin, id);
+        userService.deleteById(id);
     }
-    
+
     @Test
     void registrationAdmin() throws Exception {
         User userAdmin = userService.findByLogin("test user");
         User user = new User("username", "userpass");
         userService.registrationAdmin(userAdmin, user);
         Long id = user.getId();
-        
+
         Assertions.assertTrue(userRepository.existsById(id));
-        userService.deleteById(userAdmin, id);
+        userService.deleteById(id);
     }
-    
+
     @Test
     void deleteUser() throws Exception {
-        User userAdmin = userService.findByLogin("test user");
         User user = new User("username", "userpass");
         userService.registration(user);
         Long id = user.getId();
-        userService.deleteById(userAdmin, id);
+        userService.deleteById(id);
         Assertions.assertFalse(userRepository.existsById(id));
+    }
+
+    @Test
+    void updateUser() throws Exception {
+        User user = new User("username", "userpass");
+        userService.registration(user);
+        Long id = user.getId();
+        User newUser = new User("username updated", "userpassupd");
+
+        userService.updateUserById(id, newUser);
+        Assertions.assertEquals(newUser.getLogin(), userService.findUserById(id).getLogin());
+        userService.deleteById(id);
     }
 }

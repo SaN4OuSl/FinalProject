@@ -1,10 +1,6 @@
 package org.example.controller;
 
-import org.example.entity.Animal;
-import org.example.entity.Farm;
-import org.example.entity.Plant;
-import org.example.entity.Technique;
-import org.example.entity.User;
+import org.example.entity.*;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
@@ -16,20 +12,21 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @Controller
 public class MainController {
-    
+
     private final UserService userService;
     private final FarmService farmService;
     private final PlantService plantService;
     private final AnimalService animalService;
     private final TechniqueService techniqueService;
-    
+
     @Autowired
     public MainController(UserService userService, FarmService farmService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
         this.userService = userService;
@@ -38,7 +35,7 @@ public class MainController {
         this.animalService = animalService;
         this.techniqueService = techniqueService;
     }
-    
+
     @GetMapping("/farms")
     public String farms(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         User user;
@@ -53,7 +50,33 @@ public class MainController {
         model.addAttribute("currentUser", user);
         return "farms.html";
     }
-    
+
+    @DeleteMapping("/deleteYourAccount")
+    public String deleteYourAccount(Principal principal, Model model) {
+        try {
+            userService.deleteById(userService.findByLogin(principal.getName()).getId());
+            return "redirect:/login";
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User not found");
+            return "error.html";
+        }
+    }
+
+    @PatchMapping("/updateYourAccount")
+    public String updateYourAccount(Principal principal, @Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+        try {
+            if (!result.hasErrors()) {
+                userService.updateUserById(userService.findByLogin(principal.getName()).getId(), user);
+                return "redirect:/login";
+            } else {
+                return "redirect:/home";
+            }
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User not found");
+            return "error.html";
+        }
+    }
+
     @GetMapping("update/{aa}/{id}")
     public String update(Principal principal,
                          @PathVariable("aa") String action,
@@ -113,6 +136,14 @@ public class MainController {
                     .addAttribute("techniques", technique.getFarm().getTechniques());
             return "techniques.html";
         }
-        return "farms.html";
+        if (action.equals("user")) {
+            User userUpdate = userService.findUserById(id);
+            model.addAttribute("user", userUpdate);
+            model.addAttribute("option", option)
+                    .addAttribute("page", userService.findAllPageable(user, pageable))
+                    .addAttribute("currentUser", user);
+            return "users.html";
+        }
+        return "error.html";
     }
 }

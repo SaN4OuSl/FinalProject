@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+<link th:href="@{/css/main.css}" rel="stylesheet">
+
+<head>
+  <title>Farms Manager</title>
+</head>
+<body>
+<div class="container">
+  <header class="d-flex justify-content-around align-items-center py-3 mb-4 border-bottom ">
+    <ul class="nav nav-pills">
+      <li class="nav-item"><a href="/home" class="floating-button-active" aria-current="page">Home</a></li>
+      <li class="nav-item"><a href="/admin/users" class="floating-button">Users</a></li>
+    </ul>
+    <div th:if="${username == null}">
+      <button onclick="document.location = '/login'" type="button" class="btn btn-outline-primary me-2">Login
+      </button>
+      <button onclick="document.location = '/registration'" type="button" class="btn btn-primary">Sign-up</button>
+    </div>
+    <div th:if="${username != null}">
+      <form id="logoutForm" th:method="POST" th:action="@{/logout}">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <button type="submit" class="floating-button">Logout</button>
+        <span th:text="*{username}"></span>
+      </form>
+    </div>
+  </header>
+  <div id="add_form">
+    <p>Welcome to the farms app</p>
+    <form th:method="PATCH" th:action="@{/updateYourAccount}" th:object="${user}">
+      <h6 th:text="${errorMessage}"></h6>
+      <div class="form-floating">
+        <input type="text" class="form-control" placeholder="Username"  id="usernamefloat"
+               autofocus="true" th:field="*{login}">
+        <label for="usernamefloat">Username</label>
+      </div>
+      <div class="form-floating">
+        <input type="password" class="form-control" placeholder="Password"  id="passwordfloat"
+               autofocus="true" th:field="*{password}">
+        <label for="passwordfloat">Password</label>
+      </div>
+      <input type="submit" class="special-floating-button" value="Update your account"/>
+    </form>
+    <form th:method="DELETE" th:action="@{/deleteYourAccount}">
+      <input type="submit" class="special-floating-button" value="Delete your account"/>
+    </form>
+  </div>
+</div>
+</body>
+</html>

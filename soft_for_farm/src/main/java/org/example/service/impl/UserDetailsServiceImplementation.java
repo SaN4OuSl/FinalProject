@@ -43,4 +43,12 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
         }
         return authorities;
     }
+
+    public boolean isAdmin(User user) {
+        for (GrantedAuthority auth : getAuthorities(user)) {
+            if ("ROLE_ADMIN".equals(auth.getAuthority()))
+                return true;
+        }
+        return false;
+    }
 }

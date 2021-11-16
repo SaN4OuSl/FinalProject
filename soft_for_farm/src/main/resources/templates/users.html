@@ -79,8 +79,11 @@
         </div>
         <input type="submit" class="floating-button" value="Update account"/>
     </form>
+    <form th:method="PATCH" th:action="@{/admin/addAdminRole/{id}(id=${user.getId()})}">
+        <input type="submit" class="floating-button" value="Add admin role"/>
+    </form>
     <form th:method="DELETE" th:action="@{/admin/user/{id}(id=${user.getId()})}">
-        <input type="submit" class="floating-button" value="Delete account  "/>
+        <input type="submit" class="floating-button" value="Delete account"/>
     </form>
 </div>
 </body>

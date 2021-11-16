@@ -5,7 +5,7 @@ import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.service.*;
-import org.example.service.impl.UserDetailsServiceImplementation;
+import org.example.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +24,16 @@ import java.util.List;
 public class MainController {
     
     private final UserService userService;
-    private final UserDetailsServiceImplementation userDetailsServiceImplementation;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final FarmService farmService;
     private final PlantService plantService;
     private final AnimalService animalService;
     private final TechniqueService techniqueService;
     
     @Autowired
-    public MainController(UserService userService, UserDetailsServiceImplementation userDetailsServiceImplementation, FarmService farmService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
+    public MainController(UserService userService, UserDetailsServiceImpl userDetailsServiceImpl, FarmService farmService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
         this.userService = userService;
-        this.userDetailsServiceImplementation = userDetailsServiceImplementation;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.farmService = farmService;
         this.plantService = plantService;
         this.animalService = animalService;
@@ -171,7 +171,7 @@ public class MainController {
             return "techniques.html";
         }
         if (action.equals("user")) {
-            if (userDetailsServiceImplementation.isAdmin(user)) {
+            if (userDetailsServiceImpl.isAdmin(user)) {
                 User userUpdate = userService.findUserById(id);
                 model.addAttribute("user", userUpdate);
                 model.addAttribute("option", option)

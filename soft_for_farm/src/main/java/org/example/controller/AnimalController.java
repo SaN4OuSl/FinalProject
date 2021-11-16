@@ -34,7 +34,7 @@ public class AnimalController {
     }
     
     @GetMapping("/{farm_id}/new")
-    public String displayAnimalCreation(Principal principal, Model model, @PathVariable("farm_id") Long farm_id) {
+    public String displayAnimalForm(Principal principal, Model model, @PathVariable("farm_id") Long farm_id) {
         try {
             User user = userService.findByLogin(principal.getName());
             model.addAttribute("farm", farmService.findFarmById(user, farm_id));

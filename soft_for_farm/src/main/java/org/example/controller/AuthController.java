@@ -5,7 +5,7 @@ import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
 import org.example.service.UserService;
-import org.example.service.impl.UserDetailsServiceImplementation;
+import org.example.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,16 +22,16 @@ import java.security.Principal;
 public class AuthController {
 
     private final UserService userService;
-    private final UserDetailsServiceImplementation userDetailsServiceImplementation;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    public AuthController(UserService userService, UserDetailsServiceImplementation userDetailsServiceImplementation) {
+    public AuthController(UserService userService, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userService = userService;
-        this.userDetailsServiceImplementation = userDetailsServiceImplementation;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
 
     @GetMapping("/registration")
-    public String displayRegisterForm(@Valid @ModelAttribute("user") User user) {
+    public String displayRegistrationForm(@Valid @ModelAttribute("user") User user) {
         return "registration.html";
     }
 
@@ -68,7 +68,7 @@ public class AuthController {
     public String home(Principal principal, Model model) {
         try {
             User user = userService.findByLogin(principal.getName());
-            if (!userDetailsServiceImplementation.isAdmin(user)) {
+            if (!userDetailsServiceImpl.isAdmin(user)) {
                 model.addAttribute("username", principal.getName());
                 model.addAttribute("user", user);
                 return "index.html";

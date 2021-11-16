@@ -23,4 +23,6 @@ public interface UserService {
     void updateUserById(Long id, User user) throws UserNotFoundException;
 
     Page<User> findAllPageable(User user, Pageable pageable);
+    
+    void addAdminRole(User user);
 }

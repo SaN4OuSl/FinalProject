@@ -34,7 +34,7 @@ public class FarmController {
     }
     
     @GetMapping("/new")
-    public String displayFarmCreation(Principal principal, @ModelAttribute("farm") Farm farm, Model model) {
+    public String displayFarmForm(Principal principal, @ModelAttribute("farm") Farm farm, Model model) {
         try {
             model.addAttribute("user", userService.findByLogin(principal.getName()));
             return "addFarm.html";

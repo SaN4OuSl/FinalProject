@@ -21,13 +21,13 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
+    
     private final UserService userService;
-
+    
     public AdminController(UserService userService) {
         this.userService = userService;
     }
-
+    
     @GetMapping("/users")
     public String users(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         User user;
@@ -42,9 +42,9 @@ public class AdminController {
         model.addAttribute("currentUser", user);
         return "users.html";
     }
-
+    
     @GetMapping("/new")
-    public String displayAdminCreation(Principal principal, @ModelAttribute("user") User user, Model model) {
+    public String displayAdminForm(Principal principal, @ModelAttribute("user") User user, Model model) {
         User userAdmin;
         try {
             userAdmin = userService.findByLogin(principal.getName());
@@ -55,8 +55,8 @@ public class AdminController {
         model.addAttribute("user", userAdmin);
         return "addAdmin.html";
     }
-
-
+    
+    
     @PostMapping(value = "/new")
     public String createAdmin(Principal principal, @Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         try {
@@ -79,7 +79,7 @@ public class AdminController {
             return "addAdmin.html";
         }
     }
-
+    
     @DeleteMapping(value = "/user/{id}")
     public String deleteUser(@PathVariable("id") Long id, Model model) {
         try {
@@ -90,7 +90,7 @@ public class AdminController {
             return "login.html";
         }
     }
-
+    
     @PatchMapping(value = "/userUpdate/{id}")
     public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result, @PathVariable("id") Long id, Model model) {
         if (result.hasErrors()) {
@@ -104,5 +104,16 @@ public class AdminController {
             }
             return "redirect:/admin/users";
         }
+    }
+    
+    @PatchMapping(value = "/addAdminRole/{id}")
+    public String addAdminRole(@PathVariable("id") Long id, Model model) {
+        try {
+            userService.addAdminRole(userService.findUserById(id));
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User not found");
+            return "error.html";
+        }
+        return "redirect:/admin/users";
     }
 }

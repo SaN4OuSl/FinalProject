@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserDetailsServiceImplementation implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     
     private final UserRepository userRepository;
     
     @Autowired
-    public UserDetailsServiceImplementation(UserRepository userRepository) {
+    public UserDetailsServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
     

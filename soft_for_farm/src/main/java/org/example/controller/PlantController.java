@@ -35,7 +35,7 @@ public class PlantController {
     }
     
     @GetMapping("/{farm_id}/new")
-    public String displayPlantCreation(Principal principal, Model model, @PathVariable("farm_id") Long farm_id) {
+    public String displayPlantForm(Principal principal, Model model, @PathVariable("farm_id") Long farm_id) {
         try {
             User user = userService.findByLogin(principal.getName());
             model.addAttribute("farm", farmService.findFarmById(user, farm_id));

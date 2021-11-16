@@ -5,6 +5,7 @@ import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.service.*;
+import org.example.service.impl.UserDetailsServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,25 +18,28 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class MainController {
-
+    
     private final UserService userService;
+    private final UserDetailsServiceImplementation userDetailsServiceImplementation;
     private final FarmService farmService;
     private final PlantService plantService;
     private final AnimalService animalService;
     private final TechniqueService techniqueService;
-
+    
     @Autowired
-    public MainController(UserService userService, FarmService farmService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
+    public MainController(UserService userService, UserDetailsServiceImplementation userDetailsServiceImplementation, FarmService farmService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
         this.userService = userService;
+        this.userDetailsServiceImplementation = userDetailsServiceImplementation;
         this.farmService = farmService;
         this.plantService = plantService;
         this.animalService = animalService;
         this.techniqueService = techniqueService;
     }
-
+    
     @GetMapping("/farms")
     public String farms(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         User user;
@@ -50,7 +54,7 @@ public class MainController {
         model.addAttribute("currentUser", user);
         return "farms.html";
     }
-
+    
     @DeleteMapping("/deleteYourAccount")
     public String deleteYourAccount(Principal principal, Model model) {
         try {
@@ -61,7 +65,7 @@ public class MainController {
             return "error.html";
         }
     }
-
+    
     @PatchMapping("/updateYourAccount")
     public String updateYourAccount(Principal principal, @Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         try {
@@ -76,7 +80,7 @@ public class MainController {
             return "error.html";
         }
     }
-
+    
     @GetMapping("update/{aa}/{id}")
     public String update(Principal principal,
                          @PathVariable("aa") String action,
@@ -107,43 +111,79 @@ public class MainController {
         }
         if (action.equals("plant")) {
             Plant plant = plantService.findPlantById(id);
+            try {
+                farm = farmService.findFarmById(user, plant.getFarm().getId());
+            } catch (FarmNotFoundException e) {
+                model.addAttribute("errorMessage", "Farm with this id not found");
+                return "error.html";
+            } catch (AccessToFarmException e) {
+                model.addAttribute("errorMessage", "You don't have access to this farm");
+                return "error.html";
+            }
+            List<Plant> plants = plantService.findAllPlantsByFarm(farm);
             model.addAttribute("plant", plant);
             model.addAttribute("expense", String.format("%.2f", plantService.expensesCounter(plant)))
                     .addAttribute("profit", String.format("%.2f", plantService.profitCounter(plant)))
                     .addAttribute("netProfit", String.format("%.2f", plantService.netProfitCounter(plant)));
-            model.addAttribute("farm", plant.getFarm())
+            model.addAttribute("farm", farm)
                     .addAttribute("option", option)
-                    .addAttribute("plants", plant.getFarm().getPlants());
+                    .addAttribute("plants", plants);
             return "plants.html";
         }
         if (action.equals("animal")) {
             Animal animal = animalService.findAnimalById(id);
+            try {
+                farm = farmService.findFarmById(user, animal.getFarm().getId());
+            } catch (FarmNotFoundException e) {
+                model.addAttribute("errorMessage", "Farm with this id not found");
+                return "error.html";
+            } catch (AccessToFarmException e) {
+                model.addAttribute("errorMessage", "You don't have access to this farm");
+                return "error.html";
+            }
+            List<Animal> animals = animalService.findAllAnimalByFarm(farm);
             model.addAttribute("animal", animal);
             model.addAttribute("expenses", String.format("%.2f", animalService.expensesCounter(animal)))
                     .addAttribute("profit", String.format("%.2f", animalService.profitCounter(animal)))
                     .addAttribute("netProfit", String.format("%.2f", animalService.netProfitCounter(animal)));
-            model.addAttribute("farm", animal.getFarm())
+            model.addAttribute("farm", farm)
                     .addAttribute("option", option)
-                    .addAttribute("animals", animal.getFarm().getAnimals());
+                    .addAttribute("animals", animals);
             return "animals.html";
         }
         if (action.equals("technique")) {
             Technique technique = techniqueService.findTechniqueById(id);
+            try {
+                farm = farmService.findFarmById(user, technique.getFarm().getId());
+            } catch (FarmNotFoundException e) {
+                model.addAttribute("errorMessage", "Farm with this id not found");
+                return "error.html";
+            } catch (AccessToFarmException e) {
+                model.addAttribute("errorMessage", "You don't have access to this farm");
+                return "error.html";
+            }
+            List<Technique> techniques = techniqueService.findAllTechniquesByFarm(farm);
             model.addAttribute("technique", technique);
             model.addAttribute("expenses", String.format("%.2f", techniqueService.expensesCounter(technique)));
-            model.addAttribute("farm", technique.getFarm())
+            model.addAttribute("farm", farm)
                     .addAttribute("option", option)
-                    .addAttribute("techniques", technique.getFarm().getTechniques());
+                    .addAttribute("techniques", techniques);
             return "techniques.html";
         }
         if (action.equals("user")) {
-            User userUpdate = userService.findUserById(id);
-            model.addAttribute("user", userUpdate);
-            model.addAttribute("option", option)
-                    .addAttribute("page", userService.findAllPageable(user, pageable))
-                    .addAttribute("currentUser", user);
-            return "users.html";
+            if (userDetailsServiceImplementation.isAdmin(user)) {
+                User userUpdate = userService.findUserById(id);
+                model.addAttribute("user", userUpdate);
+                model.addAttribute("option", option)
+                        .addAttribute("page", userService.findAllPageable(user, pageable))
+                        .addAttribute("currentUser", user);
+                return "users.html";
+            } else {
+                model.addAttribute("errorMessage", "You dont have enough rights");
+                return "error.html";
+            }
         }
+        model.addAttribute("errorMessage", "Some error");
         return "error.html";
     }
 }

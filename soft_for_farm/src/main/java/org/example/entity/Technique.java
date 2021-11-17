@@ -26,7 +26,7 @@ public class Technique {
     @Column(name = "price_of_lubricants")
     private Double priceOfLubricant;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "farm_id")
     private Farm farm;
     

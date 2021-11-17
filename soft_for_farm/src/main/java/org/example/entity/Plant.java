@@ -47,7 +47,7 @@ public class Plant {
     @Column(name = "cost_of_plant")
     private Double costOfPlant;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "farm_id")
     private Farm farm;
     

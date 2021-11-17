@@ -39,7 +39,7 @@ public class Animal {
     @DecimalMin("0.00")
     private Double costOfOneAnimal;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "farm_id")
     private Farm farm;
     

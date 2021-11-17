@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<User> findAllPageable(User user, Pageable pageable) {
         LOGGER.info("Read all users");
-        return userRepository.findAllUsers(user, pageable);
+        return userRepository.findAll(pageable);
     }
     
     private void regUser(User user, Role role) {

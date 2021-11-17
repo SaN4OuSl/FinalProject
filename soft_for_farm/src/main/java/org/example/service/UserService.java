@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
-    void registration(User user) throws DuplicateUserLogin, UserPasswordSmall;
+    User registration(User user) throws DuplicateUserLogin, UserPasswordSmall;
 
     void registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException;
 

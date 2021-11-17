@@ -55,13 +55,13 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public void registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall {
-        if (user.getPassword().length() < 8) {
-            LOGGER.warn("IN registrationAdmin user enter small password");
-            throw new UserPasswordSmall("Password cannot be less than 8 symbols");
-        }
         if (userRepository.existsUserByLogin(user.getLogin())) {
             LOGGER.warn("IN registrationAdmin user with login {} exist", user.getLogin());
             throw new DuplicateUserLogin("User with login:" + user.getLogin() + " exist");
+        }
+        if (user.getPassword().length() < 8) {
+            LOGGER.warn("IN registrationAdmin user enter small password");
+            throw new UserPasswordSmall("Password cannot be less than 8 symbols");
         }
         
         Role role = roleRepository.findByName("ROLE_ADMIN");

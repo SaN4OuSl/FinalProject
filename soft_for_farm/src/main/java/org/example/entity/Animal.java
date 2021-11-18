@@ -1,5 +1,7 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -39,8 +41,9 @@ public class Animal {
     @DecimalMin("0.00")
     private Double costOfOneAnimal;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "farm_id")
+    @JsonIgnore
     private Farm farm;
     
     public Animal() {

@@ -1,5 +1,7 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class Role {
     private String name;
     
     @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
     private List<User> users;
     
     public Role() {

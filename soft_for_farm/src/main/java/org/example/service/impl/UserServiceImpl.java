@@ -25,20 +25,22 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+    private final UserDetailsServiceImpl userDetailsService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     
-    public UserServiceImpl(UserRepository userRepository,
+    public UserServiceImpl(UserDetailsServiceImpl userDetailsService, UserRepository userRepository,
                            RoleRepository roleRepository,
                            BCryptPasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
     
     @Override
-    public void registration(User user) throws DuplicateUserLogin, UserPasswordSmall {
+    public User registration(User user) throws DuplicateUserLogin, UserPasswordSmall {
         if (user.getPassword().length() < 8) {
             LOGGER.warn("IN registration user enter small password");
             throw new UserPasswordSmall("Password cannot be less than 8 symbols");
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService {
         
         Role role = roleRepository.findByName("ROLE_USER");
         regUser(user, role);
+        return user;
     }
     
     @Override
@@ -69,8 +72,11 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public Page<User> findAllPageable(User user, Pageable pageable) {
-        LOGGER.info("Read all users");
-        return userRepository.findAllUsers(user, pageable);
+        if(userDetailsService.isAdmin(user)) {
+            LOGGER.info("Read all users");
+            return userRepository.findAllUsers(user, pageable);
+        }
+        return null;
     }
     
     private void regUser(User user, Role role) {

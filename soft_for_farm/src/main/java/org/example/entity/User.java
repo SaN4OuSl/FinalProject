@@ -1,6 +1,7 @@
 package org.example.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -26,9 +27,11 @@ public class User {
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    @JsonIgnore
     private List<Role> roles;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Farm> farms;
     
     @CreatedDate

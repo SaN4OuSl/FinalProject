@@ -1,5 +1,7 @@
 package org.example.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -26,8 +28,9 @@ public class Technique {
     @Column(name = "price_of_lubricants")
     private Double priceOfLubricant;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "farm_id")
+    @JsonIgnore
     private Farm farm;
     
     public Technique() {

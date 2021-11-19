@@ -21,21 +21,21 @@ import java.security.Principal;
 
 @Controller
 public class AuthController {
-
+    
     private final UserService userService;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
-
+    
     @Autowired
     public AuthController(UserService userService, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userService = userService;
         this.userDetailsServiceImpl = userDetailsServiceImpl;
     }
-
+    
     @GetMapping("/registration")
     public String displayRegistrationForm(@Valid @ModelAttribute("user") User user) {
         return "registration.html";
     }
-
+    
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error, @RequestParam(value = "logout", required = false) String logout, Model model) {
         if (error != null) {
@@ -44,10 +44,10 @@ public class AuthController {
         if (logout != null) {
             model.addAttribute("logoutMessage", "You have been logged out successfully!");
         }
-
+        
         return "login.html";
     }
-
+    
     @PostMapping("/registration")
     public String registration(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -67,7 +67,7 @@ public class AuthController {
         }
         return "redirect:/login";
     }
-
+    
     @GetMapping(value = {"/", "/home"})
     public String home(Principal principal, Model model) {
         try {

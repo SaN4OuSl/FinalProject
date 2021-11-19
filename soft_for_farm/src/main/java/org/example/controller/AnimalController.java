@@ -104,7 +104,7 @@ public class AnimalController {
     }
     
     @DeleteMapping(value = "/{id}")
-    public String deleteAnimal(Principal principal,@PathVariable("id") Long id, Model model) {
+    public String deleteAnimal(Principal principal, @PathVariable("id") Long id, Model model) {
         Animal animal = animalService.findAnimalById(id);
         try {
             User user = userService.findByLogin(principal.getName());

@@ -82,7 +82,7 @@ public class PlantServiceImpl implements PlantService {
     public Double netProfitCounter(Plant plant) {
         return profitCounter(plant) - expensesCounter(plant);
     }
-
+    
     @Override
     public List<Plant> findAllPlantsByFarm(Farm farm) {
         LOGGER.info("Read all plants by farm");

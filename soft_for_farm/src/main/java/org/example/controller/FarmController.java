@@ -1,10 +1,10 @@
 package org.example.controller;
 
+import org.example.entity.Farm;
+import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
-import org.example.entity.Farm;
-import org.example.entity.User;
 import org.example.service.FarmService;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

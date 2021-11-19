@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteById(User userWhoDeletes, Long id) throws UserNotFoundException, NotEnoughRights {
         if (userRepository.existsById(id)) {
-            if (userDetailsService.isAdmin(userWhoDeletes) || userRepository.findUserById(id).getLogin().equals(userWhoDeletes.getLogin())) {
+            if (userDetailsService.isAdmin(userWhoDeletes) || id.equals(userWhoDeletes.getId())) {
                 userRepository.deleteById(id);
                 LOGGER.info("IN deleteById: deleted with id: {}", id);
             } else {
@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public void addAdminRole(User userAdmin, User user) throws NotEnoughRights {
-        if(userDetailsService.isAdmin(userAdmin)) {
+        if (userDetailsService.isAdmin(userAdmin)) {
             LOGGER.info("Start add admin role for user: " + user.getLogin());
             List<Role> roleList = new ArrayList<>();
             Role role = roleRepository.findByName("ROLE_ADMIN");
@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
             user.setRoles(roleList);
             userRepository.save(user);
             LOGGER.info("End add admin role for user: " + user.getLogin());
-        }else {
+        } else {
             LOGGER.warn("User don't have enough rights");
             throw new NotEnoughRights("You don't have enough rights");
         }

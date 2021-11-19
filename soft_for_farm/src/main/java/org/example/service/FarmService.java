@@ -15,7 +15,7 @@ public interface FarmService {
     
     Farm findFarmById(User user, Long id) throws FarmNotFoundException, AccessToFarmException;
     
-    void deleteFarm(User user, Long id);
+    void deleteFarm(User user, Long id) throws AccessToFarmException, FarmNotFoundException;
     
     Double profitCounter(Farm farm);
     

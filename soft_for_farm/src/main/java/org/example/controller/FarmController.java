@@ -101,6 +101,9 @@ public class FarmController {
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
             return "login.html";
+        } catch (FarmNotFoundException | AccessToFarmException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "login.html";
         }
     }
     

@@ -18,7 +18,7 @@ public class User {
     @JsonIgnore
     private Long id;
     
-    @Size(min = 2, message = "Login must be more than 2 and no more than 40 characters")
+    @Size(min = 2, message = "Login must be more than 2 characters")
     private String login;
     
     @Size(min = 8, message = "Password must be more than 8 characters")

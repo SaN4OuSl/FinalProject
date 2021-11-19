@@ -5,6 +5,7 @@ import org.example.entity.User;
 import org.example.exception.user.*;
 import org.example.security.jwt.JwtTokenProvider;
 import org.example.service.UserService;
+import org.example.service.impl.UserDetailsServiceImpl;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,10 +22,12 @@ import java.util.Map;
 public class AdminRestController {
     
     private final UserService userService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     
-    public AdminRestController(UserService userService, JwtTokenProvider jwtTokenProvider) {
+    public AdminRestController(UserService userService, UserDetailsServiceImpl userDetailsService, JwtTokenProvider jwtTokenProvider) {
         this.userService = userService;
+        this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
     
@@ -32,7 +35,7 @@ public class AdminRestController {
     @PageableAsQueryParam
     public Page<User> readPageable(String token, @Parameter(hidden = true) Pageable pageable) {
         try {
-            User user = userService.findByLogin(jwtTokenProvider.getUsername(token));
+            User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             return userService.findAllPageable(user, pageable);
         } catch (UserNotFoundException | NotEnoughRights e) {
             return null;
@@ -42,7 +45,7 @@ public class AdminRestController {
     @PostMapping(value = "/new")
     public Object createAdmin(String adminToken, @RequestBody User user) {
         User registrationAdmin;
-        String adminLogin = jwtTokenProvider.getUsername(adminToken);
+        String adminLogin = jwtTokenProvider.getLogin(adminToken);
         try {
             registrationAdmin = userService.registrationAdmin(userService.findByLogin(adminLogin), user);
         } catch (UserPasswordSmall | DuplicateUserLogin | UserNotFoundException | NotEnoughRights e) {
@@ -65,7 +68,7 @@ public class AdminRestController {
     @DeleteMapping(value = "/user/{id}")
     public Object deleteUser(String token, @PathVariable("id") Long id) {
         try {
-            User user = userService.findByLogin(jwtTokenProvider.getUsername(token));
+            User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.deleteById(user, id);
             return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
         } catch (UserNotFoundException | NotEnoughRights e) {
@@ -76,7 +79,7 @@ public class AdminRestController {
     @PatchMapping(value = "/userUpdate/{id}")
     public Object updateUser(String token, @RequestBody User newUser, @PathVariable("id") Long id) {
         try {
-            User user = userService.findByLogin(jwtTokenProvider.getUsername(token));
+            User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.updateUserById(id, newUser, user);
             return new ResponseEntity<>("User successfully updated", HttpStatus.OK);
         } catch (UserNotFoundException | NotEnoughRights | UserPasswordSmall | DuplicateUserLogin | UserLoginSmall e) {
@@ -87,10 +90,22 @@ public class AdminRestController {
     @PatchMapping(value = "/addAdminRole/{id}")
     public Object addAdminRole(String token, @PathVariable("id") Long id) {
         try {
-            User userAdmin = userService.findByLogin(jwtTokenProvider.getUsername(token));
+            User userAdmin = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.addAdminRole(userAdmin, userService.findUserById(id));
             return new ResponseEntity<>("New admin added successfully", HttpStatus.OK);
         } catch (UserNotFoundException | NotEnoughRights e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/users/{id}")
+    public Object getUserById(String token, @PathVariable("id") Long id) {
+        try {
+            User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            if (userDetailsService.isAdmin(user) || user.getId().equals(id))
+                return userService.findUserById(id);
+            else return ResponseEntity.badRequest().body("You dont have enough rights");
+        } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

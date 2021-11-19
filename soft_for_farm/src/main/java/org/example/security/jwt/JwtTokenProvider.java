@@ -50,7 +50,7 @@ public class JwtTokenProvider {
                 .compact();
     }
     
-    public String getUsername(String token) {
+    public String getLogin(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
     

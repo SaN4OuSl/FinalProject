@@ -44,7 +44,7 @@ public class FarmServiceTest {
         Long id = farm.getId();
 
         Assertions.assertTrue(farmRepository.existsById(id));
-        farmService.deleteFarm(user, 0L);
+        farmService.deleteFarm(user, id);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class FarmServiceTest {
 
         farmService.updateFarm(user, id, newFarm);
         Assertions.assertEquals(newFarm.getFarmName(), farmService.findFarmById(user, id).getFarmName());
-        farmService.deleteFarm(user, 0L);
+        farmService.deleteFarm(user, id);
     }
 
     @Test

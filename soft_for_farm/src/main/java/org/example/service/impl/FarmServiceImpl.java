@@ -1,10 +1,6 @@
 package org.example.service.impl;
 
-import org.example.entity.Animal;
-import org.example.entity.Farm;
-import org.example.entity.Plant;
-import org.example.entity.Technique;
-import org.example.entity.User;
+import org.example.entity.*;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.repository.FarmRepository;
@@ -52,15 +48,21 @@ public class FarmServiceImpl implements FarmService {
     
     public void updateFarm(User user, Long id, Farm farm) throws FarmNotFoundException, AccessToFarmException {
         if (farmRepository.existsById(id)) {
-            LOGGER.info("Start update farm: " + id);
-            Farm newFarm = findFarmById(user, id);
-            newFarm.setFarmName(farm.getFarmName());
-            newFarm.setAddress(farm.getAddress());
-            newFarm.setYearOfStatistic(farm.getYearOfStatistic());
-            farmRepository.save(newFarm);
-            LOGGER.info("End update farm: " + id);
+            if (farmRepository.existsByIdAndUser(id, user)) {
+                LOGGER.info("Start update farm: " + id);
+                Farm newFarm = findFarmById(user, id);
+                newFarm.setFarmName(farm.getFarmName());
+                newFarm.setAddress(farm.getAddress());
+                newFarm.setYearOfStatistic(farm.getYearOfStatistic());
+                farmRepository.save(newFarm);
+                LOGGER.info("End update farm: " + id);
+            } else {
+                LOGGER.warn("You don't have access to this farm");
+                throw new AccessToFarmException("You don't have access to this farm");
+            }
         } else {
             LOGGER.warn("farm doesn't exists");
+            throw new FarmNotFoundException("Farm with this id not found");
         }
     }
     
@@ -74,13 +76,19 @@ public class FarmServiceImpl implements FarmService {
         return farmRepository.findById(id).orElse(null);
     }
     
-    public void deleteFarm(User user, Long id) {
+    public void deleteFarm(User user, Long id) throws AccessToFarmException, FarmNotFoundException {
         if (farmRepository.existsById(id)) {
-            LOGGER.info("Start delete farm: " + id);
-            farmRepository.deleteById(id);
-            LOGGER.info("End delete farm: " + id);
+            if (farmRepository.existsByIdAndUser(id, user)) {
+                LOGGER.info("Start delete farm: " + id);
+                farmRepository.deleteById(id);
+                LOGGER.info("End delete farm: " + id);
+            } else {
+                LOGGER.warn("You don't have access to this farm");
+                throw new AccessToFarmException("You don't have access to this farm");
+            }
         } else {
             LOGGER.warn("farm doesn't exists");
+            throw new FarmNotFoundException("Farm with this id not found");
         }
     }
     
@@ -127,7 +135,7 @@ public class FarmServiceImpl implements FarmService {
     }
     
     @Override
-    public Page<Farm> findFarmsByFarmName(String farmName, User user,  Pageable pageable) {
+    public Page<Farm> findFarmsByFarmName(String farmName, User user, Pageable pageable) {
         return farmRepository.findAllByFarmNameAndUser(farmName, user, pageable);
     }
     

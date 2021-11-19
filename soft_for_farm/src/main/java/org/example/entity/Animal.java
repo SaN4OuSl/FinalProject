@@ -11,6 +11,7 @@ public class Animal {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     
     @Size(min = 2, message = "Animal name must be have more than 2 characters")

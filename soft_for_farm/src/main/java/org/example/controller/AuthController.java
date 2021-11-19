@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.entity.User;
 import org.example.exception.user.DuplicateUserLogin;
+import org.example.exception.user.UserLoginSmall;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
 import org.example.service.UserService;
@@ -59,6 +60,9 @@ public class AuthController {
             return "registration.html";
         } catch (UserPasswordSmall e) {
             model.addAttribute("errorMessage", "Password must be have more than 8 characters");
+            return "registration.html";
+        } catch (UserLoginSmall userLoginSmall) {
+            model.addAttribute("errorMessage", "Login must be have more than 2 characters");
             return "registration.html";
         }
         return "redirect:/login";

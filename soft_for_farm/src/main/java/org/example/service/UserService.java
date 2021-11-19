@@ -2,27 +2,25 @@ package org.example.service;
 
 
 import org.example.entity.User;
-import org.example.exception.user.DuplicateUserLogin;
-import org.example.exception.user.UserNotFoundException;
-import org.example.exception.user.UserPasswordSmall;
+import org.example.exception.user.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
-    User registration(User user) throws DuplicateUserLogin, UserPasswordSmall;
+    User registration(User user) throws DuplicateUserLogin, UserPasswordSmall, UserLoginSmall;
 
-    void registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException;
+    User registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, UserNotFoundException, NotEnoughRights, UserLoginSmall;
 
     User findByLogin(String login) throws UserNotFoundException;
 
     User findUserById(Long id) throws UserNotFoundException;
 
-    void deleteById(Long id) throws UserNotFoundException;
+    void deleteById(User userWhoDeletes, Long id) throws UserNotFoundException, NotEnoughRights;
 
-    void updateUserById(Long id, User user) throws UserNotFoundException;
+    void updateUserById(Long id, User user, User userWhoUpdates) throws UserNotFoundException, NotEnoughRights, UserPasswordSmall, DuplicateUserLogin, UserLoginSmall;
 
-    Page<User> findAllPageable(User user, Pageable pageable);
+    Page<User> findAllPageable(User user, Pageable pageable) throws NotEnoughRights;
     
-    void addAdminRole(User user);
+    void addAdminRole(User userAdmin, User user) throws NotEnoughRights;
 }

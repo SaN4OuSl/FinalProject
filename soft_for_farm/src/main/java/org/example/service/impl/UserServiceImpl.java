@@ -3,9 +3,7 @@ package org.example.service.impl;
 
 import org.example.entity.Role;
 import org.example.entity.User;
-import org.example.exception.user.DuplicateUserLogin;
-import org.example.exception.user.UserNotFoundException;
-import org.example.exception.user.UserPasswordSmall;
+import org.example.exception.user.*;
 import org.example.repository.auth.RoleRepository;
 import org.example.repository.auth.UserRepository;
 import org.example.service.UserService;
@@ -40,43 +38,36 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public User registration(User user) throws DuplicateUserLogin, UserPasswordSmall {
-        if (user.getPassword().length() < 8) {
-            LOGGER.warn("IN registration user enter small password");
-            throw new UserPasswordSmall("Password cannot be less than 8 symbols");
-        }
-        if (userRepository.existsUserByLogin(user.getLogin())) {
-            LOGGER.warn("IN user with login {} exist", user.getLogin());
-            throw new DuplicateUserLogin("User with login:" + user.getLogin() + " exist");
-        }
-        
-        Role role = roleRepository.findByName("ROLE_USER");
-        regUser(user, role);
-        return user;
-    }
-    
-    @Override
-    public void registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall {
-        if (user.getPassword().length() < 8) {
-            LOGGER.warn("IN registrationAdmin user enter small password");
-            throw new UserPasswordSmall("Password cannot be less than 8 symbols");
-        }
-        if (userRepository.existsUserByLogin(user.getLogin())) {
+    public User registration(User user) throws DuplicateUserLogin, UserPasswordSmall, UserLoginSmall {
+        if (checkUserPaswordAndLogin(user)) {
+            Role role = roleRepository.findByName("ROLE_USER");
+            regUser(user, role);
+            return user;
+        } else {
             LOGGER.warn("IN registrationAdmin user with login {} exist", user.getLogin());
             throw new DuplicateUserLogin("User with login:" + user.getLogin() + " exist");
         }
-        
-        Role role = roleRepository.findByName("ROLE_ADMIN");
-        regUser(user, role);
     }
     
     @Override
-    public Page<User> findAllPageable(User user, Pageable pageable) {
-        if(userDetailsService.isAdmin(user)) {
+    public User registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, NotEnoughRights, UserLoginSmall {
+        if (userDetailsService.isAdmin(userAdmin)) {
+            if (checkUserPaswordAndLogin(user)) {
+                Role role = roleRepository.findByName("ROLE_ADMIN");
+                regUser(user, role);
+                return user;
+            }
+        }
+        throw new NotEnoughRights("You dont have rights for this action");
+    }
+    
+    @Override
+    public Page<User> findAllPageable(User user, Pageable pageable) throws NotEnoughRights {
+        if (userDetailsService.isAdmin(user)) {
             LOGGER.info("Read all users");
             return userRepository.findAllUsers(user, pageable);
         }
-        return null;
+        throw new NotEnoughRights("You dont have rights for this action");
     }
     
     private void regUser(User user, Role role) {
@@ -115,39 +106,76 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
-        LOGGER.info("IN deleteById: deleted with id: {}", id);
-    }
-    
-    @Override
-    public void updateUserById(Long id, User user) throws UserNotFoundException {
+    public void deleteById(User userWhoDeletes, Long id) throws UserNotFoundException, NotEnoughRights {
         if (userRepository.existsById(id)) {
-            LOGGER.info("Start update user: " + id);
-            User newUser;
-            try {
-                newUser = findUserById(id);
-            } catch (UserNotFoundException e) {
-                LOGGER.warn("IN findByLogin user not found by id: {}", id);
-                throw new UserNotFoundException("User with login " + id + " dont found");
+            if (userDetailsService.isAdmin(userWhoDeletes) || userRepository.findUserById(id).getLogin().equals(userWhoDeletes.getLogin())) {
+                userRepository.deleteById(id);
+                LOGGER.info("IN deleteById: deleted with id: {}", id);
+            } else {
+                throw new NotEnoughRights("You don't have enough rights");
             }
-            newUser.setLogin(user.getLogin());
-            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(newUser);
-            LOGGER.info("End update user: " + id);
         } else {
-            LOGGER.warn("user doesn't exists");
+            throw new UserNotFoundException("User not found");
         }
     }
     
     @Override
-    public void addAdminRole(User user) {
-        LOGGER.info("Start add admin role for user: " + user.getLogin());
-        List<Role> roleList = new ArrayList<>();
-        Role role = roleRepository.findByName("ROLE_ADMIN");
-        roleList.add(role);
-        user.setRoles(roleList);
-        userRepository.save(user);
-        LOGGER.info("End add admin role for user: " + user.getLogin());
-    }   
+    public void updateUserById(Long id, User user, User userWhoUpdates) throws UserNotFoundException, NotEnoughRights, UserPasswordSmall, DuplicateUserLogin, UserLoginSmall {
+        if (userDetailsService.isAdmin(userWhoUpdates) || id.equals(userWhoUpdates.getId())) {
+            if (userRepository.existsById(id)) {
+                if (checkUserPaswordAndLogin(user)) {
+                    LOGGER.info("Start update user: " + id);
+                    User newUser;
+                    try {
+                        newUser = findUserById(id);
+                    } catch (UserNotFoundException e) {
+                        LOGGER.warn("IN findByLogin user not found by id: {}", id);
+                        throw new UserNotFoundException("User with login " + id + " dont found");
+                    }
+                    newUser.setLogin(user.getLogin());
+                    newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                    userRepository.save(newUser);
+                    LOGGER.info("End update user: " + id);
+                }
+            } else {
+                LOGGER.warn("User doesn't exists");
+                throw new UserNotFoundException("User with this id does not exists");
+            }
+        } else {
+            LOGGER.warn("User don't have enough rights");
+            throw new NotEnoughRights("You don't have enough rights");
+        }
+    }
+    
+    @Override
+    public void addAdminRole(User userAdmin, User user) throws NotEnoughRights {
+        if(userDetailsService.isAdmin(userAdmin)) {
+            LOGGER.info("Start add admin role for user: " + user.getLogin());
+            List<Role> roleList = new ArrayList<>();
+            Role role = roleRepository.findByName("ROLE_ADMIN");
+            roleList.add(role);
+            user.setRoles(roleList);
+            userRepository.save(user);
+            LOGGER.info("End add admin role for user: " + user.getLogin());
+        }else {
+            LOGGER.warn("User don't have enough rights");
+            throw new NotEnoughRights("You don't have enough rights");
+        }
+    }
+    
+    private boolean checkUserPaswordAndLogin(User user) throws DuplicateUserLogin, UserPasswordSmall, UserLoginSmall {
+        if (user.getPassword().length() < 8) {
+            LOGGER.warn("IN registrationAdmin user enter small password");
+            throw new UserPasswordSmall("Password cannot be less than 8 symbols");
+        }
+        if (userRepository.existsUserByLogin(user.getLogin())) {
+            LOGGER.warn("IN registrationAdmin user with login {} exist", user.getLogin());
+            throw new DuplicateUserLogin("User with login:" + user.getLogin() + " exist");
+        }
+        if (user.getLogin().length() < 2) {
+            LOGGER.warn("IN registrationAdmin user with login {} is to small", user.getLogin());
+            throw new UserLoginSmall("Login cannot be less than 2 symbols");
+        }
+        return true;
+    }
 }

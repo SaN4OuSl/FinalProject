@@ -15,9 +15,10 @@ public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     
-    @Size(min = 2, max = 40, message = "Login must be more than 2 and no more than 40 characters")
+    @Size(min = 2, message = "Login must be more than 2 and no more than 40 characters")
     private String login;
     
     @Size(min = 8, message = "Password must be more than 8 characters")
@@ -35,6 +36,7 @@ public class User {
     private List<Farm> farms;
     
     @CreatedDate
+    @JsonIgnore
     private Date created;
     
     public User(String login, String password) {

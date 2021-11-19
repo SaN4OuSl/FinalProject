@@ -3,6 +3,7 @@ package org.example;
 import org.example.entity.User;
 import org.example.repository.auth.UserRepository;
 import org.example.service.UserService;
+import org.example.service.impl.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,15 @@ public class UserServiceTest {
 
     @Autowired
     UserService userService;
-
+    
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
+    
     @Test
     void contextLoads() {
         assertThat(userRepository).isNotNull();
         assertThat(userService).isNotNull();
+        assertThat(userDetailsService).isNotNull();
     }
 
     @Test
@@ -39,7 +44,7 @@ public class UserServiceTest {
         Long id = user.getId();
 
         Assertions.assertTrue(userRepository.existsById(id));
-        userService.deleteById(id);
+        userService.deleteById(user, id);
     }
 
     @Test
@@ -50,7 +55,7 @@ public class UserServiceTest {
         Long id = user.getId();
 
         Assertions.assertTrue(userRepository.existsById(id));
-        userService.deleteById(id);
+        userService.deleteById(userAdmin, id);
     }
 
     @Test
@@ -58,7 +63,7 @@ public class UserServiceTest {
         User user = new User("username", "userpass");
         userService.registration(user);
         Long id = user.getId();
-        userService.deleteById(id);
+        userService.deleteById(user, id);
         Assertions.assertFalse(userRepository.existsById(id));
     }
 
@@ -69,8 +74,20 @@ public class UserServiceTest {
         Long id = user.getId();
         User newUser = new User("username updated", "userpassupd");
 
-        userService.updateUserById(id, newUser);
+        userService.updateUserById(id, newUser, user);
         Assertions.assertEquals(newUser.getLogin(), userService.findUserById(id).getLogin());
-        userService.deleteById(id);
+        userService.deleteById(userService.findUserById(id), id);
+    }
+    
+    @Test
+    void addAdminRole() throws Exception {
+        User userAdmin = userService.findByLogin("test user");
+        User user = new User("username", "userpass");
+        userService.registration(user);
+        Long id = user.getId();
+        
+        userService.addAdminRole(userAdmin, user);
+        Assertions.assertTrue(userDetailsService.isAdmin(user));
+        userService.deleteById(userService.findUserById(id), id);
     }
 }

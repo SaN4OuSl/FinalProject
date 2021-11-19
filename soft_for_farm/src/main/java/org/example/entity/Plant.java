@@ -13,6 +13,7 @@ public class Plant {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     
     @Size(min = 2, message = "Plant name must be more than 2 characters")

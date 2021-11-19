@@ -13,6 +13,7 @@ public class Farm {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     
     @Size(min = 2, message = "Farm name must be more than 2 characters")

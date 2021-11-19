@@ -3,9 +3,8 @@ package org.example.controller;
 import org.example.entity.*;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
-import org.example.exception.user.UserNotFoundException;
+import org.example.exception.user.*;
 import org.example.service.*;
-import org.example.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +23,14 @@ import java.util.List;
 public class MainController {
     
     private final UserService userService;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final FarmService farmService;
     private final PlantService plantService;
     private final AnimalService animalService;
     private final TechniqueService techniqueService;
     
     @Autowired
-    public MainController(UserService userService, UserDetailsServiceImpl userDetailsServiceImpl, FarmService farmService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
+    public MainController(UserService userService, FarmService farmService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
         this.userService = userService;
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.farmService = farmService;
         this.plantService = plantService;
         this.animalService = animalService;
@@ -58,10 +55,14 @@ public class MainController {
     @DeleteMapping("/deleteYourAccount")
     public String deleteYourAccount(Principal principal, Model model) {
         try {
-            userService.deleteById(userService.findByLogin(principal.getName()).getId());
+            User user = userService.findByLogin(principal.getName());
+            userService.deleteById(user, user.getId());
             return "redirect:/login";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
+            return "error.html";
+        } catch (NotEnoughRights notEnoughRights) {
+            model.addAttribute("errorMessage", "You don't have enough rights");
             return "error.html";
         }
     }
@@ -70,13 +71,17 @@ public class MainController {
     public String updateYourAccount(Principal principal, @Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
         try {
             if (!result.hasErrors()) {
-                userService.updateUserById(userService.findByLogin(principal.getName()).getId(), user);
+                User currentUser = userService.findByLogin(principal.getName());
+                userService.updateUserById(currentUser.getId(), user, currentUser);
                 return "redirect:/login";
             } else {
                 return "redirect:/home";
             }
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
+            return "error.html";
+        } catch (NotEnoughRights | UserPasswordSmall | UserLoginSmall | DuplicateUserLogin e) {
+            model.addAttribute("errorMessage", e.getMessage());
             return "error.html";
         }
     }
@@ -85,7 +90,7 @@ public class MainController {
     public String update(Principal principal,
                          @PathVariable("aa") String action,
                          @PathVariable("id") Long id,
-                         Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) throws UserNotFoundException {
+                         Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) throws UserNotFoundException, NotEnoughRights {
         User user = userService.findByLogin(principal.getName());
         Farm farm;
         int option = 0;
@@ -171,17 +176,12 @@ public class MainController {
             return "techniques.html";
         }
         if (action.equals("user")) {
-            if (userDetailsServiceImpl.isAdmin(user)) {
-                User userUpdate = userService.findUserById(id);
-                model.addAttribute("user", userUpdate);
-                model.addAttribute("option", option)
-                        .addAttribute("page", userService.findAllPageable(user, pageable))
-                        .addAttribute("currentUser", user);
-                return "users.html";
-            } else {
-                model.addAttribute("errorMessage", "You dont have enough rights");
-                return "error.html";
-            }
+            User userUpdate = userService.findUserById(id);
+            model.addAttribute("user", userUpdate);
+            model.addAttribute("option", option)
+                    .addAttribute("page", userService.findAllPageable(user, pageable))
+                    .addAttribute("currentUser", user);
+            return "users.html";
         }
         model.addAttribute("errorMessage", "Some error");
         return "error.html";

@@ -2,15 +2,18 @@ package org.example.controller.rest;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import org.example.entity.User;
-import org.example.exception.user.UserNotFoundException;
+import org.example.exception.user.*;
 import org.example.security.jwt.JwtTokenProvider;
 import org.example.service.UserService;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -28,13 +31,67 @@ public class AdminRestController {
     @GetMapping("/users")
     @PageableAsQueryParam
     public Page<User> readPageable(String token, @Parameter(hidden = true) Pageable pageable) {
-        User user;
         try {
-            user = userService.findByLogin(jwtTokenProvider.getUsername(token));
-        } catch (UserNotFoundException e) {
+            User user = userService.findByLogin(jwtTokenProvider.getUsername(token));
+            return userService.findAllPageable(user, pageable);
+        } catch (UserNotFoundException | NotEnoughRights e) {
             return null;
         }
-        return userService.findAllPageable(user, pageable);
     }
     
+    @PostMapping(value = "/new")
+    public Object createAdmin(String adminToken, @RequestBody User user) {
+        User registrationAdmin;
+        String adminLogin = jwtTokenProvider.getUsername(adminToken);
+        try {
+            registrationAdmin = userService.registrationAdmin(userService.findByLogin(adminLogin), user);
+        } catch (UserPasswordSmall | DuplicateUserLogin | UserNotFoundException | NotEnoughRights e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body("Unknown error");
+        }
+        String login = registrationAdmin.getLogin();
+        
+        String newToken = jwtTokenProvider.createToken(login, user.getRoles());
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("id", String.valueOf(registrationAdmin.getId()));
+        response.put("login", login);
+        response.put("token", newToken);
+        
+        return ResponseEntity.ok(response);
+    }
+    
+    @DeleteMapping(value = "/user/{id}")
+    public Object deleteUser(String token, @PathVariable("id") Long id) {
+        try {
+            User user = userService.findByLogin(jwtTokenProvider.getUsername(token));
+            userService.deleteById(user, id);
+            return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
+        } catch (UserNotFoundException | NotEnoughRights e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    @PatchMapping(value = "/userUpdate/{id}")
+    public Object updateUser(String token, @RequestBody User newUser, @PathVariable("id") Long id) {
+        try {
+            User user = userService.findByLogin(jwtTokenProvider.getUsername(token));
+            userService.updateUserById(id, newUser, user);
+            return new ResponseEntity<>("User successfully updated", HttpStatus.OK);
+        } catch (UserNotFoundException | NotEnoughRights | UserPasswordSmall | DuplicateUserLogin | UserLoginSmall e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
+    @PatchMapping(value = "/addAdminRole/{id}")
+    public Object addAdminRole(String token, @PathVariable("id") Long id) {
+        try {
+            User userAdmin = userService.findByLogin(jwtTokenProvider.getUsername(token));
+            userService.addAdminRole(userAdmin, userService.findUserById(id));
+            return new ResponseEntity<>("New admin added successfully", HttpStatus.OK);
+        } catch (UserNotFoundException | NotEnoughRights e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

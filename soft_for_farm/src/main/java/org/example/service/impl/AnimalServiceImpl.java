@@ -2,6 +2,7 @@ package org.example.service.impl;
 
 import org.example.entity.Animal;
 import org.example.entity.Farm;
+import org.example.entity.User;
 import org.example.repository.AnimalRepository;
 import org.example.service.AnimalService;
 import org.slf4j.Logger;
@@ -86,5 +87,10 @@ public class AnimalServiceImpl implements AnimalService {
     public List<Animal> findAllAnimalByFarm(Farm farm) {
         LOGGER.info("Read all animals by farm");
         return animalRepository.findAllByFarm(farm);
+    }
+    
+    @Override
+    public boolean checkAccessToAnimal(User user, Long id) {
+        return animalRepository.existsByIdAndUser(id, user);
     }
 }

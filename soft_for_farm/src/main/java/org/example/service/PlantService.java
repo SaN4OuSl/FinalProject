@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.entity.Farm;
 import org.example.entity.Plant;
+import org.example.entity.User;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ public interface PlantService {
     Double expensesCounter(Plant plant);
     
     Double netProfitCounter(Plant plant);
-
+    
     List<Plant> findAllPlantsByFarm(Farm farm);
+    
+    boolean checkAccessToPlant(User user, Long id);
 }

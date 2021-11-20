@@ -48,8 +48,10 @@ public class AdminRestController {
         String adminLogin = jwtTokenProvider.getLogin(adminToken);
         try {
             registrationAdmin = userService.registrationAdmin(userService.findByLogin(adminLogin), user);
-        } catch (UserPasswordSmall | DuplicateUserLogin | UserNotFoundException | NotEnoughRights e) {
+        } catch (UserPasswordSmall | DuplicateUserLogin | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (NotEnoughRights e) {
+            return ResponseEntity.status(403).body(e.getMessage());
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body("Unknown error");
         }
@@ -71,8 +73,10 @@ public class AdminRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.deleteById(user, id);
             return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
-        } catch (UserNotFoundException | NotEnoughRights e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (NotEnoughRights e) {
+            return ResponseEntity.status(403).body(e.getMessage());
         }
     }
     
@@ -82,8 +86,10 @@ public class AdminRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.updateUserById(id, newUser, user);
             return new ResponseEntity<>("User successfully updated", HttpStatus.OK);
-        } catch (UserNotFoundException | NotEnoughRights | UserPasswordSmall | DuplicateUserLogin | UserLoginSmall e) {
+        } catch (UserNotFoundException | UserPasswordSmall | DuplicateUserLogin | UserLoginSmall e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (NotEnoughRights e) {
+            return ResponseEntity.status(403).body(e.getMessage());
         }
     }
     
@@ -93,8 +99,10 @@ public class AdminRestController {
             User userAdmin = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.addAdminRole(userAdmin, userService.findUserById(id));
             return new ResponseEntity<>("New admin added successfully", HttpStatus.OK);
-        } catch (UserNotFoundException | NotEnoughRights e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (NotEnoughRights e) {
+            return ResponseEntity.status(403).body(e.getMessage());
         }
     }
     

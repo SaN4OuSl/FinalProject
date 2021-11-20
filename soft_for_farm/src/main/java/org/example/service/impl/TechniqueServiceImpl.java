@@ -3,6 +3,7 @@ package org.example.service.impl;
 
 import org.example.entity.Farm;
 import org.example.entity.Technique;
+import org.example.entity.User;
 import org.example.repository.TechniqueRepository;
 import org.example.service.TechniqueService;
 import org.slf4j.Logger;
@@ -76,5 +77,10 @@ public class TechniqueServiceImpl implements TechniqueService {
     public List<Technique> findAllTechniquesByFarm(Farm farm) {
         LOGGER.info("Read all techniques by farm");
         return techniqueRepository.findAllByFarm(farm);
+    }
+    
+    @Override
+    public boolean checkAccessToTechnique(User user, Long id) {
+        return techniqueRepository.existsByIdAndUser(id, user);
     }
 }

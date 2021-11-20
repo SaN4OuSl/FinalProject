@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.entity.Farm;
 import org.example.entity.Technique;
+import org.example.entity.User;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface TechniqueService {
     Double expensesCounter(Technique technique);
     
     List<Technique> findAllTechniquesByFarm(Farm farm);
+    
+    boolean checkAccessToTechnique(User user, Long id);
 }

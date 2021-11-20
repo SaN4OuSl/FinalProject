@@ -2,6 +2,7 @@ package org.example.service.impl;
 
 import org.example.entity.Farm;
 import org.example.entity.Plant;
+import org.example.entity.User;
 import org.example.repository.PlantRepository;
 import org.example.service.PlantService;
 import org.slf4j.Logger;
@@ -87,5 +88,10 @@ public class PlantServiceImpl implements PlantService {
     public List<Plant> findAllPlantsByFarm(Farm farm) {
         LOGGER.info("Read all plants by farm");
         return plantRepository.findAllByFarm(farm);
+    }
+    
+    @Override
+    public boolean checkAccessToPlant(User user, Long id){
+        return plantRepository.existsByIdAndUser(id, user);
     }
 }

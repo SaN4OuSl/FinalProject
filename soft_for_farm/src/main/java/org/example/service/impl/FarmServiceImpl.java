@@ -35,6 +35,7 @@ public class FarmServiceImpl implements FarmService {
         this.techniqueService = techniqueService;
     }
     
+    @Override
     public void addFarm(User user, Farm farm) {
         if (farm != null) {
             LOGGER.info("Start create farm: " + farm.getFarmName());
@@ -46,6 +47,7 @@ public class FarmServiceImpl implements FarmService {
         }
     }
     
+    @Override
     public void updateFarm(User user, Long id, Farm farm) throws FarmNotFoundException, AccessToFarmException {
         if (farmRepository.existsById(id)) {
             if (farmRepository.existsByIdAndUser(id, user)) {
@@ -66,6 +68,7 @@ public class FarmServiceImpl implements FarmService {
         }
     }
     
+    @Override
     public Farm findFarmById(User user, Long id) throws FarmNotFoundException, AccessToFarmException {
         if (!farmRepository.existsById(id)) {
             throw new FarmNotFoundException("Farm with this id not found");
@@ -76,6 +79,7 @@ public class FarmServiceImpl implements FarmService {
         return farmRepository.findById(id).orElse(null);
     }
     
+    @Override
     public void deleteFarm(User user, Long id) throws AccessToFarmException, FarmNotFoundException {
         if (farmRepository.existsById(id)) {
             if (farmRepository.existsByIdAndUser(id, user)) {

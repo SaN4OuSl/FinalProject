@@ -4,7 +4,7 @@ import org.example.entity.User;
 import org.example.exception.user.DuplicateUserLogin;
 import org.example.exception.user.UserNotFoundException;
 import org.example.exception.user.UserPasswordSmall;
-import org.example.security.jwt.JwtTokenProvider;
+import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

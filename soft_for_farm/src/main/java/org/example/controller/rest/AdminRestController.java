@@ -3,7 +3,7 @@ package org.example.controller.rest;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.example.entity.User;
 import org.example.exception.user.*;
-import org.example.security.jwt.JwtTokenProvider;
+import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.UserService;
 import org.example.service.impl.UserDetailsServiceImpl;
 import org.springdoc.core.converters.models.PageableAsQueryParam;

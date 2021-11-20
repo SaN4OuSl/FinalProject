@@ -6,7 +6,7 @@ import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
-import org.example.security.jwt.JwtTokenProvider;
+import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.FarmService;
 import org.example.service.TechniqueService;
 import org.example.service.UserService;

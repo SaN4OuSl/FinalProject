@@ -4,3 +4,4 @@ Follow these steps to run the application:
 2. Run Dockerfile
 3. Run docker-compose.yml
 4. Enter localhost:8080 in your browser
+5. For rest controllers test enter: localhost:8080/swagger-ui.html

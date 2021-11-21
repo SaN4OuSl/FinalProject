@@ -52,7 +52,15 @@ public class FarmRestController {
         try {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             Farm farm = farmService.findFarmById(user, id);
-            return responseReturner(farm);
+            Map<String, String> response = new HashMap<>();
+            response.put("Id", String.valueOf(farm.getId()));
+            response.put("Farm name", farm.getFarmName());
+            response.put("Address", farm.getAddress());
+            response.put("Year of statistic", farm.getYearOfStatistic());
+            response.put("Profit", String.valueOf(farmService.profitCounter(farm)));
+            response.put("Expenses", String.valueOf(farmService.expensesCounter(farm)));
+            response.put("Net profit", String.valueOf(farmService.netProfitCounter(farm)));
+            return ResponseEntity.ok(response);
         } catch (UserNotFoundException | FarmNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (AccessToFarmException e) {

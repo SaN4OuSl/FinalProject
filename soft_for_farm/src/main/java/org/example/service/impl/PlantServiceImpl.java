@@ -70,18 +70,18 @@ public class PlantServiceImpl implements PlantService {
     }
     
     @Override
-    public Double profitCounter(Plant plant) {
-        return plant.getCostOfPlant() * plant.getPlantHarvest() * plant.getSizeOfFieldForPlant();
+    public Double profitCounter(Long id) {
+        return plantRepository.countProfitOfPlantById(id);
     }
     
     @Override
-    public Double expensesCounter(Plant plant) {
-        return plant.getCostOfFertilizers() + plant.getRentalPriceOfField() + plant.getOtherExpense();
+    public Double expensesCounter(Long id) {
+        return plantRepository.countExpensesOfPlantById(id);
     }
     
     @Override
-    public Double netProfitCounter(Plant plant) {
-        return profitCounter(plant) - expensesCounter(plant);
+    public Double netProfitCounter(Long id) {
+        return profitCounter(id) - expensesCounter(id);
     }
     
     @Override

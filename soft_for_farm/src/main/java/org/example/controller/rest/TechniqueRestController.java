@@ -5,6 +5,7 @@ import org.example.entity.Technique;
 import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.jwt.JwtTokenException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.FarmService;
@@ -46,7 +47,7 @@ public class TechniqueRestController {
                 techniqueService.addTechnique(farm, technique);
                 return techniqueResponseReturner(technique);
             }
-        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
+        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -67,7 +68,7 @@ public class TechniqueRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         }
@@ -86,7 +87,7 @@ public class TechniqueRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         } else {
@@ -100,7 +101,7 @@ public class TechniqueRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             Farm farm = farmService.findFarmById(user, farm_id);
             return techniqueService.findAllTechniquesByFarm(farm);
-        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
+        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -116,7 +117,7 @@ public class TechniqueRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         } else {
@@ -130,7 +131,7 @@ public class TechniqueRestController {
         response.put("Technique type", technique.getTypeOfTechnique());
         response.put("Price of parts", String.valueOf(technique.getPriceOfParts()));
         response.put("Price of lubricants", String.valueOf(technique.getPriceOfLubricant()));
-        response.put("Expense", String.valueOf(techniqueService.expensesCounter(technique)));
+        response.put("Expense", String.valueOf(techniqueService.expensesCounter(technique.getId())));
         return ResponseEntity.ok(response);
     }
 }

@@ -5,6 +5,7 @@ import org.example.entity.Farm;
 import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.jwt.JwtTokenException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.AnimalService;
@@ -46,7 +47,7 @@ public class AnimalRestController {
                 animalService.addAnimal(farm, animal);
                 return animalResponseReturner(animal);
             }
-        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
+        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -67,7 +68,7 @@ public class AnimalRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         }
@@ -86,7 +87,7 @@ public class AnimalRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         } else {
@@ -100,7 +101,7 @@ public class AnimalRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             Farm farm = farmService.findFarmById(user, farm_id);
             return animalService.findAllAnimalByFarm(farm);
-        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
+        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -116,7 +117,7 @@ public class AnimalRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         } else {
@@ -133,9 +134,9 @@ public class AnimalRestController {
         response.put("Other expense", String.valueOf(animal.getOtherExpenses()));
         response.put("Cost of feeds", String.valueOf(animal.getCostOfFeeds()));
         response.put("Rental price of buildings", String.valueOf(animal.getRentalPriceOfBuilding()));
-        response.put("Profit", String.valueOf(animalService.profitCounter(animal)));
-        response.put("Expense", String.valueOf(animalService.expensesCounter(animal)));
-        response.put("Net profit", String.valueOf(animalService.netProfitCounter(animal)));
+        response.put("Profit", String.valueOf(animalService.profitCounter(animal.getId())));
+        response.put("Expense", String.valueOf(animalService.expensesCounter(animal.getId())));
+        response.put("Net profit", String.valueOf(animalService.netProfitCounter(animal.getId())));
         return ResponseEntity.ok(response);
     }
 }

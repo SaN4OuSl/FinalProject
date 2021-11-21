@@ -69,8 +69,8 @@ public class TechniqueServiceImpl implements TechniqueService {
     }
     
     @Override
-    public Double expensesCounter(Technique technique) {
-        return technique.getPriceOfLubricant() + technique.getPriceOfParts();
+    public Double expensesCounter(Long id) {
+        return techniqueRepository.countExpensesOfTechniqueById(id);
     }
     
     @Override

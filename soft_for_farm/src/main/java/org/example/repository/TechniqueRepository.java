@@ -15,4 +15,7 @@ public interface TechniqueRepository extends JpaRepository<Technique, Long> {
     
     @Query("select (count(t) > 0) from Technique t JOIN Farm f on (f.id = t.farm.id) JOIN User u on (u.id = f.user.id) where t.id = ?1 and u = ?2")
     boolean existsByIdAndUser(Long id, User user);
+    
+    @Query("select t.priceOfLubricant + t.priceOfParts from Technique t where t.id = ?1")
+    Double countExpensesOfTechniqueById(Long id);
 }

@@ -16,11 +16,11 @@ public interface AnimalService {
     
     Animal findAnimalById(Long id);
     
-    Double profitCounter(Animal animal);
+    Double profitCounter(Long id);
     
-    Double expensesCounter(Animal animal);
+    Double expensesCounter(Long id);
     
-    Double netProfitCounter(Animal animal);
+    Double netProfitCounter(Long id);
     
     List<Animal> findAllAnimalByFarm(Farm farm);
     

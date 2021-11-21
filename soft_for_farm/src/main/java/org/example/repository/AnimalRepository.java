@@ -15,4 +15,10 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
     
     @Query("select (count(a) > 0) from Animal a JOIN Farm f on (f.id = a.farm.id) JOIN User u on (u.id = f.user.id) where a.id = ?1 and u = ?2")
     boolean existsByIdAndUser(Long id, User user);
+    
+    @Query("select a.costOfOneAnimal * a.numberOfAnimals from Animal a where a.id = ?1")
+    Double countProfitOfAnimalById(Long id);
+    
+    @Query("select a.rentalPriceOfBuilding + a.costOfFeeds + a.otherExpenses from Animal a where a.id = ?1")
+    Double countExpensesOfAnimalById(Long id);
 }

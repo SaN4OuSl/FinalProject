@@ -69,18 +69,18 @@ public class AnimalServiceImpl implements AnimalService {
     }
     
     @Override
-    public Double profitCounter(Animal animal) {
-        return animal.getCostOfOneAnimal() * animal.getNumberOfAnimals();
+    public Double profitCounter(Long id) {
+        return animalRepository.countProfitOfAnimalById(id);
     }
     
     @Override
-    public Double expensesCounter(Animal animal) {
-        return animal.getOtherExpenses() + animal.getRentalPriceOfBuilding() + animal.getCostOfFeeds();
+    public Double expensesCounter(Long id) {
+        return animalRepository.countExpensesOfAnimalById(id);
     }
     
     @Override
-    public Double netProfitCounter(Animal animal) {
-        return profitCounter(animal) - expensesCounter(animal);
+    public Double netProfitCounter(Long id) {
+        return profitCounter(id) - expensesCounter(id);
     }
     
     @Override

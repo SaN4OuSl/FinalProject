@@ -5,6 +5,7 @@ import org.example.entity.Farm;
 import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.jwt.JwtTokenException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.FarmService;
@@ -41,7 +42,7 @@ public class FarmRestController {
         try {
             user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             return farmService.findAllPageable(user, pageable);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -52,7 +53,7 @@ public class FarmRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             Farm farm = farmService.findFarmById(user, id);
             return responseReturner(farm);
-        } catch (UserNotFoundException | FarmNotFoundException e) {
+        } catch (UserNotFoundException | FarmNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (AccessToFarmException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -70,7 +71,7 @@ public class FarmRestController {
                 farmService.addFarm(user, farm);
                 return responseReturner(farm);
             }
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -84,7 +85,7 @@ public class FarmRestController {
                 User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
                 farmService.updateFarm(user, id, farm);
                 return new ResponseEntity<>("Farm successfully updated", HttpStatus.OK);
-            } catch (FarmNotFoundException | UserNotFoundException e) {
+            } catch (FarmNotFoundException | UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             } catch (AccessToFarmException e) {
                 return ResponseEntity.status(403).body(e.getMessage());
@@ -98,7 +99,7 @@ public class FarmRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             farmService.deleteFarm(user, id);
             return new ResponseEntity<>("Farm successfully deleted", HttpStatus.OK);
-        } catch (UserNotFoundException | FarmNotFoundException e) {
+        } catch (UserNotFoundException | FarmNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (AccessToFarmException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -112,7 +113,7 @@ public class FarmRestController {
         try {
             user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             return farmService.findFarmsByYear(year, user, pageable);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -124,7 +125,7 @@ public class FarmRestController {
         try {
             user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             return farmService.findFarmsByFarmName(farmName, user, pageable);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

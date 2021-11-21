@@ -16,11 +16,11 @@ public interface PlantService {
     
     Plant findPlantById(Long id);
     
-    Double profitCounter(Plant plant);
+    Double profitCounter(Long id);
     
-    Double expensesCounter(Plant plant);
+    Double expensesCounter(Long id);
     
-    Double netProfitCounter(Plant plant);
+    Double netProfitCounter(Long id);
     
     List<Plant> findAllPlantsByFarm(Farm farm);
     

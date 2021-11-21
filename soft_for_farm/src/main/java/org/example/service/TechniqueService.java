@@ -16,7 +16,7 @@ public interface TechniqueService {
     
     Technique findTechniqueById(Long id);
     
-    Double expensesCounter(Technique technique);
+    Double expensesCounter(Long id);
     
     List<Technique> findAllTechniquesByFarm(Farm farm);
     

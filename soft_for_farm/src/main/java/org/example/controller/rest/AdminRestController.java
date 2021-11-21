@@ -2,6 +2,7 @@ package org.example.controller.rest;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import org.example.entity.User;
+import org.example.exception.jwt.JwtTokenException;
 import org.example.exception.user.*;
 import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.UserService;
@@ -37,7 +38,7 @@ public class AdminRestController {
         try {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             return userService.findAllPageable(user, pageable);
-        } catch (UserNotFoundException | NotEnoughRights e) {
+        } catch (UserNotFoundException | NotEnoughRights | JwtTokenException e) {
             return null;
         }
     }
@@ -45,10 +46,10 @@ public class AdminRestController {
     @PostMapping(value = "/new")
     public Object createAdmin(String adminToken, @RequestBody User user) {
         User registrationAdmin;
-        String adminLogin = jwtTokenProvider.getLogin(adminToken);
         try {
+            String adminLogin = jwtTokenProvider.getLogin(adminToken);
             registrationAdmin = userService.registrationAdmin(userService.findByLogin(adminLogin), user);
-        } catch (UserPasswordSmall | DuplicateUserLogin | UserNotFoundException e) {
+        } catch (UserPasswordSmall | DuplicateUserLogin | UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (NotEnoughRights e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -73,7 +74,7 @@ public class AdminRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.deleteById(user, id);
             return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (NotEnoughRights e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -86,7 +87,7 @@ public class AdminRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.updateUserById(id, newUser, user);
             return new ResponseEntity<>("User successfully updated", HttpStatus.OK);
-        } catch (UserNotFoundException | UserPasswordSmall | DuplicateUserLogin | UserLoginSmall e) {
+        } catch (UserNotFoundException | UserPasswordSmall | DuplicateUserLogin | UserLoginSmall | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (NotEnoughRights e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -99,7 +100,7 @@ public class AdminRestController {
             User userAdmin = userService.findByLogin(jwtTokenProvider.getLogin(token));
             userService.addAdminRole(userAdmin, userService.findUserById(id));
             return new ResponseEntity<>("New admin added successfully", HttpStatus.OK);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (NotEnoughRights e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -113,7 +114,7 @@ public class AdminRestController {
             if (userDetailsService.isAdmin(user) || user.getId().equals(id))
                 return userService.findUserById(id);
             else return ResponseEntity.badRequest().body("You dont have enough rights");
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

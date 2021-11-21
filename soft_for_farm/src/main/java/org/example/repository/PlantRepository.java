@@ -16,4 +16,10 @@ public interface PlantRepository extends JpaRepository<Plant, Long> {
     
     @Query("select (count(p) > 0) from Plant p JOIN Farm f on (f.id = p.farm.id) JOIN User u on (u.id = f.user.id) where p.id = ?1 and u = ?2")
     boolean existsByIdAndUser(Long id, User user);
+    
+    @Query("select p.costOfPlant * p.plantHarvest * p.sizeOfFieldForPlant from Plant p where p.id = ?1")
+    Double countProfitOfPlantById(Long id);
+    
+    @Query("select p.rentalPriceOfField + p.otherExpense + p.costOfFertilizers from Plant p where p.id = ?1")
+    Double countExpensesOfPlantById(Long id);
 }

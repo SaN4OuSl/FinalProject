@@ -102,10 +102,10 @@ public class FarmServiceImpl implements FarmService {
         List<Animal> animals = farm.getAnimals();
         Double profit = 0d;
         for (Plant plant : plants) {
-            profit += plantService.profitCounter(plant);
+            profit += plantService.profitCounter(plant.getId());
         }
         for (Animal animal : animals) {
-            profit += animalService.profitCounter(animal);
+            profit += animalService.profitCounter(animal.getId());
         }
         return profit;
     }
@@ -117,13 +117,13 @@ public class FarmServiceImpl implements FarmService {
         List<Technique> techniques = farm.getTechniques();
         Double expense = 0d;
         for (Plant plant : plants) {
-            expense += plantService.expensesCounter(plant);
+            expense += plantService.expensesCounter(plant.getId());
         }
         for (Animal animal : animals) {
-            expense += animalService.expensesCounter(animal);
+            expense += animalService.expensesCounter(animal.getId());
         }
         for (Technique technique : techniques) {
-            expense += techniqueService.expensesCounter(technique);
+            expense += techniqueService.expensesCounter(technique.getId());
         }
         return expense;
     }

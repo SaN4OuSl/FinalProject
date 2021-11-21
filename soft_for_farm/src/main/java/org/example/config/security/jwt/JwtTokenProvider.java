@@ -1,9 +1,8 @@
 package org.example.config.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.example.entity.Role;
+import org.example.exception.jwt.JwtTokenException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -50,8 +49,12 @@ public class JwtTokenProvider {
                 .compact();
     }
     
-    public String getLogin(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    public String getLogin(String token) throws JwtTokenException {
+        try {
+            return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+        } catch (SignatureException | ExpiredJwtException e){
+            throw new JwtTokenException(e.getMessage());
+        }
     }
     
     private List<String> getRoleNames(List<Role> userRoles) {

@@ -5,6 +5,7 @@ import org.example.entity.Plant;
 import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.jwt.JwtTokenException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.FarmService;
@@ -46,7 +47,7 @@ public class PlantRestController {
                 plantService.addPlant(farm, plant);
                 return plantResponseReturner(plant);
             }
-        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
+        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -67,7 +68,7 @@ public class PlantRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         }
@@ -86,7 +87,7 @@ public class PlantRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         } else {
@@ -100,7 +101,7 @@ public class PlantRestController {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             Farm farm = farmService.findFarmById(user, farm_id);
             return plantService.findAllPlantsByFarm(farm);
-        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
+        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException | JwtTokenException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -116,7 +117,7 @@ public class PlantRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | JwtTokenException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         } else {
@@ -134,9 +135,9 @@ public class PlantRestController {
         response.put("Cost of fertilizers", String.valueOf(plant.getCostOfFertilizers()));
         response.put("Rental price of fields", String.valueOf(plant.getRentalPriceOfField()));
         response.put("Size pf field for plant", String.valueOf(plant.getSizeOfFieldForPlant()));
-        response.put("Profit", String.valueOf(plantService.profitCounter(plant)));
-        response.put("Expense", String.valueOf(plantService.expensesCounter(plant)));
-        response.put("Net profit", String.valueOf(plantService.netProfitCounter(plant)));
+        response.put("Profit", String.valueOf(plantService.profitCounter(plant.getId())));
+        response.put("Expense", String.valueOf(plantService.expensesCounter(plant.getId())));
+        response.put("Net profit", String.valueOf(plantService.netProfitCounter(plant.getId())));
         return ResponseEntity.ok(response);
     }
 }

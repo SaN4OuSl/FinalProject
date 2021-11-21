@@ -127,9 +127,9 @@ public class MainController {
             }
             List<Plant> plants = plantService.findAllPlantsByFarm(farm);
             model.addAttribute("plant", plant);
-            model.addAttribute("expense", String.format("%.2f", plantService.expensesCounter(plant)))
-                    .addAttribute("profit", String.format("%.2f", plantService.profitCounter(plant)))
-                    .addAttribute("netProfit", String.format("%.2f", plantService.netProfitCounter(plant)));
+            model.addAttribute("expense", String.format("%.2f", plantService.expensesCounter(id)))
+                    .addAttribute("profit", String.format("%.2f", plantService.profitCounter(id)))
+                    .addAttribute("netProfit", String.format("%.2f", plantService.netProfitCounter(id)));
             model.addAttribute("farm", farm)
                     .addAttribute("option", option)
                     .addAttribute("plants", plants);
@@ -148,9 +148,9 @@ public class MainController {
             }
             List<Animal> animals = animalService.findAllAnimalByFarm(farm);
             model.addAttribute("animal", animal);
-            model.addAttribute("expenses", String.format("%.2f", animalService.expensesCounter(animal)))
-                    .addAttribute("profit", String.format("%.2f", animalService.profitCounter(animal)))
-                    .addAttribute("netProfit", String.format("%.2f", animalService.netProfitCounter(animal)));
+            model.addAttribute("expenses", String.format("%.2f", animalService.expensesCounter(id)))
+                    .addAttribute("profit", String.format("%.2f", animalService.profitCounter(id)))
+                    .addAttribute("netProfit", String.format("%.2f", animalService.netProfitCounter(id)));
             model.addAttribute("farm", farm)
                     .addAttribute("option", option)
                     .addAttribute("animals", animals);
@@ -169,7 +169,7 @@ public class MainController {
             }
             List<Technique> techniques = techniqueService.findAllTechniquesByFarm(farm);
             model.addAttribute("technique", technique);
-            model.addAttribute("expenses", String.format("%.2f", techniqueService.expensesCounter(technique)));
+            model.addAttribute("expenses", String.format("%.2f", techniqueService.expensesCounter(id)));
             model.addAttribute("farm", farm)
                     .addAttribute("option", option)
                     .addAttribute("techniques", techniques);

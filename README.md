@@ -4,6 +4,6 @@ The application is designed to simplify the work of farm owners, the application
 Follow these steps to run the application:
 1. Build the project by maven
 2. Run docker-compose.yml
-3. Enter localhost:8080 in your browser
+3. Enter localhost:8080/login in your browser
 
 For test REST controllers enter localhost:8080/swagger-ui.html

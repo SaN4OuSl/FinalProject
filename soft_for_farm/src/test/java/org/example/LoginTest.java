@@ -34,14 +34,6 @@ public class LoginTest {
     }
 
     @Test
-    public void accessDeniedTest() throws Exception {
-        this.mockMvc.perform(get("/"))
-                .andDo(print())
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("http://localhost/login"));
-    }
-
-    @Test
     public void correctLogin() throws Exception {
         this.mockMvc.perform(formLogin().user("test user").password("adminpass"))
                 .andDo(print())

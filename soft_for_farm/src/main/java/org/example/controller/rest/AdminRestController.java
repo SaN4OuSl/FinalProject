@@ -8,7 +8,6 @@ import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.UserService;
 import org.example.service.impl.UserDetailsServiceImpl;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +33,12 @@ public class AdminRestController {
     
     @GetMapping("/users")
     @PageableAsQueryParam
-    public Page<User> readPageable(String token, @Parameter(hidden = true) Pageable pageable) {
+    public Object readPageable(String token, @Parameter(hidden = true) Pageable pageable) {
         try {
             User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
             return userService.findAllPageable(user, pageable);
         } catch (UserNotFoundException | NotEnoughRights | JwtTokenException e) {
-            return null;
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     

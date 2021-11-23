@@ -44,6 +44,20 @@ public class FarmController {
         }
     }
     
+    @GetMapping()
+    public String farms(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
+        User user;
+        try {
+            user = userService.findByLogin(principal.getName());
+        } catch (UserNotFoundException e) {
+            model.addAttribute("errorMessage", "User with this login not found");
+            return "error.html";
+        }
+        Page<Farm> pageFarm = farmService.findAllPageable(user, pageable);
+        model.addAttribute("page", pageFarm);
+        model.addAttribute("currentUser", user);
+        return "farms.html";
+    }
     
     @PostMapping(value = "/new")
     public String createFarm(Principal principal, @Valid @ModelAttribute("farm") Farm farm, BindingResult result, Model model) {
@@ -55,7 +69,7 @@ public class FarmController {
                 return "addFarm.html";
             } else {
                 farmService.addFarm(user, farm);
-                return "redirect:/farms";
+                return "redirect:/farm";
             }
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
@@ -88,7 +102,7 @@ public class FarmController {
                 model.addAttribute("errorMessage", "User not found");
                 return "error.html";
             }
-            return "redirect:/farms";
+            return "redirect:/farm";
         }
     }
     
@@ -97,7 +111,7 @@ public class FarmController {
         try {
             User user = userService.findByLogin(principal.getName());
             farmService.deleteFarm(user, id);
-            return "redirect:/farms";
+            return "redirect:/farm";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
             return "login.html";

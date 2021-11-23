@@ -56,7 +56,7 @@
             <td><label th:text="${user.getLogin()}">Login</label></td>
             <td><label th:text="${user.getPassword()}">Password</label></td>
             <td><label th:text="${user.getCreated()}">Created date</label></td>
-            <td><a th:href="@{/update/user/{id}(id=${user.getId()})}" class="floating-button">Select</a></td>
+            <td><a th:href="@{/admin/update/user/{id}(id=${user.getId()})}" class="floating-button">Select</a></td>
         </tr>
         <tr>
             <td colspan="4"><a href="/admin/new" class="floating-button">Add Admin</a></td>

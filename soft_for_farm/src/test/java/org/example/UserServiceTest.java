@@ -49,13 +49,12 @@ public class UserServiceTest {
 
     @Test
     void registrationAdmin() throws Exception {
-        User userAdmin = userService.findByLogin("test user");
         User user = new User("username", "userpass");
-        userService.registrationAdmin(userAdmin, user);
+        userService.registrationAdmin(user);
         Long id = user.getId();
 
         Assertions.assertTrue(userRepository.existsById(id));
-        userService.deleteById(userAdmin, id);
+        userService.deleteById(user, id);
     }
 
     @Test
@@ -81,12 +80,11 @@ public class UserServiceTest {
     
     @Test
     void addAdminRole() throws Exception {
-        User userAdmin = userService.findByLogin("test user");
         User user = new User("username", "userpass");
         userService.registration(user);
         Long id = user.getId();
         
-        userService.addAdminRole(userAdmin, user);
+        userService.addAdminRole(user);
         Assertions.assertTrue(userDetailsService.isAdmin(user));
         userService.deleteById(userService.findUserById(id), id);
     }

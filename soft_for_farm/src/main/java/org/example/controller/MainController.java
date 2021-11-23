@@ -37,21 +37,6 @@ public class MainController {
         this.techniqueService = techniqueService;
     }
     
-    @GetMapping("/farms")
-    public String farms(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
-        User user;
-        try {
-            user = userService.findByLogin(principal.getName());
-        } catch (UserNotFoundException e) {
-            model.addAttribute("errorMessage", "User with this login not found");
-            return "error.html";
-        }
-        Page<Farm> pageFarm = farmService.findAllPageable(user, pageable);
-        model.addAttribute("page", pageFarm);
-        model.addAttribute("currentUser", user);
-        return "farms.html";
-    }
-    
     @DeleteMapping("/deleteYourAccount")
     public String deleteYourAccount(Principal principal, Model model) {
         try {
@@ -174,14 +159,6 @@ public class MainController {
                     .addAttribute("option", option)
                     .addAttribute("techniques", techniques);
             return "techniques.html";
-        }
-        if (action.equals("user")) {
-            User userUpdate = userService.findUserById(id);
-            model.addAttribute("user", userUpdate);
-            model.addAttribute("option", option)
-                    .addAttribute("page", userService.findAllPageable(user, pageable))
-                    .addAttribute("currentUser", user);
-            return "users.html";
         }
         model.addAttribute("errorMessage", "Some error");
         return "error.html";

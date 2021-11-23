@@ -5,9 +5,7 @@ import org.example.entity.Plant;
 import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
-import org.example.exception.jwt.JwtTokenException;
 import org.example.exception.user.UserNotFoundException;
-import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.FarmService;
 import org.example.service.PlantService;
 import org.example.service.UserService;
@@ -25,21 +23,19 @@ import java.util.Map;
 public class PlantRestController {
     
     private final FarmService farmService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final PlantService plantService;
     private final UserService userService;
     
-    public PlantRestController(FarmService farmService, JwtTokenProvider jwtTokenProvider, PlantService plantService, UserService userService) {
+    public PlantRestController(FarmService farmService, PlantService plantService, UserService userService) {
         this.farmService = farmService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.plantService = plantService;
         this.userService = userService;
     }
     
     @PostMapping(value = "/{farm_id}/new")
-    public Object createPlant(String token, @Valid @RequestBody Plant plant, BindingResult result, @PathVariable Long farm_id) {
+    public Object createPlant(@Valid @RequestBody Plant plant, BindingResult result, @PathVariable Long farm_id) {
         try {
-            User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            User user = userService.getUserByAuthentication();
             Farm farm = farmService.findFarmById(user, farm_id);
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
@@ -47,17 +43,17 @@ public class PlantRestController {
                 plantService.addPlant(farm, plant);
                 return plantResponseReturner(plant);
             }
-        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException | JwtTokenException e) {
+        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
     @PatchMapping(value = "/{id}")
-    public Object updatePlant(String token, @Valid @RequestBody Plant newPlant, BindingResult result, @PathVariable("id") Long id) {
+    public Object updatePlant(@Valid @RequestBody Plant newPlant, BindingResult result, @PathVariable("id") Long id) {
         Plant plant = plantService.findPlantById(id);
         if (plant != null) {
             try {
-                User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+                User user = userService.getUserByAuthentication();
                 if (plantService.checkAccessToPlant(user, id)) {
                     if (result.hasErrors()) {
                         return ResponseEntity.badRequest().body("Errors in fields");
@@ -68,7 +64,7 @@ public class PlantRestController {
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException | JwtTokenException e) {
+            } catch (UserNotFoundException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         }
@@ -76,18 +72,18 @@ public class PlantRestController {
     }
     
     @DeleteMapping(value = "/{id}")
-    public Object deletePlant(String token, @PathVariable("id") Long id) {
+    public Object deletePlant(@PathVariable("id") Long id) {
         Plant plant = plantService.findPlantById(id);
         if (plant != null) {
             try {
-                User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+                User user = userService.getUserByAuthentication();
                 if (plantService.checkAccessToPlant(user, id)) {
                     plantService.deletePlant(id);
                     return new ResponseEntity<>("Plant successfully deleted", HttpStatus.OK);
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException | JwtTokenException e) {
+            } catch (UserNotFoundException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         } else {
@@ -96,28 +92,28 @@ public class PlantRestController {
     }
     
     @GetMapping("/{farm_id}/all")
-    public Object plants(String token, @PathVariable Long farm_id) {
+    public Object plants(@PathVariable Long farm_id) {
         try {
-            User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            User user = userService.getUserByAuthentication();
             Farm farm = farmService.findFarmById(user, farm_id);
             return plantService.findAllPlantsByFarm(farm);
-        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException | JwtTokenException e) {
+        } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
     @GetMapping("/{id}")
-    public Object getPlantById(String token, @PathVariable("id") Long id) {
+    public Object getPlantById(@PathVariable("id") Long id) {
         Plant plant = plantService.findPlantById(id);
         if (plant != null) {
             try {
-                User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+                User user = userService.getUserByAuthentication();
                 if (plantService.checkAccessToPlant(user, id)) {
                     return plantResponseReturner(plant);
                 } else {
                     return ResponseEntity.status(403).body("You dont have access");
                 }
-            } catch (UserNotFoundException | JwtTokenException e) {
+            } catch (UserNotFoundException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
         } else {

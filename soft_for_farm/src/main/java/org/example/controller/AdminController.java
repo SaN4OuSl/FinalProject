@@ -30,15 +30,12 @@ public class AdminController {
     public String users(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         try {
             User user = userService.findByLogin(principal.getName());
-            Page<User> pageUser = userService.findAllPageable(user, pageable);
+            Page<User> pageUser = userService.findAllPageable(pageable);
             model.addAttribute("page", pageUser);
             model.addAttribute("currentUser", user);
             return "users.html";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User with this login not found");
-            return "error.html";
-        } catch (NotEnoughRights e) {
-            model.addAttribute("errorMessage", e.getMessage());
             return "error.html";
         }
     }
@@ -65,7 +62,7 @@ public class AdminController {
                 model.addAttribute("user", userAdmin);
                 return "addAdmin.html";
             } else {
-                userService.registrationAdmin(userAdmin, user);
+                userService.registrationAdmin(user);
                 return "redirect:/admin/users";
             }
         } catch (UserNotFoundException e) {
@@ -117,17 +114,25 @@ public class AdminController {
     }
     
     @PatchMapping(value = "/addAdminRole/{id}")
-    public String addAdminRole(Principal principal, @PathVariable("id") Long id, Model model) {
+    public String addAdminRole(@PathVariable("id") Long id, Model model) {
         try {
-            User userAdmin = userService.findByLogin(principal.getName());
-            userService.addAdminRole(userAdmin, userService.findUserById(id));
+            userService.addAdminRole(userService.findUserById(id));
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
             return "error.html";
-        } catch (NotEnoughRights notEnoughRights) {
-            model.addAttribute("errorMessage", notEnoughRights.getMessage());
-            return "error.html";
         }
         return "redirect:/admin/users";
+    }
+    
+    @GetMapping("update/user/{id}")
+    public String update(Principal principal,
+                         @PathVariable("id") Long id,
+                         Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) throws UserNotFoundException, NotEnoughRights {
+        User userUpdate = userService.findUserById(id);
+        model.addAttribute("user", userUpdate);
+        model.addAttribute("option", 0)
+                .addAttribute("page", userService.findAllPageable(pageable))
+                .addAttribute("currentUser", userService.findByLogin(principal.getName()));
+        return "users.html";
     }
 }

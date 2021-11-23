@@ -5,9 +5,7 @@ import org.example.entity.Farm;
 import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
-import org.example.exception.jwt.JwtTokenException;
 import org.example.exception.user.UserNotFoundException;
-import org.example.config.security.jwt.JwtTokenProvider;
 import org.example.service.FarmService;
 import org.example.service.UserService;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
@@ -26,31 +24,28 @@ import java.util.Map;
 public class FarmRestController {
     
     private final FarmService farmService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     
-    public FarmRestController(FarmService farmService, JwtTokenProvider jwtTokenProvider, UserService userService) {
+    public FarmRestController(FarmService farmService, UserService userService) {
         this.farmService = farmService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
     }
     
     @GetMapping("/farms")
     @PageableAsQueryParam
-    public Object farms(String token, @Parameter(hidden = true) Pageable pageable) {
-        User user;
+    public Object farms(@Parameter(hidden = true) Pageable pageable) {
         try {
-            user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            User user = userService.getUserByAuthentication();
             return farmService.findAllPageable(user, pageable);
-        } catch (UserNotFoundException | JwtTokenException e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
     @GetMapping("/{id}")
-    public Object getFarmById(String token, @PathVariable("id") Long id) {
+    public Object getFarmById(@PathVariable("id") Long id) {
         try {
-            User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            User user = userService.getUserByAuthentication();
             Farm farm = farmService.findFarmById(user, id);
             Map<String, String> response = new HashMap<>();
             response.put("Id", String.valueOf(farm.getId()));
@@ -61,7 +56,7 @@ public class FarmRestController {
             response.put("Expenses", String.valueOf(farmService.expensesCounter(farm)));
             response.put("Net profit", String.valueOf(farmService.netProfitCounter(farm)));
             return ResponseEntity.ok(response);
-        } catch (UserNotFoundException | FarmNotFoundException | JwtTokenException e) {
+        } catch (UserNotFoundException | FarmNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (AccessToFarmException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -69,31 +64,30 @@ public class FarmRestController {
     }
     
     @PostMapping(value = "/new")
-    public Object createFarm(String token, @Valid @RequestBody Farm farm, BindingResult result) {
-        User user;
+    public Object createFarm(@Valid @RequestBody Farm farm, BindingResult result) {
         try {
-            user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            User user = userService.getUserByAuthentication();
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
             } else {
                 farmService.addFarm(user, farm);
                 return responseReturner(farm);
             }
-        } catch (UserNotFoundException | JwtTokenException e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
     @PatchMapping(value = "/{id}")
-    public Object updateFarm(String token, @Valid @RequestBody Farm farm, BindingResult result, @PathVariable("id") Long id) {
+    public Object updateFarm(@Valid @RequestBody Farm farm, BindingResult result, @PathVariable("id") Long id) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body("Errors in fields");
         } else {
             try {
-                User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+                User user = userService.getUserByAuthentication();
                 farmService.updateFarm(user, id, farm);
                 return new ResponseEntity<>("Farm successfully updated", HttpStatus.OK);
-            } catch (FarmNotFoundException | UserNotFoundException | JwtTokenException e) {
+            } catch (FarmNotFoundException | UserNotFoundException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             } catch (AccessToFarmException e) {
                 return ResponseEntity.status(403).body(e.getMessage());
@@ -102,12 +96,12 @@ public class FarmRestController {
     }
     
     @DeleteMapping(value = "/{id}")
-    public Object deleteFarm(String token, @PathVariable("id") Long id) {
+    public Object deleteFarm(@PathVariable("id") Long id) {
         try {
-            User user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            User user = userService.getUserByAuthentication();
             farmService.deleteFarm(user, id);
             return new ResponseEntity<>("Farm successfully deleted", HttpStatus.OK);
-        } catch (UserNotFoundException | FarmNotFoundException | JwtTokenException e) {
+        } catch (UserNotFoundException | FarmNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (AccessToFarmException e) {
             return ResponseEntity.status(403).body(e.getMessage());
@@ -116,24 +110,22 @@ public class FarmRestController {
     
     @GetMapping(value = "/findByYear")
     @PageableAsQueryParam
-    public Object findFarmsByYear(String token, String year, @Parameter(hidden = true) Pageable pageable) {
-        User user;
+    public Object findFarmsByYear(String year, @Parameter(hidden = true) Pageable pageable) {
         try {
-            user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            User user = userService.getUserByAuthentication();
             return farmService.findFarmsByYear(year, user, pageable);
-        } catch (UserNotFoundException | JwtTokenException e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
     @GetMapping(value = "/findFarmByName")
     @PageableAsQueryParam
-    public Object findFarmsByFarmName(String token, String farmName, @Parameter(hidden = true) Pageable pageable) {
-        User user;
+    public Object findFarmsByFarmName(String farmName, @Parameter(hidden = true) Pageable pageable) {
         try {
-            user = userService.findByLogin(jwtTokenProvider.getLogin(token));
+            User user = userService.getUserByAuthentication();
             return farmService.findFarmsByFarmName(farmName, user, pageable);
-        } catch (UserNotFoundException | JwtTokenException e) {
+        } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

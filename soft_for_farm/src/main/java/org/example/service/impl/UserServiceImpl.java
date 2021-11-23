@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,24 +52,19 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public User registrationAdmin(User userAdmin, User user) throws DuplicateUserLogin, UserPasswordSmall, NotEnoughRights, UserLoginSmall {
-        if (userDetailsService.isAdmin(userAdmin)) {
-            if (checkUserPaswordAndLogin(user)) {
-                Role role = roleRepository.findByName("ROLE_ADMIN");
-                regUser(user, role);
-                return user;
-            }
+    public User registrationAdmin(User user) throws DuplicateUserLogin, UserPasswordSmall, NotEnoughRights, UserLoginSmall {
+        if (checkUserPaswordAndLogin(user)) {
+            Role role = roleRepository.findByName("ROLE_ADMIN");
+            regUser(user, role);
+            return user;
         }
         throw new NotEnoughRights("You dont have rights for this action");
     }
     
     @Override
-    public Page<User> findAllPageable(User user, Pageable pageable) throws NotEnoughRights {
-        if (userDetailsService.isAdmin(user)) {
-            LOGGER.info("Read all users");
-            return userRepository.findAllUsers(user, pageable);
-        }
-        throw new NotEnoughRights("You dont have rights for this action");
+    public Page<User> findAllPageable(Pageable pageable) {
+        LOGGER.info("Read all users");
+        return userRepository.findAllUsers(pageable);
     }
     
     private void regUser(User user, Role role) {
@@ -103,6 +100,12 @@ public class UserServiceImpl implements UserService {
         }
         LOGGER.info("IN findByLogin: found user by id: {}", id);
         return resultUser;
+    }
+    
+    @Override
+    public User getUserByAuthentication() throws UserNotFoundException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return findByLogin(auth.getName());
     }
     
     @Override
@@ -148,8 +151,7 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void addAdminRole(User userAdmin, User user) throws NotEnoughRights {
-        if (userDetailsService.isAdmin(userAdmin)) {
+    public void addAdminRole(User user) {
             LOGGER.info("Start add admin role for user: " + user.getLogin());
             List<Role> roleList = new ArrayList<>();
             Role role = roleRepository.findByName("ROLE_ADMIN");
@@ -157,10 +159,6 @@ public class UserServiceImpl implements UserService {
             user.setRoles(roleList);
             userRepository.save(user);
             LOGGER.info("End add admin role for user: " + user.getLogin());
-        } else {
-            LOGGER.warn("User don't have enough rights");
-            throw new NotEnoughRights("You don't have enough rights");
-        }
     }
     
     private boolean checkUserPaswordAndLogin(User user) throws DuplicateUserLogin, UserPasswordSmall, UserLoginSmall {

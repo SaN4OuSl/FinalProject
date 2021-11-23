@@ -3,12 +3,17 @@ package org.example.config.security.jwt;
 import io.jsonwebtoken.*;
 import org.example.entity.Role;
 import org.example.exception.jwt.JwtTokenException;
+import org.example.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -22,6 +27,12 @@ public class JwtTokenProvider {
     
     @Value("${jwt.token.expired}")
     private long expiredMills;
+    
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    
+    public JwtTokenProvider(UserDetailsServiceImpl userDetailsServiceImpl) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+    }
     
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -54,6 +65,29 @@ public class JwtTokenProvider {
             return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
         } catch (SignatureException | ExpiredJwtException e){
             throw new JwtTokenException(e.getMessage());
+        }
+    }
+    
+    public Authentication getAuthentication(String token) throws JwtTokenException {
+        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(getLogin(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+    
+    public String resolveToken(HttpServletRequest req) {
+        String bearerToken = req.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+    
+    public boolean validateToken(String token) throws JwtTokenException {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new JwtTokenException("JWT token is expired or invalid");
         }
     }
     

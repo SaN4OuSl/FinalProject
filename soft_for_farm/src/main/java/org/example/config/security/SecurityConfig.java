@@ -24,6 +24,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     
+    @Autowired
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtTokenProvider jwtTokenProvider) {
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+    
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -43,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .antMatchers("/css/**", "/registration").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/login").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/registration").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/registration").permitAll()
                 .antMatchers("/admin/**", "/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
@@ -62,12 +68,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
-    
-    @Autowired
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.userDetailsService = userDetailsService;
-        this.jwtTokenProvider = jwtTokenProvider;
     }
     
     @Bean

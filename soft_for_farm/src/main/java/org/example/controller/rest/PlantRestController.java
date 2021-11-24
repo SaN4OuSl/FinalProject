@@ -1,14 +1,12 @@
 package org.example.controller.rest;
 
-import org.example.entity.Farm;
 import org.example.entity.Plant;
-import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.plant.AccessToPlantException;
+import org.example.exception.plant.PlantNotFoundException;
 import org.example.exception.user.UserNotFoundException;
-import org.example.service.FarmService;
 import org.example.service.PlantService;
-import org.example.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,25 +20,19 @@ import java.util.Map;
 @RequestMapping("/api/plant")
 public class PlantRestController {
     
-    private final FarmService farmService;
     private final PlantService plantService;
-    private final UserService userService;
     
-    public PlantRestController(FarmService farmService, PlantService plantService, UserService userService) {
-        this.farmService = farmService;
+    public PlantRestController(PlantService plantService) {
         this.plantService = plantService;
-        this.userService = userService;
     }
     
     @PostMapping(value = "/{farm_id}/new")
     public Object createPlant(@Valid @RequestBody Plant plant, BindingResult result, @PathVariable Long farm_id) {
         try {
-            Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
             } else {
-                plantService.addPlant(farm, plant);
-                return plantResponseReturner(plant);
+                return plantResponseReturner(plantService.addPlant(farm_id, plant));
             }
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -49,52 +41,31 @@ public class PlantRestController {
     
     @PatchMapping(value = "/{id}")
     public Object updatePlant(@Valid @RequestBody Plant newPlant, BindingResult result, @PathVariable("id") Long id) {
-        Plant plant = plantService.findPlantById(id);
-        if (plant != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (plantService.checkAccessToPlant(user, id)) {
-                    if (result.hasErrors()) {
-                        return ResponseEntity.badRequest().body("Errors in fields");
-                    } else {
-                        plantService.updatePlant(id, newPlant);
-                        return plantResponseReturner(plant);
-                    }
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
+        try {
+            if (result.hasErrors()) {
+                return ResponseEntity.badRequest().body("Errors in fields");
+            } else {
+                return plantResponseReturner(plantService.updatePlant(id, newPlant));
             }
+        } catch (UserNotFoundException | PlantNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.badRequest().body("Plant not found");
     }
     
     @DeleteMapping(value = "/{id}")
     public Object deletePlant(@PathVariable("id") Long id) {
-        Plant plant = plantService.findPlantById(id);
-        if (plant != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (plantService.checkAccessToPlant(user, id)) {
-                    plantService.deletePlant(id);
-                    return new ResponseEntity<>("Plant successfully deleted", HttpStatus.OK);
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
-        } else {
-            return ResponseEntity.badRequest().body("Plant not found");
+        try {
+            plantService.deletePlant(id);
+            return new ResponseEntity<>("Plant successfully deleted", HttpStatus.OK);
+        } catch (UserNotFoundException | PlantNotFoundException | AccessToPlantException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
     @GetMapping("/{farm_id}/all")
     public Object plants(@PathVariable Long farm_id) {
         try {
-            Farm farm = farmService.findFarmById(farm_id);
-            return plantService.findAllPlantsByFarm(farm);
+            return plantService.findAllPlantsByFarmId(farm_id);
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -102,20 +73,10 @@ public class PlantRestController {
     
     @GetMapping("/{id}")
     public Object getPlantById(@PathVariable("id") Long id) {
-        Plant plant = plantService.findPlantById(id);
-        if (plant != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (plantService.checkAccessToPlant(user, id)) {
-                    return plantResponseReturner(plant);
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
-        } else {
-            return ResponseEntity.badRequest().body("Plant not found");
+        try {
+            return plantResponseReturner(plantService.findPlantById(id));
+        } catch (UserNotFoundException | PlantNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     

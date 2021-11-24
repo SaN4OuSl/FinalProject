@@ -5,6 +5,7 @@ import org.example.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.Pattern;
@@ -20,4 +21,7 @@ public interface FarmRepository extends JpaRepository<Farm, Long> {
     Page<Farm> findAllByUser(User user, Pageable pageable);
     
     boolean existsByIdAndUser(Long id, User user);
+    
+    @Query("select f from Animal a JOIN Farm f on (f.id = a.farm.id) where a.id = ?1")
+    Farm getFarmByAnimalId(Long id);
 }

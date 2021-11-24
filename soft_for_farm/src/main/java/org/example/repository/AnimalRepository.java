@@ -11,10 +11,15 @@ import java.util.List;
 
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Long> {
-    List<Animal> findAllByFarm(Farm farm);
+    
+    @Query("select a from Animal a where a.farm.id = ?1")
+    List<Animal> findAllByFarmId(Long id);
     
     @Query("select (count(a) > 0) from Animal a JOIN Farm f on (f.id = a.farm.id) JOIN User u on (u.id = f.user.id) where a.id = ?1 and u = ?2")
     boolean existsByIdAndUser(Long id, User user);
+    
+    @Query("select a from Animal a JOIN Farm f on (f.id = a.farm.id) JOIN User u on (u.id = f.user.id) where a.id = ?1 and u = ?2")
+    Animal findByIdAndUser(Long id, User user);
     
     @Query("select a.costOfOneAnimal * a.numberOfAnimals from Animal a where a.id = ?1")
     Double countProfitOfAnimalById(Long id);

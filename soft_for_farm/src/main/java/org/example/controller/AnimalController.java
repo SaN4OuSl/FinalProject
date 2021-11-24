@@ -2,6 +2,8 @@ package org.example.controller;
 
 import org.example.entity.Animal;
 import org.example.entity.Farm;
+import org.example.exception.animal.AccessToAnimalException;
+import org.example.exception.animal.AnimalNotFoundException;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
@@ -46,14 +48,13 @@ public class AnimalController {
     }
     
     @PostMapping(value = "/{farm_id}/new")
-    public String createAnimal(@Valid @ModelAttribute("animal") Animal animal, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
+    public String createAnimal(@Valid @ModelAttribute("animal") Animal animal, BindingResult result, @PathVariable("farm_id") Long farmId, Model model) {
         try {
-            Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
-                model.addAttribute("farm", farm);
+                model.addAttribute("farm", farmService.findFarmById(farmId));
                 return "addAnimal.html";
             } else {
-                animalService.addAnimal(farm, animal);
+                animalService.addAnimal(farmId, animal);
                 return "redirect:/animal/{farm_id}/all";
             }
         } catch (FarmNotFoundException e) {
@@ -70,17 +71,16 @@ public class AnimalController {
     
     @PatchMapping(value = "/{id}")
     public String updateAnimal(@Valid @ModelAttribute("animal") Animal newAnimal, BindingResult result, @PathVariable("id") Long id, Model model) {
-        Animal animal = animalService.findAnimalById(id);
         try {
-            Farm farm = farmService.findFarmById(animal.getFarm().getId());
+            Farm farm = animalService.getFarmByAnimalId(id);
             if (result.hasErrors()) {
                 model.addAttribute("farm", farm);
-                model.addAttribute("animals", animalService.findAllAnimalByFarm(farm));
+                model.addAttribute("animals", animalService.findAllAnimalByFarmId(farm.getId()));
                 return "redirect:/update/animal/{id}";
             } else {
                 animalService.updateAnimal(id, newAnimal);
                 model.addAttribute("farm", farm);
-                model.addAttribute("animals", animalService.findAllAnimalByFarm(farm));
+                model.addAttribute("animals", animalService.findAllAnimalByFarmId(farm.getId()));
                 return "animals.html";
             }
         } catch (UserNotFoundException e) {
@@ -92,24 +92,23 @@ public class AnimalController {
         } catch (AccessToFarmException e) {
             model.addAttribute("errorMessage", "You don't have access to this farm");
             return "error.html";
+        } catch (AnimalNotFoundException e) {
+            model.addAttribute("errorMessage", "Animal with this id not found");
+            return "error.html";
         }
     }
     
     @DeleteMapping(value = "/{id}")
     public String deleteAnimal(@PathVariable("id") Long id, Model model) {
-        Animal animal = animalService.findAnimalById(id);
         try {
-            Farm farm = farmService.findFarmById(animal.getFarm().getId());
+            Animal animal = animalService.findAnimalById(id);
             animalService.deleteAnimal(id);
-            return "redirect:/animal/" + farm.getId() + "/all";
+            return "redirect:/animal/" + animal.getFarm().getId() + "/all";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
             return "error.html";
-        } catch (FarmNotFoundException e) {
-            model.addAttribute("errorMessage", "Farm with this id not found");
-            return "error.html";
-        } catch (AccessToFarmException e) {
-            model.addAttribute("errorMessage", "You don't have access to this farm");
+        } catch (AnimalNotFoundException | AccessToAnimalException e) {
+            model.addAttribute("errorMessage", e.getMessage());
             return "error.html";
         }
     }
@@ -117,9 +116,8 @@ public class AnimalController {
     @GetMapping("/{id}/all")
     public String animals(Model model, @PathVariable Long id) {
         try {
-            Farm farm = farmService.findFarmById(id);
-            model.addAttribute("farm", farm);
-            model.addAttribute("animals", animalService.findAllAnimalByFarm(farm));
+            model.addAttribute("farm", farmService.findFarmById(id));
+            model.addAttribute("animals", animalService.findAllAnimalByFarmId(id));
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
             return "error.html";

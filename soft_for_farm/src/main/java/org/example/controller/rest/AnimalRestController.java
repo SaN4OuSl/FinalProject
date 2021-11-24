@@ -1,14 +1,12 @@
 package org.example.controller.rest;
 
 import org.example.entity.Animal;
-import org.example.entity.Farm;
-import org.example.entity.User;
+import org.example.exception.animal.AccessToAnimalException;
+import org.example.exception.animal.AnimalNotFoundException;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.service.AnimalService;
-import org.example.service.FarmService;
-import org.example.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,25 +20,19 @@ import java.util.Map;
 @RequestMapping("/api/animal")
 public class AnimalRestController {
     
-    private final FarmService farmService;
     private final AnimalService animalService;
-    private final UserService userService;
     
-    public AnimalRestController(FarmService farmService, AnimalService animalService, UserService userService) {
-        this.farmService = farmService;
+    public AnimalRestController(AnimalService animalService) {
         this.animalService = animalService;
-        this.userService = userService;
     }
     
-    @PostMapping(value = "/{farm_id}/new")
-    public Object createAnimal(@Valid @RequestBody Animal animal, BindingResult result, @PathVariable Long farm_id) {
+    @PostMapping(value = "/{farmId}/new")
+    public Object createAnimal(@Valid @RequestBody Animal animal, BindingResult result, @PathVariable Long farmId) {
         try {
-            Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
             } else {
-                animalService.addAnimal(farm, animal);
-                return animalResponseReturner(animal);
+                return animalResponseReturner(animalService.addAnimal(farmId, animal));
             }
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -49,52 +41,31 @@ public class AnimalRestController {
     
     @PatchMapping(value = "/{id}")
     public Object updateAnimal(@Valid @RequestBody Animal newAnimal, BindingResult result, @PathVariable("id") Long id) {
-        Animal animal = animalService.findAnimalById(id);
-        if (animal != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (animalService.checkAccessToAnimal(user, id)) {
-                    if (result.hasErrors()) {
-                        return ResponseEntity.badRequest().body("Errors in fields");
-                    } else {
-                        animalService.updateAnimal(id, newAnimal);
-                        return animalResponseReturner(animal);
-                    }
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
+        try {
+            if (result.hasErrors()) {
+                return ResponseEntity.badRequest().body("Errors in fields");
+            } else {
+                return animalResponseReturner(animalService.updateAnimal(id, newAnimal));
             }
+        } catch (UserNotFoundException | AnimalNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.badRequest().body("Animal not found");
     }
     
     @DeleteMapping(value = "/{id}")
     public Object deleteAnimal(@PathVariable("id") Long id) {
-        Animal animal = animalService.findAnimalById(id);
-        if (animal != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (animalService.checkAccessToAnimal(user, id)) {
-                    animalService.deleteAnimal(id);
-                    return new ResponseEntity<>("Animal successfully deleted", HttpStatus.OK);
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
-        } else {
-            return ResponseEntity.badRequest().body("Animal not found");
+        try {
+            animalService.deleteAnimal(id);
+            return new ResponseEntity<>("Animal successfully deleted", HttpStatus.OK);
+        } catch (UserNotFoundException | AccessToAnimalException | AnimalNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
     @GetMapping("/{farm_id}/all")
     public Object animals(@PathVariable Long farm_id) {
         try {
-            Farm farm = farmService.findFarmById(farm_id);
-            return animalService.findAllAnimalByFarm(farm);
+            return animalService.findAllAnimalByFarmId(farm_id);
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -102,20 +73,10 @@ public class AnimalRestController {
     
     @GetMapping("/{id}")
     public Object getAnimalById(@PathVariable("id") Long id) {
-        Animal animal = animalService.findAnimalById(id);
-        if (animal != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (animalService.checkAccessToAnimal(user, id)) {
-                    return animalResponseReturner(animal);
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
-        } else {
-            return ResponseEntity.badRequest().body("Animal not found");
+        try {
+            return animalService.findAnimalById(id);
+        } catch (UserNotFoundException | AnimalNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     

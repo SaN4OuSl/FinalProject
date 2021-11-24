@@ -47,7 +47,7 @@ public class PlantServiceTest {
         farmService.addFarm(farm);
         Long farmId = farm.getId();
         Plant plant = new Plant("test plant", 2000.2, 200000d, 2111.11, 2000.00, 55.00, 600.00);
-        plantService.addPlant(farmService.findFarmById(farmId), plant);
+        plantService.addPlant(farmId, plant);
         Long plantId = plant.getId();
         
         Assertions.assertTrue(plantRepository.existsById(plantId));
@@ -63,7 +63,7 @@ public class PlantServiceTest {
         Long farmId = farm.getId();
         
         Plant plant = new Plant("test plant", 2000.2, 200000d, 2111.11, 2000.00, 55.00, 600.00);
-        plantService.addPlant(farmService.findFarmById(farmId), plant);
+        plantService.addPlant(farmId, plant);
         Long plantId = plant.getId();
         
         Plant newPlant = new Plant("test plant updated", 2000.2, 200000d, 2111.11, 2000.00, 55.00, 600.00);
@@ -81,7 +81,7 @@ public class PlantServiceTest {
         farmService.addFarm(farm);
         Long farmId = farm.getId();
         Plant plant = new Plant("test plant", 2000.2, 200000d, 2111.11, 2000.00, 55.00, 600.00);
-        plantService.addPlant(farmService.findFarmById(farmId), plant);
+        plantService.addPlant(farmId, plant);
         Long plantId = plant.getId();
         
         plantService.deletePlant(plantId);

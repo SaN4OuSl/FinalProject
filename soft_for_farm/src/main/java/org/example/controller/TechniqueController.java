@@ -5,6 +5,8 @@ import org.example.entity.Farm;
 import org.example.entity.Technique;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.technique.AccessToTechniqueException;
+import org.example.exception.technique.TechniqueNotFoundException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.service.FarmService;
 import org.example.service.TechniqueService;
@@ -47,12 +49,11 @@ public class TechniqueController {
     @PostMapping(value = "/{farm_id}/new")
     public String createTechnique(@Valid @ModelAttribute("technique") Technique technique, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
         try {
-            Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
-                model.addAttribute("farm", farm);
+                model.addAttribute("farm", farmService.findFarmById(farm_id));
                 return "addTechnique.html";
             } else {
-                techniqueService.addTechnique(farm, technique);
+                techniqueService.addTechnique(farm_id, technique);
                 return "redirect:/technique/{farm_id}/all";
             }
         } catch (FarmNotFoundException e) {
@@ -69,17 +70,18 @@ public class TechniqueController {
     
     @PatchMapping(value = "/{id}")
     public String updateTechnique(@Valid @ModelAttribute("technique") Technique newTechnique, BindingResult result, @PathVariable("id") Long id, Model model) {
-        Technique technique = techniqueService.findTechniqueById(id);
         try {
+            Technique technique = techniqueService.findTechniqueById(id);
+            Long farmId = technique.getFarm().getId();
             Farm farm = farmService.findFarmById(technique.getFarm().getId());
             if (result.hasErrors()) {
                 model.addAttribute("farm", farm);
-                model.addAttribute("techniques", techniqueService.findAllTechniquesByFarm(farm));
+                model.addAttribute("techniques", techniqueService.findAllTechniquesByFarm(farmId));
                 return "redirect:/update/techniques/{id}";
             } else {
                 techniqueService.updateTechnique(id, newTechnique);
                 model.addAttribute("farm", farm);
-                model.addAttribute("techniques", techniqueService.findAllTechniquesByFarm(farm));
+                model.addAttribute("techniques", techniqueService.findAllTechniquesByFarm(farmId));
                 return "techniques.html";
             }
         } catch (FarmNotFoundException e) {
@@ -89,15 +91,18 @@ public class TechniqueController {
             model.addAttribute("errorMessage", "You don't have access to this farm");
             return "error.html";
         } catch (UserNotFoundException e) {
-            model.addAttribute("errorMessage", "USer not found");
+            model.addAttribute("errorMessage", "User not found");
+            return "error.html";
+        } catch (TechniqueNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
             return "error.html";
         }
     }
     
     @DeleteMapping(value = "/{id}")
     public String deleteTechnique(@PathVariable("id") Long id, Model model) {
-        Technique technique = techniqueService.findTechniqueById(id);
         try {
+            Technique technique = techniqueService.findTechniqueById(id);
             Farm farm = farmService.findFarmById(technique.getFarm().getId());
             techniqueService.deleteTechnique(id);
             return "redirect:/technique/" + farm.getId() + "/all";
@@ -110,6 +115,9 @@ public class TechniqueController {
         } catch (AccessToFarmException e) {
             model.addAttribute("errorMessage", "You don't have access to this farm");
             return "error.html";
+        } catch (AccessToTechniqueException | TechniqueNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "error.html";
         }
     }
     
@@ -118,7 +126,7 @@ public class TechniqueController {
         try {
             Farm farm = farmService.findFarmById(id);
             model.addAttribute("farm", farm);
-            model.addAttribute("techniques", techniqueService.findAllTechniquesByFarm(farm));
+            model.addAttribute("techniques", techniqueService.findAllTechniquesByFarm(id));
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
             return "redirect:/farm";

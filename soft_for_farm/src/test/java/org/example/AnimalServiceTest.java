@@ -47,7 +47,7 @@ public class AnimalServiceTest {
         farmService.addFarm(farm);
         Long farmId = farm.getId();
         Animal animal = new Animal("test animal", 2000, 200000d, 2111.11, 2000.00, 2222d);
-        animalService.addAnimal(farmService.findFarmById(farmId), animal);
+        animalService.addAnimal(farmId, animal);
         Long animalId = animal.getId();
 
         Assertions.assertTrue(animalRepository.existsById(animalId));
@@ -63,7 +63,7 @@ public class AnimalServiceTest {
         Long farmId = farm.getId();
 
         Animal animal = new Animal("test animal", 2000, 200000d, 2111.11, 2000.00, 2222d);
-        animalService.addAnimal(farmService.findFarmById(farmId), animal);
+        animalService.addAnimal(farmId, animal);
         Long animalId = animal.getId();
 
         Animal newAnimal = new Animal("test animal updated", 2000, 200000d, 2111.11, 2000.00, 2000.);
@@ -81,7 +81,7 @@ public class AnimalServiceTest {
         farmService.addFarm(farm);
         Long farmId = farm.getId();
         Animal animal = new Animal("test animal", 2000, 200000d, 2111.11, 2000.00, 2222d);
-        animalService.addAnimal(farmService.findFarmById(farmId), animal);
+        animalService.addAnimal(farmId, animal);
         Long animalId = animal.getId();
 
         animalService.deleteAnimal(animalId);

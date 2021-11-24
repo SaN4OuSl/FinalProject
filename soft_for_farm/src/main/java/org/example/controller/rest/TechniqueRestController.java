@@ -1,14 +1,12 @@
 package org.example.controller.rest;
 
-import org.example.entity.Farm;
 import org.example.entity.Technique;
-import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.technique.AccessToTechniqueException;
+import org.example.exception.technique.TechniqueNotFoundException;
 import org.example.exception.user.UserNotFoundException;
-import org.example.service.FarmService;
 import org.example.service.TechniqueService;
-import org.example.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -22,25 +20,19 @@ import java.util.Map;
 @RequestMapping("/api/technique")
 public class TechniqueRestController {
     
-    private final FarmService farmService;
     private final TechniqueService techniqueService;
-    private final UserService userService;
     
-    public TechniqueRestController(FarmService farmService, TechniqueService techniqueService, UserService userService) {
-        this.farmService = farmService;
+    public TechniqueRestController(TechniqueService techniqueService) {
         this.techniqueService = techniqueService;
-        this.userService = userService;
     }
     
     @PostMapping(value = "/{farm_id}/new")
     public Object createTechnique(@Valid @RequestBody Technique technique, BindingResult result, @PathVariable Long farm_id) {
         try {
-            Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
             } else {
-                techniqueService.addTechnique(farm, technique);
-                return techniqueResponseReturner(technique);
+                return techniqueResponseReturner( techniqueService.addTechnique(farm_id, technique));
             }
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -49,52 +41,31 @@ public class TechniqueRestController {
     
     @PatchMapping(value = "/{id}")
     public Object updateTechnique(@Valid @RequestBody Technique newTechnique, BindingResult result, @PathVariable("id") Long id) {
-        Technique technique = techniqueService.findTechniqueById(id);
-        if (technique != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (techniqueService.checkAccessToTechnique(user, id)) {
-                    if (result.hasErrors()) {
-                        return ResponseEntity.badRequest().body("Errors in fields");
-                    } else {
-                        techniqueService.updateTechnique(id, newTechnique);
-                        return techniqueResponseReturner(technique);
-                    }
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
+        try {
+            if (result.hasErrors()) {
+                return ResponseEntity.badRequest().body("Errors in fields");
+            } else {
+                return techniqueResponseReturner(techniqueService.updateTechnique(id, newTechnique));
             }
+        } catch (UserNotFoundException | TechniqueNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.badRequest().body("Technique not found");
     }
     
     @DeleteMapping(value = "/{id}")
     public Object deleteTechnique(@PathVariable("id") Long id) {
-        Technique technique = techniqueService.findTechniqueById(id);
-        if (technique != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (techniqueService.checkAccessToTechnique(user, id)) {
-                    techniqueService.deleteTechnique(id);
-                    return new ResponseEntity<>("Technique successfully deleted", HttpStatus.OK);
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
-        } else {
-            return ResponseEntity.badRequest().body("Technique not found");
+        try {
+            techniqueService.deleteTechnique(id);
+            return new ResponseEntity<>("Technique successfully deleted", HttpStatus.OK);
+        } catch (UserNotFoundException | AccessToTechniqueException | TechniqueNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     
     @GetMapping("/{farm_id}/all")
     public Object techniques(@PathVariable Long farm_id) {
         try {
-            Farm farm = farmService.findFarmById(farm_id);
-            return techniqueService.findAllTechniquesByFarm(farm);
+            return techniqueService.findAllTechniquesByFarm(farm_id);
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -102,20 +73,10 @@ public class TechniqueRestController {
     
     @GetMapping("/{id}")
     public Object getTechniqueById(@PathVariable("id") Long id) {
-        Technique technique = techniqueService.findTechniqueById(id);
-        if (technique != null) {
-            try {
-                User user = userService.getUserByAuthentication();
-                if (techniqueService.checkAccessToTechnique(user, id)) {
-                    return techniqueResponseReturner(technique);
-                } else {
-                    return ResponseEntity.status(403).body("You dont have access");
-                }
-            } catch (UserNotFoundException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
-        } else {
-            return ResponseEntity.badRequest().body("Technique not found");
+        try {
+            return techniqueResponseReturner(techniqueService.findTechniqueById(id));
+        } catch (UserNotFoundException | TechniqueNotFoundException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     

@@ -45,7 +45,7 @@ public class TechniqueServiceTest {
         farmService.addFarm(farm);
         Long farmId = farm.getId();
         Technique technique = new Technique("test technique", 1000.1, 20000.1);
-        techniqueService.addTechnique(farmService.findFarmById(farmId), technique);
+        techniqueService.addTechnique(farmId, technique);
         Long techniqueId = technique.getId();
         
         Assertions.assertTrue(techniqueRepository.existsById(techniqueId));
@@ -61,7 +61,7 @@ public class TechniqueServiceTest {
         Long farmId = farm.getId();
     
         Technique technique = new Technique("test technique", 1000.1, 20000.1);
-        techniqueService.addTechnique(farmService.findFarmById(farmId), technique);
+        techniqueService.addTechnique(farmId, technique);
         Long techniqueId = technique.getId();
     
         Technique newTechnique =new Technique("test technique updated", 1000.1, 20000.1);
@@ -79,7 +79,7 @@ public class TechniqueServiceTest {
         farmService.addFarm(farm);
         Long farmId = farm.getId();
         Technique technique = new Technique("test technique", 1000.1, 20000.1);
-        techniqueService.addTechnique(farmService.findFarmById(farmId), technique);
+        techniqueService.addTechnique(farmId, technique);
         Long techniqueId = technique.getId();
 
         techniqueService.deleteTechnique(techniqueId);

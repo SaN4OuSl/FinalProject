@@ -1,24 +1,25 @@
 package org.example.service;
 
-import org.example.entity.Farm;
 import org.example.entity.Technique;
-import org.example.entity.User;
+import org.example.exception.farm.AccessToFarmException;
+import org.example.exception.farm.FarmNotFoundException;
+import org.example.exception.technique.AccessToTechniqueException;
+import org.example.exception.technique.TechniqueNotFoundException;
+import org.example.exception.user.UserNotFoundException;
 
 import java.util.List;
 
 public interface TechniqueService {
     
-    void addTechnique(Farm farm, Technique technique);
+    Technique addTechnique(Long farmId, Technique technique)  throws AccessToFarmException, FarmNotFoundException, UserNotFoundException;
     
-    void updateTechnique(Long id, Technique technique);
+    Technique updateTechnique(Long id, Technique technique) throws UserNotFoundException, TechniqueNotFoundException;
     
-    void deleteTechnique(Long id);
+    void deleteTechnique(Long id) throws UserNotFoundException, AccessToTechniqueException, TechniqueNotFoundException;
     
-    Technique findTechniqueById(Long id);
+    Technique findTechniqueById(Long id) throws UserNotFoundException, TechniqueNotFoundException;
     
     Double expensesCounter(Long id);
     
-    List<Technique> findAllTechniquesByFarm(Farm farm);
-    
-    boolean checkAccessToTechnique(User user, Long id);
+    List<Technique> findAllTechniquesByFarm(Long farmId) throws FarmNotFoundException, AccessToFarmException, UserNotFoundException;
 }

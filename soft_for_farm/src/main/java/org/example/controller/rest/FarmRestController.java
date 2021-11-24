@@ -2,12 +2,10 @@ package org.example.controller.rest;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import org.example.entity.Farm;
-import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.service.FarmService;
-import org.example.service.UserService;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,19 +22,16 @@ import java.util.Map;
 public class FarmRestController {
     
     private final FarmService farmService;
-    private final UserService userService;
     
-    public FarmRestController(FarmService farmService, UserService userService) {
+    public FarmRestController(FarmService farmService) {
         this.farmService = farmService;
-        this.userService = userService;
     }
     
     @GetMapping("/farms")
     @PageableAsQueryParam
     public Object farms(@Parameter(hidden = true) Pageable pageable) {
         try {
-            User user = userService.getUserByAuthentication();
-            return farmService.findAllPageable(user, pageable);
+            return farmService.findAllPageable(pageable);
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -45,8 +40,7 @@ public class FarmRestController {
     @GetMapping("/{id}")
     public Object getFarmById(@PathVariable("id") Long id) {
         try {
-            User user = userService.getUserByAuthentication();
-            Farm farm = farmService.findFarmById(user, id);
+            Farm farm = farmService.findFarmById(id);
             Map<String, String> response = new HashMap<>();
             response.put("Id", String.valueOf(farm.getId()));
             response.put("Farm name", farm.getFarmName());
@@ -66,11 +60,10 @@ public class FarmRestController {
     @PostMapping(value = "/new")
     public Object createFarm(@Valid @RequestBody Farm farm, BindingResult result) {
         try {
-            User user = userService.getUserByAuthentication();
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
             } else {
-                farmService.addFarm(user, farm);
+                farmService.addFarm(farm);
                 return responseReturner(farm);
             }
         } catch (UserNotFoundException e) {
@@ -84,8 +77,7 @@ public class FarmRestController {
             return ResponseEntity.badRequest().body("Errors in fields");
         } else {
             try {
-                User user = userService.getUserByAuthentication();
-                farmService.updateFarm(user, id, farm);
+                farmService.updateFarm(id, farm);
                 return new ResponseEntity<>("Farm successfully updated", HttpStatus.OK);
             } catch (FarmNotFoundException | UserNotFoundException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
@@ -98,8 +90,7 @@ public class FarmRestController {
     @DeleteMapping(value = "/{id}")
     public Object deleteFarm(@PathVariable("id") Long id) {
         try {
-            User user = userService.getUserByAuthentication();
-            farmService.deleteFarm(user, id);
+            farmService.deleteFarm(id);
             return new ResponseEntity<>("Farm successfully deleted", HttpStatus.OK);
         } catch (UserNotFoundException | FarmNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -112,8 +103,7 @@ public class FarmRestController {
     @PageableAsQueryParam
     public Object findFarmsByYear(String year, @Parameter(hidden = true) Pageable pageable) {
         try {
-            User user = userService.getUserByAuthentication();
-            return farmService.findFarmsByYear(year, user, pageable);
+            return farmService.findFarmsByYear(year, pageable);
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -123,8 +113,7 @@ public class FarmRestController {
     @PageableAsQueryParam
     public Object findFarmsByFarmName(String farmName, @Parameter(hidden = true) Pageable pageable) {
         try {
-            User user = userService.getUserByAuthentication();
-            return farmService.findFarmsByFarmName(farmName, user, pageable);
+            return farmService.findFarmsByFarmName(farmName, pageable);
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -3,20 +3,17 @@ package org.example.controller;
 
 import org.example.entity.Farm;
 import org.example.entity.Technique;
-import org.example.entity.User;
 import org.example.exception.farm.AccessToFarmException;
 import org.example.exception.farm.FarmNotFoundException;
 import org.example.exception.user.UserNotFoundException;
 import org.example.service.FarmService;
 import org.example.service.TechniqueService;
-import org.example.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 
 @Controller
 @RequestMapping("/technique")
@@ -24,19 +21,16 @@ public class TechniqueController {
     
     private final FarmService farmService;
     private final TechniqueService techniqueService;
-    private final UserService userService;
     
-    public TechniqueController(FarmService farmService, TechniqueService techniqueService, UserService userService) {
+    public TechniqueController(FarmService farmService, TechniqueService techniqueService) {
         this.farmService = farmService;
         this.techniqueService = techniqueService;
-        this.userService = userService;
     }
     
     @GetMapping("/{farm_id}/new")
-    public String displayTechniqueForm(Principal principal, Model model, @PathVariable("farm_id") Long farm_id) {
+    public String displayTechniqueForm(Model model, @PathVariable("farm_id") Long farm_id) {
         try {
-            User user = userService.findByLogin(principal.getName());
-            model.addAttribute("farm", farmService.findFarmById(user, farm_id));
+            model.addAttribute("farm", farmService.findFarmById(farm_id));
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
             return "error.html";
@@ -51,10 +45,9 @@ public class TechniqueController {
     }
     
     @PostMapping(value = "/{farm_id}/new")
-    public String createTechnique(Principal principal, @Valid @ModelAttribute("technique") Technique technique, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
+    public String createTechnique(@Valid @ModelAttribute("technique") Technique technique, BindingResult result, @PathVariable("farm_id") Long farm_id, Model model) {
         try {
-            User user = userService.findByLogin(principal.getName());
-            Farm farm = farmService.findFarmById(user, farm_id);
+            Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
                 model.addAttribute("farm", farm);
                 return "addTechnique.html";
@@ -64,7 +57,7 @@ public class TechniqueController {
             }
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
-            return "redirect:/farms";
+            return "redirect:/farm";
         } catch (AccessToFarmException e) {
             model.addAttribute("errorMessage", "You don't have access to this farm");
             return "error.html";
@@ -75,11 +68,10 @@ public class TechniqueController {
     }
     
     @PatchMapping(value = "/{id}")
-    public String updateTechnique(Principal principal, @Valid @ModelAttribute("technique") Technique newTechnique, BindingResult result, @PathVariable("id") Long id, Model model) {
+    public String updateTechnique(@Valid @ModelAttribute("technique") Technique newTechnique, BindingResult result, @PathVariable("id") Long id, Model model) {
         Technique technique = techniqueService.findTechniqueById(id);
         try {
-            User user = userService.findByLogin(principal.getName());
-            Farm farm = farmService.findFarmById(user, technique.getFarm().getId());
+            Farm farm = farmService.findFarmById(technique.getFarm().getId());
             if (result.hasErrors()) {
                 model.addAttribute("farm", farm);
                 model.addAttribute("techniques", techniqueService.findAllTechniquesByFarm(farm));
@@ -92,7 +84,7 @@ public class TechniqueController {
             }
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
-            return "redirect:/farms";
+            return "redirect:/farm";
         } catch (AccessToFarmException e) {
             model.addAttribute("errorMessage", "You don't have access to this farm");
             return "error.html";
@@ -103,11 +95,10 @@ public class TechniqueController {
     }
     
     @DeleteMapping(value = "/{id}")
-    public String deleteTechnique(Principal principal, @PathVariable("id") Long id, Model model) {
+    public String deleteTechnique(@PathVariable("id") Long id, Model model) {
         Technique technique = techniqueService.findTechniqueById(id);
         try {
-            User user = userService.findByLogin(principal.getName());
-            Farm farm = farmService.findFarmById(user, technique.getFarm().getId());
+            Farm farm = farmService.findFarmById(technique.getFarm().getId());
             techniqueService.deleteTechnique(id);
             return "redirect:/technique/" + farm.getId() + "/all";
         } catch (UserNotFoundException e) {
@@ -123,15 +114,14 @@ public class TechniqueController {
     }
     
     @GetMapping("/{id}/all")
-    public String techniques(Principal principal, Model model, @PathVariable Long id) {
+    public String techniques( Model model, @PathVariable Long id) {
         try {
-            User user = userService.findByLogin(principal.getName());
-            Farm farm = farmService.findFarmById(user, id);
+            Farm farm = farmService.findFarmById(id);
             model.addAttribute("farm", farm);
             model.addAttribute("techniques", techniqueService.findAllTechniquesByFarm(farm));
         } catch (FarmNotFoundException e) {
             model.addAttribute("errorMessage", "Farm with this id not found");
-            return "redirect:/farms";
+            return "redirect:/farm";
         } catch (AccessToFarmException e) {
             model.addAttribute("errorMessage", "You don't have access to this farm");
             return "error.html";

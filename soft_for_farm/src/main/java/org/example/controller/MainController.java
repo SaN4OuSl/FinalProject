@@ -81,7 +81,7 @@ public class MainController {
         int option = 0;
         if (action.equals("farms")) {
             try {
-                farm = farmService.findFarmById(user, id);
+                farm = farmService.findFarmById(id);
                 model.addAttribute("farm", farm);
             } catch (FarmNotFoundException e) {
                 model.addAttribute("errorMessage", "Farm with this id not found");
@@ -90,7 +90,7 @@ public class MainController {
                 model.addAttribute("errorMessage", "You don't have access to this farm");
                 return "error.html";
             }
-            Page<Farm> pageFarm = farmService.findAllPageable(user, pageable);
+            Page<Farm> pageFarm = farmService.findAllPageable(pageable);
             model.addAttribute("page", pageFarm);
             model.addAttribute("expense", String.format("%.2f", farmService.expensesCounter(farm)))
                     .addAttribute("profit", String.format("%.2f", farmService.profitCounter(farm)))
@@ -102,7 +102,7 @@ public class MainController {
         if (action.equals("plant")) {
             Plant plant = plantService.findPlantById(id);
             try {
-                farm = farmService.findFarmById(user, plant.getFarm().getId());
+                farm = farmService.findFarmById(plant.getFarm().getId());
             } catch (FarmNotFoundException e) {
                 model.addAttribute("errorMessage", "Farm with this id not found");
                 return "error.html";
@@ -123,7 +123,7 @@ public class MainController {
         if (action.equals("animal")) {
             Animal animal = animalService.findAnimalById(id);
             try {
-                farm = farmService.findFarmById(user, animal.getFarm().getId());
+                farm = farmService.findFarmById(animal.getFarm().getId());
             } catch (FarmNotFoundException e) {
                 model.addAttribute("errorMessage", "Farm with this id not found");
                 return "error.html";
@@ -144,7 +144,7 @@ public class MainController {
         if (action.equals("technique")) {
             Technique technique = techniqueService.findTechniqueById(id);
             try {
-                farm = farmService.findFarmById(user, technique.getFarm().getId());
+                farm = farmService.findFarmById(technique.getFarm().getId());
             } catch (FarmNotFoundException e) {
                 model.addAttribute("errorMessage", "Farm with this id not found");
                 return "error.html";

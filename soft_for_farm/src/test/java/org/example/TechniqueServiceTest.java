@@ -4,12 +4,12 @@ import org.example.entity.*;
 import org.example.repository.TechniqueRepository;
 import org.example.service.FarmService;
 import org.example.service.TechniqueService;
-import org.example.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -31,41 +31,37 @@ public class TechniqueServiceTest {
     @Autowired
     FarmService farmService;
     
-    @Autowired
-    UserService userService;
-    
     @Test
     void contextLoads() {
         assertThat(techniqueRepository).isNotNull();
         assertThat(techniqueService).isNotNull();
         assertThat(farmService).isNotNull();
-        assertThat(userService).isNotNull();
     }
     
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void createTechnique() throws Exception {
-        User user = userService.findByLogin("test user");
         Farm farm = new Farm("test farm", "2021", "test address");
-        farmService.addFarm(user, farm);
+        farmService.addFarm(farm);
         Long farmId = farm.getId();
         Technique technique = new Technique("test technique", 1000.1, 20000.1);
-        techniqueService.addTechnique(farmService.findFarmById(user, farmId), technique);
+        techniqueService.addTechnique(farmService.findFarmById(farmId), technique);
         Long techniqueId = technique.getId();
         
         Assertions.assertTrue(techniqueRepository.existsById(techniqueId));
         techniqueService.deleteTechnique(techniqueId);
-        farmService.deleteFarm(user, farmId);
+        farmService.deleteFarm(farmId);
     }
     
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void updateTechnique() throws Exception {
-        User user = userService.findByLogin("test user");
         Farm farm = new Farm("test farm", "2021", "test address");
-        farmService.addFarm(user, farm);
+        farmService.addFarm(farm);
         Long farmId = farm.getId();
     
         Technique technique = new Technique("test technique", 1000.1, 20000.1);
-        techniqueService.addTechnique(farmService.findFarmById(user, farmId), technique);
+        techniqueService.addTechnique(farmService.findFarmById(farmId), technique);
         Long techniqueId = technique.getId();
     
         Technique newTechnique =new Technique("test technique updated", 1000.1, 20000.1);
@@ -73,21 +69,21 @@ public class TechniqueServiceTest {
 
         Assertions.assertEquals(newTechnique.getTypeOfTechnique(), techniqueService.findTechniqueById(techniqueId).getTypeOfTechnique());
         techniqueService.deleteTechnique(techniqueId);
-        farmService.deleteFarm(user, farmId);
+        farmService.deleteFarm(farmId);
     }
 
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void deleteTechnique() throws Exception {
-        User user = userService.findByLogin("test user");
         Farm farm = new Farm("test farm", "2021", "test address");
-        farmService.addFarm(user, farm);
+        farmService.addFarm(farm);
         Long farmId = farm.getId();
         Technique technique = new Technique("test technique", 1000.1, 20000.1);
-        techniqueService.addTechnique(farmService.findFarmById(user, farmId), technique);
+        techniqueService.addTechnique(farmService.findFarmById(farmId), technique);
         Long techniqueId = technique.getId();
 
         techniqueService.deleteTechnique(techniqueId);
         Assertions.assertFalse(techniqueRepository.existsById(techniqueId));
-        farmService.deleteFarm(user, farmId);
+        farmService.deleteFarm(farmId);
     }
 }

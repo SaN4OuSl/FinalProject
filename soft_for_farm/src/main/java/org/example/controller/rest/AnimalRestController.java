@@ -36,7 +36,7 @@ public class AnimalRestController {
     public Object createAnimal(@Valid @RequestBody Animal animal, BindingResult result, @PathVariable Long farm_id) {
         try {
             User user = userService.getUserByAuthentication();
-            Farm farm = farmService.findFarmById(user, farm_id);
+            Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
             } else {
@@ -95,7 +95,7 @@ public class AnimalRestController {
     public Object animals(@PathVariable Long farm_id) {
         try {
             User user = userService.getUserByAuthentication();
-            Farm farm = farmService.findFarmById(user, farm_id);
+            Farm farm = farmService.findFarmById(farm_id);
             return animalService.findAllAnimalByFarm(farm);
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

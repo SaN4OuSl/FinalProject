@@ -1,15 +1,14 @@
 package org.example;
 
 import org.example.entity.Farm;
-import org.example.entity.User;
 import org.example.repository.FarmRepository;
 import org.example.service.FarmService;
-import org.example.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -26,48 +25,46 @@ public class FarmServiceTest {
     FarmRepository farmRepository;
     @Autowired
     FarmService farmService;
-    @Autowired
-    UserService userService;
+
 
     @Test
     void contextLoads() {
         assertThat(farmRepository).isNotNull();
         assertThat(farmService).isNotNull();
-        assertThat(userService).isNotNull();
     }
 
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void createFarm() throws Exception {
-        User user = userService.findByLogin("test user");
         Farm farm = new Farm("test farm", "2021", "test address");
-        farmService.addFarm(user, farm);
+        farmService.addFarm(farm);
         Long id = farm.getId();
 
         Assertions.assertTrue(farmRepository.existsById(id));
-        farmService.deleteFarm(user, id);
+        farmService.deleteFarm(id);
     }
 
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void updateFarm() throws Exception {
-        User user = userService.findByLogin("test user");
         Farm farm = new Farm("test farm", "2021", "test address");
-        farmService.addFarm(user, farm);
+        farmService.addFarm(farm);
         Farm newFarm = new Farm("test farm updated", "2021", "test address");
         Long id = farm.getId();
 
-        farmService.updateFarm(user, id, newFarm);
-        Assertions.assertEquals(newFarm.getFarmName(), farmService.findFarmById(user, id).getFarmName());
-        farmService.deleteFarm(user, id);
+        farmService.updateFarm(id, newFarm);
+        Assertions.assertEquals(newFarm.getFarmName(), farmService.findFarmById(id).getFarmName());
+        farmService.deleteFarm(id);
     }
 
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void deleteFarm() throws Exception {
-        User user = userService.findByLogin("test user");
         Farm farm = new Farm("test farm", "2021", "test address");
-        farmService.addFarm(user, farm);
+        farmService.addFarm(farm);
         Long id = farm.getId();
 
-        farmService.deleteFarm(user, id);
+        farmService.deleteFarm(id);
         Assertions.assertFalse(farmRepository.existsById(id));
     }
 }

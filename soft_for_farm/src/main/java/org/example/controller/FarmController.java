@@ -46,17 +46,16 @@ public class FarmController {
     
     @GetMapping()
     public String farms(Principal principal, Model model, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
-        User user;
         try {
-            user = userService.findByLogin(principal.getName());
+            User user = userService.findByLogin(principal.getName());
+            Page<Farm> pageFarm = farmService.findAllPageable(pageable);
+            model.addAttribute("page", pageFarm);
+            model.addAttribute("currentUser", user);
+            return "farms.html";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User with this login not found");
             return "error.html";
         }
-        Page<Farm> pageFarm = farmService.findAllPageable(user, pageable);
-        model.addAttribute("page", pageFarm);
-        model.addAttribute("currentUser", user);
-        return "farms.html";
     }
     
     @PostMapping(value = "/new")
@@ -68,7 +67,7 @@ public class FarmController {
                 model.addAttribute("user", user);
                 return "addFarm.html";
             } else {
-                farmService.addFarm(user, farm);
+                farmService.addFarm(farm);
                 return "redirect:/farm";
             }
         } catch (UserNotFoundException e) {
@@ -90,8 +89,7 @@ public class FarmController {
             return "redirect:/update/farms/{id}";
         } else {
             try {
-                User user = userService.findByLogin(principal.getName());
-                farmService.updateFarm(user, id, farm);
+                farmService.updateFarm(id, farm);
             } catch (FarmNotFoundException e) {
                 model.addAttribute("errorMessage", "Farm with this id not found");
                 return "error.html";
@@ -107,10 +105,9 @@ public class FarmController {
     }
     
     @DeleteMapping(value = "/{id}")
-    public String deleteFarm(Principal principal, @PathVariable("id") Long id, Model model) {
+    public String deleteFarm(@PathVariable("id") Long id, Model model) {
         try {
-            User user = userService.findByLogin(principal.getName());
-            farmService.deleteFarm(user, id);
+            farmService.deleteFarm(id);
             return "redirect:/farm";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
@@ -123,31 +120,29 @@ public class FarmController {
     
     @GetMapping(value = "/{year}")
     public String findFarmsByYear(Principal principal, Model model, @PathVariable String year, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
-        User user;
         try {
-            user = userService.findByLogin(principal.getName());
+            User user = userService.findByLogin(principal.getName());
+            Page<Farm> pageFarm = farmService.findFarmsByYear(year, pageable);
+            model.addAttribute("page", pageFarm);
+            model.addAttribute("currentUser", user);
+            return "farms.html";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User with this lodin not found");
             return "error.html";
         }
-        Page<Farm> pageFarm = farmService.findFarmsByYear(year, user, pageable);
-        model.addAttribute("page", pageFarm);
-        model.addAttribute("currentUser", user);
-        return "farms.html";
     }
     
     @GetMapping(value = "/findByFarmName/{farmName}")
     public String findFarmsByFarmName(Principal principal, Model model, @PathVariable String farmName, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
-        User user;
         try {
-            user = userService.findByLogin(principal.getName());
+            User user = userService.findByLogin(principal.getName());
+            Page<Farm> pageFarm = farmService.findFarmsByFarmName(farmName, pageable);
+            model.addAttribute("page", pageFarm);
+            model.addAttribute("currentUser", user);
+            return "farms.html";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User with this lodin not found");
             return "error.html";
         }
-        Page<Farm> pageFarm = farmService.findFarmsByFarmName(farmName, user, pageable);
-        model.addAttribute("page", pageFarm);
-        model.addAttribute("currentUser", user);
-        return "farms.html";
     }
 }

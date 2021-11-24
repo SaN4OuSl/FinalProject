@@ -35,8 +35,7 @@ public class PlantRestController {
     @PostMapping(value = "/{farm_id}/new")
     public Object createPlant(@Valid @RequestBody Plant plant, BindingResult result, @PathVariable Long farm_id) {
         try {
-            User user = userService.getUserByAuthentication();
-            Farm farm = farmService.findFarmById(user, farm_id);
+            Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
             } else {
@@ -94,8 +93,7 @@ public class PlantRestController {
     @GetMapping("/{farm_id}/all")
     public Object plants(@PathVariable Long farm_id) {
         try {
-            User user = userService.getUserByAuthentication();
-            Farm farm = farmService.findFarmById(user, farm_id);
+            Farm farm = farmService.findFarmById(farm_id);
             return plantService.findAllPlantsByFarm(farm);
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -35,7 +35,6 @@ public class AnimalRestController {
     @PostMapping(value = "/{farm_id}/new")
     public Object createAnimal(@Valid @RequestBody Animal animal, BindingResult result, @PathVariable Long farm_id) {
         try {
-            User user = userService.getUserByAuthentication();
             Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
@@ -94,7 +93,6 @@ public class AnimalRestController {
     @GetMapping("/{farm_id}/all")
     public Object animals(@PathVariable Long farm_id) {
         try {
-            User user = userService.getUserByAuthentication();
             Farm farm = farmService.findFarmById(farm_id);
             return animalService.findAllAnimalByFarm(farm);
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {

@@ -35,7 +35,6 @@ public class TechniqueRestController {
     @PostMapping(value = "/{farm_id}/new")
     public Object createTechnique(@Valid @RequestBody Technique technique, BindingResult result, @PathVariable Long farm_id) {
         try {
-            User user = userService.getUserByAuthentication();
             Farm farm = farmService.findFarmById(farm_id);
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
@@ -94,7 +93,6 @@ public class TechniqueRestController {
     @GetMapping("/{farm_id}/all")
     public Object techniques(@PathVariable Long farm_id) {
         try {
-            User user = userService.getUserByAuthentication();
             Farm farm = farmService.findFarmById(farm_id);
             return techniqueService.findAllTechniquesByFarm(farm);
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {

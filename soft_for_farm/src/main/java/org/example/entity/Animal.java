@@ -1,6 +1,7 @@
 package org.example.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
@@ -13,7 +14,7 @@ public class Animal {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     
     @Size(min = 2, message = "Animal name must be have more than 2 characters")

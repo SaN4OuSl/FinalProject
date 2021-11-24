@@ -2,6 +2,7 @@ package org.example.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
     
     @Size(min = 2, message = "Login must be more than 2 characters")

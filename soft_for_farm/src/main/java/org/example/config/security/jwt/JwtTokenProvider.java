@@ -63,7 +63,7 @@ public class JwtTokenProvider {
     public String getLogin(String token) throws JwtTokenException {
         try {
             return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-        } catch (SignatureException | ExpiredJwtException e){
+        } catch (SignatureException | ExpiredJwtException e) {
             throw new JwtTokenException(e.getMessage());
         }
     }

@@ -122,7 +122,7 @@ public class TechniqueController {
     }
     
     @GetMapping("/{id}/all")
-    public String techniques( Model model, @PathVariable Long id) {
+    public String techniques(Model model, @PathVariable Long id) {
         try {
             Farm farm = farmService.findFarmById(id);
             model.addAttribute("farm", farm);

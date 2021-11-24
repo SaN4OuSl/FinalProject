@@ -17,15 +17,15 @@ import java.util.List;
 
 @Service
 public class FarmServiceImpl implements FarmService {
-
+    
     private static final Logger LOGGER = LoggerFactory.getLogger(FarmServiceImpl.class);
-
+    
     private final FarmRepository farmRepository;
     private final UserService userService;
     private final PlantService plantService;
     private final AnimalService animalService;
     private final TechniqueService techniqueService;
-
+    
     @Autowired
     public FarmServiceImpl(FarmRepository farmRepository, UserService userService, PlantService plantService, AnimalService animalService, TechniqueService techniqueService) {
         this.farmRepository = farmRepository;
@@ -34,7 +34,7 @@ public class FarmServiceImpl implements FarmService {
         this.animalService = animalService;
         this.techniqueService = techniqueService;
     }
-
+    
     @Override
     public void addFarm(Farm farm) throws UserNotFoundException {
         if (farm != null) {
@@ -47,7 +47,7 @@ public class FarmServiceImpl implements FarmService {
             LOGGER.warn("Farm is null!");
         }
     }
-
+    
     @Override
     public void updateFarm(Long id, Farm farm) throws FarmNotFoundException, AccessToFarmException, UserNotFoundException {
         if (farmRepository.existsById(id)) {
@@ -69,7 +69,7 @@ public class FarmServiceImpl implements FarmService {
             throw new FarmNotFoundException("Farm with this id not found");
         }
     }
-
+    
     @Override
     public Farm findFarmById(Long id) throws FarmNotFoundException, AccessToFarmException, UserNotFoundException {
         if (!farmRepository.existsById(id)) {
@@ -81,7 +81,7 @@ public class FarmServiceImpl implements FarmService {
         }
         return farmRepository.findById(id).orElse(null);
     }
-
+    
     @Override
     public void deleteFarm(Long id) throws AccessToFarmException, FarmNotFoundException, UserNotFoundException {
         if (farmRepository.existsById(id)) {
@@ -99,7 +99,7 @@ public class FarmServiceImpl implements FarmService {
             throw new FarmNotFoundException("Farm with this id not found");
         }
     }
-
+    
     @Override
     public Double profitCounter(Farm farm) {
         List<Plant> plants = farm.getPlants();
@@ -113,7 +113,7 @@ public class FarmServiceImpl implements FarmService {
         }
         return profit;
     }
-
+    
     @Override
     public Double expensesCounter(Farm farm) {
         List<Plant> plants = farm.getPlants();
@@ -131,24 +131,24 @@ public class FarmServiceImpl implements FarmService {
         }
         return expense;
     }
-
+    
     @Override
     public Double netProfitCounter(Farm farm) {
         return profitCounter(farm) - expensesCounter(farm);
     }
-
+    
     @Override
     public Page<Farm> findFarmsByYear(String year, Pageable pageable) throws UserNotFoundException {
         User user = userService.getUserByAuthentication();
         return farmRepository.findAllByYearOfStatisticAndUser(year, user, pageable);
     }
-
+    
     @Override
     public Page<Farm> findFarmsByFarmName(String farmName, Pageable pageable) throws UserNotFoundException {
         User user = userService.getUserByAuthentication();
         return farmRepository.findAllByFarmNameAndUser(farmName, user, pageable);
     }
-
+    
     @Override
     public Page<Farm> findAllPageable(Pageable pageable) throws UserNotFoundException {
         LOGGER.info("Read all farms");

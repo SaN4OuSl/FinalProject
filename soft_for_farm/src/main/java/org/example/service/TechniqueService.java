@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface TechniqueService {
     
-    Technique addTechnique(Long farmId, Technique technique)  throws AccessToFarmException, FarmNotFoundException, UserNotFoundException;
+    Technique addTechnique(Long farmId, Technique technique) throws AccessToFarmException, FarmNotFoundException, UserNotFoundException;
     
     Technique updateTechnique(Long id, Technique technique) throws UserNotFoundException, TechniqueNotFoundException;
     

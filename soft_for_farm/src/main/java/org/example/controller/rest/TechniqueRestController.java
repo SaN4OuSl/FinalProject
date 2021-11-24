@@ -32,7 +32,7 @@ public class TechniqueRestController {
             if (result.hasErrors()) {
                 return ResponseEntity.badRequest().body("Errors in fields");
             } else {
-                return techniqueResponseReturner( techniqueService.addTechnique(farm_id, technique));
+                return techniqueResponseReturner(techniqueService.addTechnique(farm_id, technique));
             }
         } catch (FarmNotFoundException | AccessToFarmException | UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

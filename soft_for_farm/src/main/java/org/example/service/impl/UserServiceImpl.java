@@ -152,13 +152,13 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public void addAdminRole(User user) {
-            LOGGER.info("Start add admin role for user: " + user.getLogin());
-            List<Role> roleList = new ArrayList<>();
-            Role role = roleRepository.findByName("ROLE_ADMIN");
-            roleList.add(role);
-            user.setRoles(roleList);
-            userRepository.save(user);
-            LOGGER.info("End add admin role for user: " + user.getLogin());
+        LOGGER.info("Start add admin role for user: " + user.getLogin());
+        List<Role> roleList = new ArrayList<>();
+        Role role = roleRepository.findByName("ROLE_ADMIN");
+        roleList.add(role);
+        user.setRoles(roleList);
+        userRepository.save(user);
+        LOGGER.info("End add admin role for user: " + user.getLogin());
     }
     
     private boolean checkUserPaswordAndLogin(User user) throws DuplicateUserLogin, UserPasswordSmall, UserLoginSmall {

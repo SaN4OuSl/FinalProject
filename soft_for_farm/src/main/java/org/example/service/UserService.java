@@ -18,9 +18,9 @@ public interface UserService {
     
     User getUserByAuthentication() throws UserNotFoundException;
     
-    void deleteById(User userWhoDeletes, Long id) throws UserNotFoundException, NotEnoughRights;
+    void deleteById(Long id) throws UserNotFoundException, NotEnoughRights;
     
-    void updateUserById(Long id, User user, User userWhoUpdates) throws UserNotFoundException, NotEnoughRights, UserPasswordSmall, DuplicateUserLogin, UserLoginSmall;
+    void updateById(Long id, User user) throws UserNotFoundException, NotEnoughRights, UserPasswordSmall, DuplicateUserLogin, UserLoginSmall;
     
     Page<User> findAllPageable(Pageable pageable);
     

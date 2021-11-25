@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User registration(User user) throws DuplicateUserLogin, UserPasswordSmall, UserLoginSmall {
-        if (checkUserPaswordAndLogin(user)) {
+        if (checkUserPasswordAndLogin(user)) {
             Role role = roleRepository.findByName("ROLE_USER");
             regUser(user, role);
             return user;
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User registrationAdmin(User user) throws DuplicateUserLogin, UserPasswordSmall, NotEnoughRights, UserLoginSmall {
-        if (checkUserPaswordAndLogin(user)) {
+        if (checkUserPasswordAndLogin(user)) {
             Role role = roleRepository.findByName("ROLE_ADMIN");
             regUser(user, role);
             return user;
@@ -109,8 +109,9 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void deleteById(User userWhoDeletes, Long id) throws UserNotFoundException, NotEnoughRights {
+    public void deleteById(Long id) throws UserNotFoundException, NotEnoughRights {
         if (userRepository.existsById(id)) {
+            User userWhoDeletes = getUserByAuthentication();
             if (userDetailsService.isAdmin(userWhoDeletes) || id.equals(userWhoDeletes.getId())) {
                 userRepository.deleteById(id);
                 LOGGER.info("IN deleteById: deleted with id: {}", id);
@@ -123,10 +124,11 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public void updateUserById(Long id, User user, User userWhoUpdates) throws UserNotFoundException, NotEnoughRights, UserPasswordSmall, DuplicateUserLogin, UserLoginSmall {
-        if (userDetailsService.isAdmin(userWhoUpdates) || id.equals(userWhoUpdates.getId())) {
-            if (userRepository.existsById(id)) {
-                if (checkUserPaswordAndLogin(user)) {
+    public void updateById(Long id, User user) throws UserNotFoundException, NotEnoughRights, UserPasswordSmall, DuplicateUserLogin, UserLoginSmall {
+        if (userRepository.existsById(id)) {
+            User userWhoUpdates = getUserByAuthentication();
+            if (userDetailsService.isAdmin(userWhoUpdates) || id.equals(userWhoUpdates.getId())) {
+                if (checkUserPasswordAndLogin(user)) {
                     LOGGER.info("Start update user: " + id);
                     User newUser;
                     try {
@@ -141,12 +143,12 @@ public class UserServiceImpl implements UserService {
                     LOGGER.info("End update user: " + id);
                 }
             } else {
-                LOGGER.warn("User doesn't exists");
-                throw new UserNotFoundException("User with this id does not exists");
+                LOGGER.warn("User don't have enough rights");
+                throw new NotEnoughRights("You don't have enough rights");
             }
         } else {
-            LOGGER.warn("User don't have enough rights");
-            throw new NotEnoughRights("You don't have enough rights");
+            LOGGER.warn("User doesn't exists");
+            throw new UserNotFoundException("User with this id does not exists");
         }
     }
     
@@ -161,7 +163,7 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("End add admin role for user: " + user.getLogin());
     }
     
-    private boolean checkUserPaswordAndLogin(User user) throws DuplicateUserLogin, UserPasswordSmall, UserLoginSmall {
+    private boolean checkUserPasswordAndLogin(User user) throws DuplicateUserLogin, UserPasswordSmall, UserLoginSmall {
         if (user.getPassword().length() < 8) {
             LOGGER.warn("IN registrationAdmin user enter small password");
             throw new UserPasswordSmall("Password cannot be less than 8 symbols");

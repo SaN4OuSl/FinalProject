@@ -20,8 +20,7 @@ public class UserRestController {
     @DeleteMapping(value = "/user/{id}")
     public Object deleteUser(@PathVariable("id") Long id) {
         try {
-            User user = userService.getUserByAuthentication();
-            userService.deleteById(user, id);
+            userService.deleteById(id);
             return new ResponseEntity<>("User successfully deleted", HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -33,8 +32,7 @@ public class UserRestController {
     @PatchMapping(value = "/userUpdate/{id}")
     public Object updateUser(@RequestBody User newUser, @PathVariable("id") Long id) {
         try {
-            User user = userService.getUserByAuthentication();
-            userService.updateUserById(id, newUser, user);
+            userService.updateById(id, newUser);
             return new ResponseEntity<>("User successfully updated", HttpStatus.OK);
         } catch (UserNotFoundException | UserPasswordSmall | DuplicateUserLogin | UserLoginSmall e) {
             return ResponseEntity.badRequest().body(e.getMessage());

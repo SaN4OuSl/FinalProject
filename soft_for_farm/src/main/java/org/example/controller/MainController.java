@@ -44,7 +44,7 @@ public class MainController {
     public String deleteYourAccount(Principal principal, Model model) {
         try {
             User user = userService.findByLogin(principal.getName());
-            userService.deleteById(user, user.getId());
+            userService.deleteById(user.getId());
             return "redirect:/login";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
@@ -60,7 +60,7 @@ public class MainController {
         try {
             if (!result.hasErrors()) {
                 User currentUser = userService.findByLogin(principal.getName());
-                userService.updateUserById(currentUser.getId(), user, currentUser);
+                userService.updateById(currentUser.getId(), user);
                 return "redirect:/login";
             } else {
                 return "redirect:/home";

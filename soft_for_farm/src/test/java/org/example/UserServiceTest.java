@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -38,47 +39,52 @@ public class UserServiceTest {
     }
 
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void registrationUser() throws Exception {
         User user = new User("username", "userpass");
         userService.registration(user);
         Long id = user.getId();
 
         Assertions.assertTrue(userRepository.existsById(id));
-        userService.deleteById(user, id);
+        userService.deleteById(id);
     }
 
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void registrationAdmin() throws Exception {
         User user = new User("username", "userpass");
         userService.registrationAdmin(user);
         Long id = user.getId();
 
         Assertions.assertTrue(userRepository.existsById(id));
-        userService.deleteById(user, id);
+        userService.deleteById(id);
     }
 
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void deleteUser() throws Exception {
         User user = new User("username", "userpass");
         userService.registration(user);
         Long id = user.getId();
-        userService.deleteById(user, id);
+        userService.deleteById(id);
         Assertions.assertFalse(userRepository.existsById(id));
     }
 
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void updateUser() throws Exception {
         User user = new User("username", "userpass");
         userService.registration(user);
         Long id = user.getId();
         User newUser = new User("username updated", "userpassupd");
 
-        userService.updateUserById(id, newUser, user);
+        userService.updateById(id, newUser);
         Assertions.assertEquals(newUser.getLogin(), userService.findUserById(id).getLogin());
-        userService.deleteById(userService.findUserById(id), id);
+        userService.deleteById(id);
     }
     
     @Test
+    @WithMockUser(username = "test user", password = "adminpass")
     void addAdminRole() throws Exception {
         User user = new User("username", "userpass");
         userService.registration(user);
@@ -86,6 +92,6 @@ public class UserServiceTest {
         
         userService.addAdminRole(user);
         Assertions.assertTrue(userDetailsService.isAdmin(user));
-        userService.deleteById(userService.findUserById(id), id);
+        userService.deleteById(id);
     }
 }

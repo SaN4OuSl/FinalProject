@@ -81,10 +81,9 @@ public class AdminController {
     }
     
     @DeleteMapping(value = "/user/{id}")
-    public String deleteUser(Principal principal, @PathVariable("id") Long id, Model model) {
+    public String deleteUser(@PathVariable("id") Long id, Model model) {
         try {
-            User user = userService.findByLogin(principal.getName());
-            userService.deleteById(user, id);
+            userService.deleteById(id);
             return "redirect:/admin/users";
         } catch (UserNotFoundException e) {
             model.addAttribute("errorMessage", "User not found");
@@ -96,12 +95,12 @@ public class AdminController {
     }
     
     @PatchMapping(value = "/userUpdate/{id}")
-    public String updateUser(Principal principal, @Valid @ModelAttribute("user") User newUser, BindingResult result, @PathVariable("id") Long id, Model model) {
+    public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result, @PathVariable("id") Long id, Model model) {
         if (result.hasErrors()) {
             return "redirect:/update/user/{id}";
         } else {
             try {
-                userService.updateUserById(id, newUser, userService.findByLogin(principal.getName()));
+                userService.updateById(id, newUser);
             } catch (UserNotFoundException e) {
                 model.addAttribute("errorMessage", "User not found");
                 return "error.html";

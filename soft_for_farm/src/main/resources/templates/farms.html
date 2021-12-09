@@ -28,14 +28,14 @@
         <div th:if="${page.totalPages != 1}">
             <ul class="pagination">
                 <li th:class="${page.number == 0} ? disabled"><a
-                        class="floating-button" th:href="@{/farms?page=0}">&laquo;</a></li>
+                        class="floating-button" th:href="@{/farm?page=0}">&laquo;</a></li>
                 <li th:class="${page.number == 0} ? disabled"><a
-                        class="floating-button" th:href="@{/farms?page={num} (num=${page.number-1})}">&larr;</a></li>
+                        class="floating-button" th:href="@{/farm?page={num} (num=${page.number-1})}">&larr;</a></li>
                 <li th:class="${page.number + 1 == page.totalPages} ? disabled">
-                    <a class="floating-button" th:href="@{/farms?page={num} (num=${page.number+1})}">&rarr;</a>
+                    <a class="floating-button" th:href="@{/farm?page={num} (num=${page.number+1})}">&rarr;</a>
                 </li>
                 <li th:class="${page.number + 1 == page.totalPages} ? disabled">
-                    <a class="floating-button" th:href="@{/farms?page={num} (num=${page.totalPages-1})}">&raquo;</a>
+                    <a class="floating-button" th:href="@{/farm?page={num} (num=${page.totalPages-1})}">&raquo;</a>
                 </li>
             </ul>
         </div>
